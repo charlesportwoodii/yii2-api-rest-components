@@ -1,0 +1,22 @@
+
+{
+    "name": "charlesportwoodii/yii2-api-rest-components",
+    "description": "Restful API components for Yii framework 2",
+    "keywords": ["yii2", "rest", "api", "cors"],
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/charlesportwoodii/yii2-api-rest-components/issues",
+        "source": "https://github.com/charlesportwoodii/yii2-api-rest-components"
+    },
+    "authors": [{
+        "name": "Charles R. Portwood II",
+        "email": "charlesportwoodii@erianna.com"
+    }],
+    "require": {
+        "yiisoft/yii2": ">=2.0.4"
+    },
+    "autoload": {
+        "psr-4": { "charlesportwoodii\\yii2": "" }
+    }
+}
