@@ -24,11 +24,10 @@
     "require-dev": {
         "codeception/codeception": "^2.2",
         "yiisoft/yii2-codeception": "^2.0",
-        "yiisoft/yii2-faker": "^2.0",
         "codeception/specify": "*",
         "codeception/verify": "*"
     },
     "autoload": {
-        "psr-4": { "charlesportwoodii\\yii2\\": "" }
+        "psr-4": { "yrc\\": "" }
     }
 }

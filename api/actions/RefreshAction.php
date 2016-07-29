@@ -1,10 +1,10 @@
 <?php
 
-namespace charlesportwoodii\yii2\api\actions;
+namespace yrc\api\actions;
 
-use charlesportwoodii\yii2\api\actions\AuthenticationAction;
-use charlesportwoodii\yii2\api\models\User\Token;
-use charlesportwoodii\yii2\rest\Action as RestAction;
+use yrc\api\actions\AuthenticationAction;
+use yrc\api\models\User\Token;
+use yrc\rest\Action as RestAction;
 
 use yii\web\UnauthorizedHttpException;
 use Yii;

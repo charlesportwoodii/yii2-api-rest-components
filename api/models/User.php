@@ -1,8 +1,8 @@
 <?php
 
-namespace charlesportwoodii\yii2\api\models;
+namespace yrc\api\models;
 
-use charlesportwoodii\yii2\api\models\User\Token;
+use yrc\api\models\User\Token;
 
 use Base32\Base32;
 use OTPHP\TOTP;
@@ -27,13 +27,13 @@ use Yii;
  *
  * @property Tokens[] $tokens
  */
-class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
+abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
     /**
      * password_hash Algorithm
      * @var integer
      */
-    private $passwordHashAlgorithm = PASSWORD_ARGON2;
+    private $passwordHashAlgorithm = PASSWORD_BCRYPT;
     
     /**
      * password_hash options
@@ -50,16 +50,14 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         parent::init();
 
         // Prefer Argon2 if it is available, but fall back to BCRYPT if it isn't
-        if (!defined('PASSWORD_ARGON2')) {
-            $passwordHashAlgorithm = PASSWORD_BCRYPT;
-            $passwordHashOptions = [
-                'cost' => 13
-            ];
+        if (defined('PASSWORD_ARGON2')) {
+            $this->passwordHashAlgorithm = PASSWORD_ARGON2;
+            $this->passwordHashOptions = [];
         }
 
         // Lower the bcrypt cost when running tests
-        if (YII_DEBUG && $passwordHashAlgorithm === PASSWORD_BCRYPT) {
-            $this->options['cost'] = 10;
+        if (YII_DEBUG && $this->passwordHashAlgorithm === PASSWORD_BCRYPT) {
+            $this->passwordHashOptions['cost'] = 10;
         }
     }
 
@@ -90,7 +88,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             [['password', 'username'], 'required'],
             [['username'], 'trim'],
             [['password'], 'string', 'length' => [8, 100]],
-            [['created_at', 'updated_at', 'activation_token_expires_at', 'reset_token_expires_at', 'opt_enabled'], 'integer'],
+            [['created_at', 'updated_at', 'activation_token_expires_at', 'reset_token_expires_at', 'otp_enabled'], 'integer'],
             [['password', 'username', 'otp_secret', 'activation_token', 'reset_token'], 'string', 'max' => 255],
             [['username'], 'unique'],
         ];
@@ -133,7 +131,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         if (parent::beforeValidate()) {
             if ($this->isNewRecord || $this->password !== $this->oldAttributes['password']) {
-                $this->password = password_hash($this->password, $this->passwordHashAlgorithm, $this->options);
+                $this->password = password_hash($this->password, $this->passwordHashAlgorithm, $this->passwordHashOptions);
             }
             
             return true;
@@ -150,8 +148,8 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function validatePassword($password)
     {
         if (password_verify($password, $this->password)) {
-            if (password_needs_rehash($this->password, $this->passwordHashAlgorithm, $this->options)) {
-                $this->password = password_hash($password, $this->passwordHashAlgorithm, $this->options);
+            if (password_needs_rehash($this->password, $this->passwordHashAlgorithm, $this->passwordHashOptions)) {
+                $this->password = password_hash($password, $this->passwordHashAlgorithm, $this->passwordHashOptions);
                 
                 // Allow authentication to continue if we weren't able to update the password, but log the message
                 if (!$this->save()) {
@@ -229,7 +227,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function disableOTP()
     {
         $this->otp_secret = "";
-        $this->opt_enabled = 0;
+        $this->otp_enabled = 0;
 
         return $this->save();
     }

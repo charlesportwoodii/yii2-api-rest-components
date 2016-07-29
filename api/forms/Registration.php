@@ -1,9 +1,12 @@
 <?php
 
-namespace charlesportwoodii\yii2\api\forms;
+namespace yrc\api\forms;
 
 use ZxcvbnPhp\Zxcvbn;
 use Base32\Base32;
+use app\models\User;
+
+use Yii;
 
 /**
  * @class Registration
@@ -55,9 +58,7 @@ class Registration extends \yii\base\Model
             $zxcvbn = new Zxcvbn;
             $userData = [ $this->username ];
             $strength = $zxcvbn->passwordStrength((string)$this->password, $userData);
-            var_dump($strength);
-            die();
-            if ($strength['entrophy'] < 36) {
+            if ($strength['entropy'] < 36) {
                 $this->addError('password', 'Your password has low entrophy. Please choose a stronger password');
             }
         }
@@ -73,10 +74,7 @@ class Registration extends \yii\base\Model
     public function register()
     {
         if ($this->validate()) {
-            $config = require  Yii::getPathFromAlias('@app') . '/config/loader.php';
-            $userClass = $config['user']['class'];
-
-            $user = new $userClass;
+            $user = new User;
             $user->attributes = [
                 'username'          => $this->username,
                 'password'          => $this->password,

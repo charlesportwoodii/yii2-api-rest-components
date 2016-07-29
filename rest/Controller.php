@@ -1,6 +1,6 @@
 <?php
 
-namespace charlesportwoodii\yii2\rest;
+namespace yrc\rest;
 
 use yii\rest\Controller as RestController;
 use yii\filters\Cors;

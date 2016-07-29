@@ -1,6 +1,6 @@
 <?php
 
-namespace charlesportwoodii\yii2\filters\auth;
+namespace yrc\filters\auth;
 
 use app\models\User\Token;
 

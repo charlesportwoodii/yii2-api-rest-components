@@ -1,6 +1,6 @@
 <?php
 
-namespace charlesportwoodii\yii2\api\forms;
+namespace yrc\api\forms;
 
 final class Activation extends \yii\base\model
 {

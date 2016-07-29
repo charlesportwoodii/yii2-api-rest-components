@@ -1,9 +1,9 @@
 <?php
 
-namespace charlesportwoodii\yii2\api\models\User;
+namespace yrc\api\models\User;
 
 use CryptLib\Random\Factory as CryptLibRandomFactory;
-use charlesportwoodii\yii2\api\models\User;
+use yrc\api\models\User;
 
 use yii\behaviors\TimestampBehavior;
 use Yii;

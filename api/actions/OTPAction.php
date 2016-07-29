@@ -1,9 +1,9 @@
 <?php
 
-namespace charlesportwoodii\yii2\api\actions;
+namespace yrc\api\actions;
 
-use charlesportwoodii\yii2\api\models\User;
-use charlesportwoodii\yii2\rest\Action as RestAction;
+use app\models\User;
+use yrc\rest\Action as RestAction;
 
 use yii\web\HttpException;
 use Yii;
