@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6a121168ebff22c25212cf9d96dbc399",
-    "content-hash": "f50e0d5708e0c78d9a62456783802b02",
+    "hash": "29c4d6c02299419388d42ac191b4a3b4",
+    "content-hash": "a582e8894b070c989b66358fe2a69218",
     "packages": [
         {
             "name": "CryptLib/CryptLib",
