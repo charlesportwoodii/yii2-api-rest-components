@@ -9,14 +9,24 @@
         "issues": "https://github.com/charlesportwoodii/yii2-api-rest-components/issues",
         "source": "https://github.com/charlesportwoodii/yii2-api-rest-components"
     },
+    "minimum-stability": "stable",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/ircmaxell/PHP-CryptLib"
+        }
+    ],
     "authors": [{
         "name": "Charles R. Portwood II",
         "email": "charlesportwoodii@erianna.com"
     }],
     "require": {
-        "yiisoft/yii2": ">=2.0.4"
+        "php": ">=7.0.0",
+        "yiisoft/yii2": ">=2.0.4",
+        "spomky-labs/otphp": ">=8.2.0",
+        "CryptLib/CryptLib": "dev-master"
     },
     "autoload": {
-        "psr-4": { "charlesportwoodii\\yii2": "" }
+        "psr-4": { "charlesportwoodii\\yii2\\": "" }
     }
 }
