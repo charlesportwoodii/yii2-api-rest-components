@@ -2,7 +2,7 @@
 {
     "name": "charlesportwoodii/yii2-api-rest-components",
     "description": "Restful API components for Yii framework 2",
-    "keywords": ["yii2", "rest", "api", "cors"],
+    "keywords": ["yii2", "rest", "api", "cors", "auth"],
     "type": "yii2-extension",
     "license": "BSD-3-Clause",
     "support": {
@@ -16,7 +16,17 @@
     "require": {
         "php": ">=7.0.0",
         "yiisoft/yii2": ">=2.0.9",
-        "spomky-labs/otphp": ">=8.2.0"
+        "spomky-labs/otphp": ">=8.2.0",
+        "bjeavons/zxcvbn-php": "^0.1",
+        "yiisoft/yii2-swiftmailer": "~2.0.0",
+        "yiisoft/yii2-twig": "~2.0.0"
+    },
+    "require-dev": {
+        "codeception/codeception": "^2.2",
+        "yiisoft/yii2-codeception": "^2.0",
+        "yiisoft/yii2-faker": "^2.0",
+        "codeception/specify": "*",
+        "codeception/verify": "*"
     },
     "autoload": {
         "psr-4": { "charlesportwoodii\\yii2\\": "" }

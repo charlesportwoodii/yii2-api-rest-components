@@ -41,6 +41,7 @@ final class HMACSignatureAuth extends AuthMethod
             if (count($data) !== 3) {
                 $this->handleFailure($response);
             }
+            
             $accessToken = $data[0];
             $hmac        = $data[1];
             $salt        = $data[2];

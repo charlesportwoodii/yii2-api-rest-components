@@ -2,13 +2,12 @@
 
 namespace charlesportwoodii\yii2\api\actions;
 
-use Yii;
-use charlesportwoodii\yii2\rest\Action as RestAction;
-
 use charlesportwoodii\yii2\api\forms\Login;
 use charlesportwoodii\yii2\api\models\User\Token;
+use charlesportwoodii\yii2\rest\Action as RestAction;
 
 use yii\web\UnauthorizedHttpException;
+use Yii;
 
 /**
  * @class AuthenticationAction

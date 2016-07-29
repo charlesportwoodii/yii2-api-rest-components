@@ -2,11 +2,11 @@
 
 namespace charlesportwoodii\yii2\api\actions;
 
-use Yii;
+use charlesportwoodii\yii2\api\models\User;
 use charlesportwoodii\yii2\rest\Action as RestAction;
 
-use charlesportwoodii\yii2\api\models\User;
 use yii\web\HttpException;
+use Yii;
 
 /**
  * @class OTPAction

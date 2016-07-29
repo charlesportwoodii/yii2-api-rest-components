@@ -2,8 +2,6 @@
 
 namespace charlesportwoodii\yii2\api\forms;
 
-use charlesportwoodii\yii2\api\models\User;
-
 /**
  * @class Login
  * Form for authenticating users
@@ -55,8 +53,11 @@ final class Login extends \yii\base\model
      */
     public function getUser()
     {
+        $config = require  Yii::getPathFromAlias('@app') . '/config/loader.php';
+        $userClass = $config['user']['class'];
+        
         if ($this->_user === null) {
-            $this->_user = User::findOne(['username' => $this->username]);
+            $this->_user = $userClass::findOne(['username' => $this->username]);
         }
         return $this->_user;
     }
