@@ -4,58 +4,9 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "29c4d6c02299419388d42ac191b4a3b4",
-    "content-hash": "a582e8894b070c989b66358fe2a69218",
+    "hash": "3073171f1b36d80a4341fa87253a5994",
+    "content-hash": "e4861e502251f85f13acecee2c26e6b1",
     "packages": [
-        {
-            "name": "CryptLib/CryptLib",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ircmaxell/PHP-CryptLib.git",
-                "reference": "70390eac36f73becbe8b99b7327633ce51d7160e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ircmaxell/PHP-CryptLib/zipball/70390eac36f73becbe8b99b7327633ce51d7160e",
-                "reference": "70390eac36f73becbe8b99b7327633ce51d7160e",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.2"
-            },
-            "require-dev": {
-                "mikey179/vfsstream": "1.1.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "CryptLib": "lib"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Anthony Ferrara",
-                    "email": "ircmaxell@ircmaxell.com",
-                    "homepage": "http://blog.ircmaxell.com"
-                }
-            ],
-            "description": "A General Purpose Cryptography Library",
-            "homepage": "https://github.com/ircmaxell/PHP-CryptLib",
-            "keywords": [
-                "cipher",
-                "cryptography",
-                "encryption"
-            ],
-            "support": {
-                "source": "https://github.com/ircmaxell/PHP-CryptLib/tree/master",
-                "issues": "https://github.com/ircmaxell/PHP-CryptLib/issues"
-            },
-            "time": "2013-02-04 20:03:55"
-        },
         {
             "name": "beberlei/assert",
             "version": "v2.6.3",
@@ -836,9 +787,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "cryptlib/cryptlib": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
