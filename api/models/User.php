@@ -195,7 +195,7 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
         $this->otp_secret = $encodedSecret;
 
         if ($this->save()) {
-            return $$totp->getProvisioningUri();
+            return $totp->getProvisioningUri();
         }
 
         return false;
