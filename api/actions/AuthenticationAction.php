@@ -2,8 +2,8 @@
 
 namespace yrc\api\actions;
 
-use yrc\api\forms\Login;
-use yrc\api\models\User\Token;
+use app\forms\Login;
+use app\models\User\Token;
 use yrc\rest\Action as RestAction;
 
 use yii\web\UnauthorizedHttpException;
@@ -13,7 +13,7 @@ use Yii;
  * @class AuthenticationAction
  * Handles Authentication and Deauthentication of users
  */
-final class AuthenticationAction extends RestAction
+class AuthenticationAction extends RestAction
 {
     /**
      * [POST] /api/v1/authenticate

@@ -3,7 +3,7 @@
 namespace yrc\api\models\User;
 
 use CryptLib\Random\Factory as CryptLibRandomFactory;
-use yrc\api\models\User;
+use app\models\User;
 
 use yii\behaviors\TimestampBehavior;
 use Yii;
@@ -20,7 +20,7 @@ use Yii;
  *
  * @property User $user
  */
-class Token extends \yii\db\ActiveRecord
+abstract class Token extends \yii\db\ActiveRecord
 {
     /**
      * Constant OFFSET_TIME

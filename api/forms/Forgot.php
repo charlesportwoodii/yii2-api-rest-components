@@ -2,7 +2,7 @@
 
 namespace yrc\api\forms;
 
-final class Forgot extends \yii\base\model
+abstract class Forgot extends \yii\base\model
 {
 
 }

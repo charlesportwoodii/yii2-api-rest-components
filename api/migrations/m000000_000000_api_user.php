@@ -11,6 +11,7 @@ class m000000_000000_api_user extends Migration
     {
         $this->createTable('user', [
             'id'                => $this->primaryKey(),
+            'email'             => $this->string(255)->notNull(),
             'username'          => $this->string(255)->notNull(),
             'password'          => $this->string(255)->notNull(),
             'activation_token'  => $this->string(255),

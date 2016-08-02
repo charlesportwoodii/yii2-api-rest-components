@@ -12,7 +12,7 @@ use Yii;
  * @class OTPAction
  * Handles enabling and disabling of OTP
  */
-final class OTPAction extends RestAction
+class OTPAction extends RestAction
 {
     /**
      * [POST] /api/v1/otp

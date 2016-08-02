@@ -6,7 +6,7 @@ namespace yrc\api\forms;
  * @class Login
  * Form for authenticating users
  */
-final class Login extends \yii\base\model
+abstract class Login extends \yii\base\model
 {
     /**
      * The user's username

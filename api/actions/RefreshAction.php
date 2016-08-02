@@ -3,13 +3,17 @@
 namespace yrc\api\actions;
 
 use yrc\api\actions\AuthenticationAction;
-use yrc\api\models\User\Token;
+use app\models\User\Token;
 use yrc\rest\Action as RestAction;
 
 use yii\web\UnauthorizedHttpException;
 use Yii;
 
-final class RefreshAction extends RestAction
+/**
+ * @class RefreshAction
+ * Handles token refresh
+ */
+class RefreshAction extends RestAction
 {
     /**
      * [POST] /api/v1/user/refresh

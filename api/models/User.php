@@ -2,7 +2,7 @@
 
 namespace yrc\api\models;
 
-use yrc\api\models\User\Token;
+use app\models\User\Token;
 
 use Base32\Base32;
 use OTPHP\TOTP;
@@ -13,6 +13,7 @@ use Yii;
  * This is the model class for table "user".
  *
  * @property integer $id
+ * @property string $email
  * @property string $username
  * @property string $password
  * @property string $activation_token
@@ -85,12 +86,14 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
     public function rules()
     {
         return [
-            [['password', 'username'], 'required'],
+            [['password', 'username', 'email'], 'required'],
             [['username'], 'trim'],
+            [['email'], 'email'],
             [['password'], 'string', 'length' => [8, 100]],
             [['created_at', 'updated_at', 'activation_token_expires_at', 'reset_token_expires_at', 'otp_enabled'], 'integer'],
             [['password', 'username', 'otp_secret', 'activation_token', 'reset_token'], 'string', 'max' => 255],
             [['username'], 'unique'],
+            [['username', 'email'], 'unique'],
         ];
     }
 
@@ -101,6 +104,7 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
     {
         return [
             'id'                => 'ID',
+            'email'             => 'Email Address',
             'username'          => 'Username',
             'password'          => 'Password',
             'activation_token'  => 'Activation Token',
@@ -251,6 +255,27 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
     }
 
     /**
+     * Activates the user
+     * @return boolean
+     */
+    public function activate()
+    {
+        $this->activation_token = '';
+        $this->activation_token_expires_at = 0;
+
+        return $this->save();
+    }
+
+    /**
+     * Whether or not a user is activated or not
+     * @return boolean
+     */
+    public function isActivated()
+    {
+        return $this->activation_token === '';
+    }
+
+    /**
      * @inheritdoc
      */
     public static function findIdentity($id)
@@ -290,5 +315,14 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @todo
+     */
+    public static function sendActivationEmail($email, $token)
+    {
+        return true;
+        return false;
     }
 }

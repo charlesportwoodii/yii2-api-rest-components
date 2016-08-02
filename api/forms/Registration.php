@@ -12,13 +12,21 @@ use Yii;
  * @class Registration
  * Registration form
  */
-class Registration extends \yii\base\Model
+abstract class Registration extends \yii\base\Model
 {
+    const ACTIVATION_TOKEN_TIMEOUT = '+5 days';
+
     /**
      * The username
      * @var string $username
      */
     public $username;
+
+    /**
+     * The email
+     * @var string $email
+     */
+    public $email;
 
     /**
      * The password
@@ -39,29 +47,11 @@ class Registration extends \yii\base\Model
     public function rules()
     {
         return [
-            [['username', 'password', 'password_verify'], 'required'],
-            [['username'], 'string', 'min' => 4],
+            [['email', 'username', 'password', 'password_verify'], 'required'],
+            [['email', 'username'], 'string', 'min' => 4],
             [['password', 'password_verify'], 'string', 'min' => 8],
-            [['password_verify'], 'compare', 'compareAttribute' => 'password'],
-            [['password'], 'verifyPasswordComplexity']
+            [['password_verify'], 'compare', 'compareAttribute' => 'password']
         ];
-    }
-
-    /**
-     * Verifies that the password has sufficient entrophy
-     * @param array $attributes
-     * @param array $params
-     */
-    public function verifyPasswordComplexity($attributes, $params)
-    {
-        if (!$this->hasErrors()) {
-            $zxcvbn = new Zxcvbn;
-            $userData = [ $this->username ];
-            $strength = $zxcvbn->passwordStrength((string)$this->password, $userData);
-            if ($strength['entropy'] < 36) {
-                $this->addError('password', 'Your password has low entrophy. Please choose a stronger password');
-            }
-        }
     }
 
     /**
@@ -75,16 +65,20 @@ class Registration extends \yii\base\Model
     {
         if ($this->validate()) {
             $user = new User;
+            $token = Base32::encode(\random_bytes(64));
             $user->attributes = [
+                'email'             => $this->email,
                 'username'          => $this->username,
                 'password'          => $this->password,
-                'activation_token'  => Base32::encode(\random_bytes(64)),
+                'activation_token'  => \password_hash($token, PASSWORD_DEFAULT),
                 'otp_enabled'       => 0,
                 'otp_secret'        => '',
-                'activation_token_expires_at' => strtotime('+5 days')
+                'activation_token_expires_at' => strtotime(self::ACTIVATION_TOKEN_TIMEOUT)
             ];
-            
-            return $user->save();
+        
+            if ($user->save()) {
+                return User::sendActivationEmail($user->email, $token);
+            }
         }
 
         return false;
