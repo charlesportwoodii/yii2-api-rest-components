@@ -37,7 +37,12 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
      * password_hash options
      * @var array
      */
-    private $passwordHashOptions = [];
+    private $passwordHashOptions = [
+        'cost' => 13,
+        'memory_cost' => 1<<12,
+        'time_cost' => 3,
+        'threads' => 1
+    ];
     
     /**
      * Overrides init
@@ -50,7 +55,6 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
         // Prefer Argon2 if it is available, but fall back to BCRYPT if it isn't
         if (defined('PASSWORD_ARGON2')) {
             $this->passwordHashAlgorithm = PASSWORD_ARGON2;
-            $this->passwordHashOptions = [];
         }
 
         // Lower the bcrypt cost when running tests
@@ -87,7 +91,7 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
             [['email'], 'email'],
             [['password'], 'string', 'length' => [8, 100]],
             [['created_at', 'updated_at', 'otp_enabled', 'verified'], 'integer'],
-            [['password', 'email', 'otp_secret'], 'string', 'max' => 255],
+            [['password', 'email'], 'string', 'max' => 255],
             [['email'], 'unique'],
         ];
     }
@@ -165,12 +169,12 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
      */
     public function provisionOTP()
     {
-        if ($this->otp_enabled == 0) {
+        if ($this->isOTPEnabled() === true) {
             return false;
         }
 
         $secret = \random_bytes(256);
-        $encoded_secret = Base32::encode($secret);
+        $encodedSecret = Base32::encode($secret);
         $totp = new TOTP(
             $this->email,
             $encodedSecret,

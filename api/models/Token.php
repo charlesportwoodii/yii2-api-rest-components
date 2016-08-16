@@ -2,7 +2,7 @@
 
 namespace yrc\api\models;
 
-use CryptLib\Random\Factory as CryptLibRandomFactory;
+use Base32\Base32;
 use Yii;
 
 /**
@@ -58,29 +58,21 @@ abstract class Token extends \yii\base\Model
     public static function generate($userId = null)
     {
         $config = require  Yii::getAlias('@app') . '/config/loader.php';
-        $userClass = $config['user']['class'];
+        $userClass = $config['yii2']['user'];
 
         $user = $userClass::findOne(['id' => $userId]);
         if ($user == null) {
             throw new \yii\base\Exception('Invalid user');
         }
-        
-        $generator = (new CryptLibRandomFactory)->getMediumStrengthGenerator();
-        
-        $token = new self;
-        $token->attributes = [
-            'userId'       => $userId,
-            'accessToken'  => $generator->generateString(32),
-            'refreshToken' => $generator->generateString(32),
-            'ikm'          => \base64_encode(\random_bytes(32))
-        ];
-        
+       
+        $token = new static;
+        $token->userId = $userId;
+        $token->accessToken = Base32::encode(\random_bytes(32));
+        $token->refreshToken =  Base32::encode(\random_bytes(32));
+        $token->ikm = \base64_encode(\random_bytes(32));
+
         if ($token->save()) {
-            return [
-                'access_token'  => $token->accessToken,
-                'refresh_token' => $token->refreshToken,
-                'ikm'           => $token->ikm
-            ];
+            return \array_merge($token->attributes, [ 'expiresAt' => strtotime(self::TOKEN_EXPIRATION_TIME)]);
         }
             
         throw new \yii\base\Exception('Token failed to save');

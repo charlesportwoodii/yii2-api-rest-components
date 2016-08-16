@@ -14,7 +14,7 @@ class m000000_000000_api_user extends Migration
             'email'             => $this->string(255)->notNull(),
             'password'          => $this->string(255)->notNull(),
             'verified'          => $this->integer()->defaultValue(0),
-            'otp_secret'        => $this->string(255),
+            'otp_secret'        => $this->string(600),
             'otp_enabled'       => $this->integer()->defaultValue(0),
             'created_at'        => $this->integer(),
             'updated_at'        => $this->integer()

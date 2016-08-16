@@ -2,6 +2,9 @@
 
 namespace yrc\api\forms;
 
+use app\models\Token;
+use Yii;
+
 /**
  * @class Login
  * Form for authenticating users
@@ -40,8 +43,9 @@ abstract class Login extends \yii\base\model
     {
         return [
             [['email', 'password'], 'required'],
+            [['email'], 'email'],
             [['email', 'password'], 'string', 'max' => 255],
-            [['opt'], 'string', 'length' => 6],
+            [['otp'], 'string', 'length' => 6],
             [['password'], 'string', 'min' => 8],
             [['password'], 'validatePasswordAndOTP'],
         ];
@@ -60,11 +64,12 @@ abstract class Login extends \yii\base\model
         $config = require  Yii::getAlias('@app') . '/config/loader.php';
         $userClass = $config['yii2']['user'];
         
-        if ($this->_user === null) {
-            $this->_user = $userClass::findOne(['email' => $this->email]);
+        // We only allow verified users to authenticate
+        if ($this->user === null) {
+            $this->user = $userClass::findOne(['email' => $this->email, 'verified' => 1]);
         }
 
-        return $this->_user;
+        return $this->user;
     }
 
     /**
@@ -91,7 +96,7 @@ abstract class Login extends \yii\base\model
                 // Check the OTP code if it is enabled for the account
                 if ($user->isOTPEnabled() === true) {
                     // Verify the OTP code is valid
-                    if ($user->verifyOTP((integer)$this->otp) === false) {
+                    if ($user->verifyOTP((string)$this->otp) === false) {
                         $this->addError($attribute, 'Incorrect email address or password.');
                     }
                 }
