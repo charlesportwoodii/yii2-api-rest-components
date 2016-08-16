@@ -15,7 +15,7 @@ use Yii;
 class RegistrationAction extends RestAction
 {
     /**
-     * [POST] /api/v1/register
+     * [POST] /api/[...]/register
      * Handles registration of users
      * @return mixed
      */

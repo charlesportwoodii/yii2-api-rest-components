@@ -16,7 +16,6 @@ use Yii;
 class AuthenticationAction extends RestAction
 {
     /**
-     * [POST] /api/v1/authenticate
      * Authenticates a user using their username and password
      * @return mixed
      */
@@ -38,7 +37,6 @@ class AuthenticationAction extends RestAction
     }
 
     /**
-     * [DELETE] /api/v1/authenticate
      * Deauthenticates a user
      * @return mixed
      */
@@ -80,10 +78,15 @@ class AuthenticationAction extends RestAction
             $accessToken = $data[0];
 
             // Retrieve the token object
-            $token = Token::getAccessTokenObjectFromString($accessToken, Yii::$app->user->id);
+            $token = Token::getAccessTokenObjectFromString($accessToken);
 
             // Malformed header
-            if ($token === null) {
+            if (!$token) {
+                throw new UnauthorizedHttpException;
+            }
+
+            // This should never happen
+            if ($token['userId'] !== Yii::$app->user->id) {
                 throw new UnauthorizedHttpException;
             }
                 

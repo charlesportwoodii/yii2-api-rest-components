@@ -2,9 +2,9 @@
 
 namespace yrc\api\forms;
 
-use app\forms\Registration;
-use app\models\User;
 use Base32\Base32;
+
+use Yii;
 
 /**
  * @class Activation
@@ -44,14 +44,17 @@ abstract class Activation extends \yii\base\model
     public function belongsToUserAndIsNotExpired($attribute, $params)
     {
         if (!$this->hasErrors()) {
-            $this->user = User::find()->where(['activation_token' => $this->activation_code])->one();
+            $tokenInfo = Yii::$app->cache->get($this->activation_code);
+            if ($tokenInfo === null) {
+                $this->addError('activation_code', 'The activation code provided is not valid.');
+            }
+
+            $config = require  Yii::getAlias('@app') . '/config/loader.php';
+            $userClass = $config['yii2']['user'];
+            $this->user = $userClass::find()->where(['id' => $tokenInfo['id']])->one();
 
             if ($this->user === null) {
                 $this->addError('activation_code', 'The activation code provided is not valid.');
-            } else {
-                if (time() > $this->user->activation_token_expires_at) {
-                    $this->addError('activation_code', 'The activation code you provided is expired. For security purposes please request a new activation token and activate your account using that new token');
-                }
             }
         }
     }
@@ -63,7 +66,10 @@ abstract class Activation extends \yii\base\model
     public function activate()
     {
         if ($this->validate()) {
-            return $this->user->activate();
+            if ($this->user->activate()) {
+                Yii::$app->cache->delete($this->activation_code);
+                return true;
+            }
         }
 
         return false;

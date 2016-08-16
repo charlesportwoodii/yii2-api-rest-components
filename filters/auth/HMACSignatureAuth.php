@@ -46,14 +46,14 @@ final class HMACSignatureAuth extends AuthMethod
             $hmac        = $data[1];
             $salt        = $data[2];
 
-            // Check the access token, and make sure we get a valid instance of app\models\User\Token back
-            $token = Token::getAccessTokenObjectFromString($accessToken);
-            if ($token === null || get_class($token) != "app\models\User\Token") {
+            // Check the access token, and make sure we get a valid token data back
+            $token = Yii::$app->cache->get($accessToken);
+            if (!$token) {
                 $this->handleFailure($response);
             }
 
             // Verify the HMAC Signature
-            if ($this->isHMACSignatureValid($hmac, $accessToken, \base64_decode($token->salt), \base64_decode($salt), $request) === false) {
+            if ($this->isHMACSignatureValid($accessToken, \base64_decode($token['salt']), \base64_decode($salt), $request, $hmac) === false) {
                 $this->handleFailure($response);
             }
             
@@ -77,7 +77,7 @@ final class HMACSignatureAuth extends AuthMethod
      * @param yii\web\request $request
      * @return bool
      */
-    private function isHMACSignatureValid($hmac = null, $accessToken, $ikm, $salt, $request)
+    private function isHMACSignatureValid($accessToken, $ikm, $salt, $request, $hmac = null)
     {
         static $selfHMAC = null;
         static $hkdf   = null;

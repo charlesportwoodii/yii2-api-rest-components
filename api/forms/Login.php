@@ -9,10 +9,10 @@ namespace yrc\api\forms;
 abstract class Login extends \yii\base\model
 {
     /**
-     * The user's username
+     * The user's email
      * @var string
      */
-    public $username;
+    public $email;
 
     /**
      * The user's password
@@ -39,8 +39,8 @@ abstract class Login extends \yii\base\model
     public function rules()
     {
         return [
-            [['username', 'password'], 'required'],
-            [['username', 'password'], 'string', 'max' => 255],
+            [['email', 'password'], 'required'],
+            [['email', 'password'], 'string', 'max' => 255],
             [['opt'], 'string', 'length' => 6],
             [['password'], 'string', 'min' => 8],
             [['password'], 'validatePasswordAndOTP'],
@@ -53,12 +53,17 @@ abstract class Login extends \yii\base\model
      */
     public function getUser()
     {
-        $config = require  Yii::getPathFromAlias('@app') . '/config/loader.php';
-        $userClass = $config['user']['class'];
+        if ($this->user !== null) {
+            return $this->user;
+        }
+
+        $config = require  Yii::getAlias('@app') . '/config/loader.php';
+        $userClass = $config['yii2']['user'];
         
         if ($this->_user === null) {
-            $this->_user = $userClass::findOne(['username' => $this->username]);
+            $this->_user = $userClass::findOne(['email' => $this->email]);
         }
+
         return $this->_user;
     }
 
@@ -76,18 +81,18 @@ abstract class Login extends \yii\base\model
 
             // If the user is null or false, an error occured when fetching them, thus throw an error
             if (!$user) {
-                $this->addError($attribute, 'Incorrect usernamne or password.');
+                $this->addError($attribute, 'Incorrect email address or password.');
             } else {
                 // If the password doesn't validate, throw an error
                 if (!$user->validatePassword($this->password)) {
-                    $this->addError($attribute, 'Incorrect usernamne or password.');
+                    $this->addError($attribute, 'Incorrect email address or password.');
                 }
 
                 // Check the OTP code if it is enabled for the account
                 if ($user->isOTPEnabled() === true) {
                     // Verify the OTP code is valid
                     if ($user->verifyOTP((integer)$this->otp) === false) {
-                        $this->addError($attribute, 'Incorrect usernamne or password.');
+                        $this->addError($attribute, 'Incorrect email address or password.');
                     }
                 }
             }

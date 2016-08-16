@@ -14,15 +14,12 @@ use Yii;
  *
  * @property integer $id
  * @property string $email
- * @property string $username
  * @property string $password
  * @property string $activation_token
  * @property string $reset_token
- * @property integer $account_status
+ * @property integer $verified
  * @property string $otp_secret
  * @property string $otp_enabled
- * @property integer $activation_token_expires_at
- * @property integer $reset_token_expires_at
  * @property integer $created_at
  * @property integer $updated_at
  *
@@ -86,14 +83,12 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
     public function rules()
     {
         return [
-            [['password', 'username', 'email'], 'required'],
-            [['username'], 'trim'],
+            [['password', 'email'], 'required'],
             [['email'], 'email'],
             [['password'], 'string', 'length' => [8, 100]],
-            [['created_at', 'updated_at', 'activation_token_expires_at', 'reset_token_expires_at', 'otp_enabled'], 'integer'],
-            [['password', 'username', 'otp_secret', 'activation_token', 'reset_token'], 'string', 'max' => 255],
-            [['username'], 'unique'],
-            [['username', 'email'], 'unique'],
+            [['created_at', 'updated_at', 'otp_enabled', 'verified'], 'integer'],
+            [['password', 'email', 'otp_secret'], 'string', 'max' => 255],
+            [['email'], 'unique'],
         ];
     }
 
@@ -105,26 +100,14 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
         return [
             'id'                => 'ID',
             'email'             => 'Email Address',
-            'username'          => 'Username',
             'password'          => 'Password',
             'activation_token'  => 'Activation Token',
-            'reset_token'       => 'Reset Token',
-            'account_status'    => 'Account Status',
             'otp_secret'        => 'One Time Password Secret Value',
             'otp_enabled'       => 'Is Two Factor Authentication Enabled?',
-            'activation_token_expires_at' => 'Activation Token Expiration',
-            'reset_token_expires_at' => 'Reset Token Expiration',
+            'verified'          => 'Is the account email verified?',
             'created_at'        => 'Created At',
             'updated_at'        => 'Last Updated At'
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTokens()
-    {
-        return $this->hasMany(Token::className(), ['user_id' => 'id']);
     }
 
     /**
@@ -189,7 +172,7 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
         $secret = \random_bytes(256);
         $encoded_secret = Base32::encode($secret);
         $totp = new TOTP(
-            $this->username,
+            $this->email,
             $encodedSecret,
             30,             // 30 second window
             'sha256',       // SHA256 for the hashing algorithm
@@ -244,7 +227,7 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
     public function verifyOTP($code)
     {
         $totp = new TOTP(
-            $this->username,
+            $this->email,
             $this->otp_secret,
             30,             // 30 second window
             'sha256',       // SHA256 for the hashing algorithm
@@ -260,9 +243,7 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
      */
     public function activate()
     {
-        $this->activation_token = '';
-        $this->activation_token_expires_at = 0;
-
+        $this->verified = 1;
         return $this->save();
     }
 
@@ -272,7 +253,7 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
      */
     public function isActivated()
     {
-        return $this->activation_token === '';
+        return (bool)$this->verified;
     }
 
     /**
@@ -293,7 +274,7 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
             return null;
         }
         
-        return static::findOne(['id' => $token->user_id]);
+        return static::findOne(['id' => $token['userId']]);
     }
 
     /**
