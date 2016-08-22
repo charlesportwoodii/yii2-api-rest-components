@@ -43,14 +43,15 @@ abstract class Activation extends \yii\base\model
     public function belongsToUserAndIsNotExpired($attribute, $params)
     {
         if (!$this->hasErrors()) {
-            $tokenInfo = Yii::$app->cache->get($this->activation_code);
+            $tokenInfo = Yii::$app->cache->get(
+                hash('sha256', $this->activation_code . '_activation_token')
+            );
+            
             if ($tokenInfo === null) {
                 $this->addError('activation_code', 'The activation code provided is not valid.');
             }
 
-            $config = require  Yii::getAlias('@app') . '/config/loader.php';
-            $userClass = $config['yii2']['user'];
-            $this->user = $userClass::find()->where(['id' => $tokenInfo['id']])->one();
+            $this->user = Yii::$app->yrc->userClass::find()->where(['id' => $tokenInfo['id']])->one();
 
             if ($this->user === null) {
                 $this->addError('activation_code', 'The activation code provided is not valid.');

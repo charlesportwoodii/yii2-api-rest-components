@@ -37,7 +37,7 @@ abstract class Registration extends \yii\base\Model
     {
         return [
             [['email', 'password', 'password_verify'], 'required'],
-            [['email'], 'string', 'min' => 4],
+            [['email'], 'email'],
             [['password', 'password_verify'], 'string', 'min' => 8],
             [['password_verify'], 'compare', 'compareAttribute' => 'password']
         ];
@@ -50,9 +50,7 @@ abstract class Registration extends \yii\base\Model
     public function register()
     {
         if ($this->validate()) {
-            $config = require  Yii::getAlias('@app') . '/config/loader.php';
-            $userClass = $config['yii2']['user'];
-            $user = new $userClass;
+            $user = new Yii::$app->yrc->userClass;
             
             $user->attributes = [
                 'email'             => $this->email,
@@ -64,11 +62,12 @@ abstract class Registration extends \yii\base\Model
             if ($user->save()) {
                 // Create an activation token for the user, and store it in the cache
                 $token = Base32::encode(\random_bytes(64));
-                Yii::$app->cache->set($token, [
+                
+                Yii::$app->cache->set(hash('sha256', $token . '_activation_token'), [
                     'id' => $user->id
                 ]);
 
-                return $userClass::sendActivationEmail($user->email, $token);
+                return Yii::$app->yrc->userClass::sendActivationEmail($user->email, $token);
             }
         }
 

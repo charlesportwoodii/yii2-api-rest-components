@@ -60,13 +60,10 @@ abstract class Login extends \yii\base\model
         if ($this->user !== null) {
             return $this->user;
         }
-
-        $config = require  Yii::getAlias('@app') . '/config/loader.php';
-        $userClass = $config['yii2']['user'];
         
         // We only allow verified users to authenticate
         if ($this->user === null) {
-            $this->user = $userClass::findOne(['email' => $this->email, 'verified' => 1]);
+            $this->user = Yii::$app->yrc->userClass::findOne(['email' => $this->email, 'verified' => 1]);
         }
 
         return $this->user;

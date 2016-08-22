@@ -308,6 +308,21 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
     public static function sendActivationEmail($email, $token)
     {
         return true;
-        return false;
+    }
+
+    /**
+     * @todo
+     */
+    public static function sendPasswordResetEmail($email, $token)
+    {
+        return true;
+    }
+
+    /**
+     * @todo
+     */
+    public static function sendPasswordChangedEmail($email)
+    {
+        return true;
     }
 }
