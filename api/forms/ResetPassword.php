@@ -2,6 +2,9 @@
 
 namespace yrc\api\forms;
 
+use Base32\Base32;
+use Yii;
+
 abstract class ResetPassword extends \yii\base\model
 {
     const SCENARIO_INIT = 'init';
@@ -76,14 +79,11 @@ abstract class ResetPassword extends \yii\base\model
     public function validateUser($attributes, $params)
     {
         if (!$this->hasErrors()) {
-            $config = require  Yii::getAlias('@app') . '/config/loader.php';
-            $userClass = $config['yii2']['user'];
-            $this->user = $userClass::findOne(['email' => $this->email]);
+            $this->user = Yii::$app->yrc->userClass::findOne(['email' => $this->email]);
 
             if ($this->user === null) {
                 $this->addError('email', 'The provided email address is not valid');
             }
-
         }
     }
 
@@ -100,16 +100,14 @@ abstract class ResetPassword extends \yii\base\model
             }
 
             $tokenInfo = Yii::$app->cache->get(
-                hash('sha256', $token . '_reset_token')
+                hash('sha256', $this->reset_token . '_reset_token')
             );
             
             if ($tokenInfo === null) {
                 $this->addError('reset_token', 'The password reset token provided is not valid.');
             }
 
-            $config = require  Yii::getAlias('@app') . '/config/loader.php';
-            $userClass = $config['yii2']['user'];
-            $this->user = $userClass::find()->where(['id' => $tokenInfo['id']])->one();
+            $this->user = Yii::$app->yrc->userClass::find()->where(['id' => $tokenInfo['id']])->one();
 
             if ($this->user === null) {
                 $this->addError('reset_token', 'The password reset token provided is not valid.');
@@ -130,17 +128,15 @@ abstract class ResetPassword extends \yii\base\model
      * Initializes a password reset request
      * @return boolean
      */
-    public function init()
+    public function initReset()
     {
         if ($this->validate()) {
             // Create an reset token for the user, and store it in the cache
             $token = Base32::encode(\random_bytes(64));
             
             Yii::$app->cache->set(hash('sha256', $token . '_reset_token'), [
-                'id' => $user->id
+                'id' => $this->user->id
             ], strtotime(self::EXPIRY_TIME));
-
-            $this->user = Yii::$app->yrc->userClass::find()->where(['id' => $tokenInfo['id']])->one();
 
             return Yii::$app->yrc->userClass::sendPasswordResetEmail($this->user->email, $token);
         }
@@ -156,8 +152,6 @@ abstract class ResetPassword extends \yii\base\model
     {
         if ($this->validate()) {
             $this->user->password = $this->password;
-
-            $this->user = Yii::$app->yrc->userClass::find()->where(['id' => $tokenInfo['id']])->one();
 
             if ($this->user->save()) {
                 return Yii::$app->yrc->userClass::sendPasswordChangedEmail($this->email);
