@@ -28,7 +28,19 @@ final class HMACSignatureAuth extends AuthMethod
 
     // The HKDF authentication info
     const AUTH_INFO = 'HMAC|AuthenticationKey';
-    
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeAction($action)
+    {
+        if (Yii::$app->request->method === 'OPTIONS') {
+            return true;
+        }
+
+        return parent::beforeAction($action);
+    }
+
     /**
      * @inheritdoc
      */

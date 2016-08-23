@@ -67,12 +67,12 @@ abstract class Token extends \yii\base\Model
        
         $token = new static;
         $token->userId = $userId;
-        $token->accessToken = Base32::encode(\random_bytes(32));
-        $token->refreshToken =  Base32::encode(\random_bytes(32));
+        $token->accessToken = \str_replace('=', '', Base32::encode(\random_bytes(32)));
+        $token->refreshToken =  \str_replace('=', '', Base32::encode(\random_bytes(32)));
         $token->ikm = \base64_encode(\random_bytes(32));
 
         if ($token->save()) {
-            return \array_merge($token->attributes, [ 'expiresAt' => strtotime(self::TOKEN_EXPIRATION_TIME)]);
+            return \array_merge($token->attributes, ['expiresAt' => strtotime(self::TOKEN_EXPIRATION_TIME)]);
         }
             
         throw new \yii\base\Exception('Token failed to save');

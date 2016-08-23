@@ -18,6 +18,12 @@ use ReflectionMethod;
 class Controller extends RestController
 {
     /**
+     * Allowed HTTP verbs
+     * @var array $httpVerbs
+     */
+    private $httpVerbs = ['post', 'get', 'delete', 'put', 'patch', 'options', 'head'];
+    
+    /**
      * RestController automatically applies HTTP verb filtering and CORS headers
      * @return array
      */
@@ -64,13 +70,12 @@ class Controller extends RestController
     private function getHttpVerbMethodsFromClass($class)
     {
         $result = [];
-        $httpVerbs = ['post', 'get', 'delete', 'put', 'patch', 'options', 'head'];
 
         // Fetch the static methods for the class
         $reflection = new ReflectionClass($class);
         $methods = $reflection->getMethods(ReflectionMethod::IS_STATIC);
         foreach ($methods as $method) {
-            if (in_array($method->name, $httpVerbs)) {
+            if (in_array($method->name, $this->httpVerbs)) {
                 $result[] = $method->name;
             }
         }

@@ -28,4 +28,10 @@ abstract class Action extends \yii\base\Action
         // But this is the correct response if for some reason it isn't
         throw new HttpException(405);
     }
+
+    public static function options($params)
+    {
+        Yii::$app->response->statusCode = 204;
+        return;
+    }
 }

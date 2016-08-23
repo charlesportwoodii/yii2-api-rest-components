@@ -24,12 +24,17 @@ class AuthenticationAction extends RestAction
         $model = new Login;
         
         if ($model->load(['Login' => Yii::$app->request->post()])) {
-            $authData = $model->authenticate();
+            $data = $model->authenticate();
 
-            if ($authData === false) {
+            if ($data === false) {
                 throw new UnauthorizedHttpException;
             } else {
-                return $authData;
+                return [
+                    'access_token'  => $data['accessToken'],
+                    'refresh_token' => $data['refreshToken'],
+                    'ikm'           => $data['ikm'],
+                    'expires_at'    => $data['expiresAt']
+                ];
             }
         }
             
