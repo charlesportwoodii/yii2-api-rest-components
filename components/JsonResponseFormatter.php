@@ -25,10 +25,10 @@ class JsonResponseFormatter extends YiiJsonResponseFormatter
             }
             
             $status = 200;
+
             // Pull the exception
             $exception = \Yii::$app->errorHandler->exception;
-            if ($exception && is_subclass_of($exception, 'yii\web\HttpException'))
-            {
+            if ($exception && is_subclass_of($exception, 'yii\web\HttpException')) {
                 $copy = $response->data;
                 $response->data = null;
                 $response->data['error'] = [
@@ -37,18 +37,9 @@ class JsonResponseFormatter extends YiiJsonResponseFormatter
                 ];
 
                 $status = $copy['status'];
-
-                /**
-                $response->data['error'] = [
-                    'message'   => $exception->getMessage(),
-                    'file'      => $exception->getFile(),
-                    'line'      => $exception->getLine(),
-                    'trace'     => $exception->getTraceAsString()
-                ];
-                **/
             }
 
-            // If the data attribute isn't set, transfer everything into it
+            // If the data attribute isn't set, transfer everything into it and build the new response object
             if (!isset($response->data['data'])) {
                 $copy = $response->data;
 
