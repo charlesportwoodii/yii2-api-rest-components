@@ -4,6 +4,7 @@ namespace yrc\components;
 
 use yii\helpers\Json;
 use yii\web\JsonResponseFormatter as YiiJsonResponseFormatter;
+use Yii;
 
 /**
  * Handles formatting of the response
@@ -23,11 +24,14 @@ class JsonResponseFormatter extends YiiJsonResponseFormatter
             if ($this->prettyPrint) {
                 $options |= JSON_PRETTY_PRINT;
             }
+
+            // Preserve floating precision values
+            $options |= JSON_PRESERVE_ZERO_FRACTION;
             
             $status = 200;
 
             // Pull the exception
-            $exception = \Yii::$app->errorHandler->exception;
+            $exception = Yii::$app->errorHandler->exception;
             if ($exception && is_subclass_of($exception, 'yii\web\HttpException')) {
                 $copy = $response->data;
                 $response->data = null;
@@ -53,6 +57,10 @@ class JsonResponseFormatter extends YiiJsonResponseFormatter
                 }
 
                 $response->data['status'] = $status;
+
+                if ($response->data['data'] === [] || $response->data['data'] === null) {
+                    $response->data['data'] =  null;
+                }
             }
 
             $response->content = Json::encode($response->data, $options);

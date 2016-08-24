@@ -3,7 +3,7 @@
 namespace yrc\api\actions;
 
 use app\forms\Login;
-use app\models\User\Token;
+use app\models\Token;
 use yrc\rest\Action as RestAction;
 
 use yii\web\UnauthorizedHttpException;
@@ -47,25 +47,8 @@ class AuthenticationAction extends RestAction
      */
     public static function delete($params)
     {
-        $all = Yii::$app->request->get('all', null);
-        
-        if ($all !== null) {
-            $token = self::getAccessTokenFromHeader();
-            return (bool)$token->delete();
-        } else {
-            $tokens = Token::find(['user_id' => Yii::$app->user->id])->all();
-            foreach ($tokens as $token) {
-                $token->delete();
-            }
-            
-            // Make sure everything was deleted
-            $count = Token::find(['user_id' => Yii::$app->user->id])->count();
-            if ($count === 0) {
-                return true;
-            }
-        }
-
-        return false;
+        $token = self::getAccessTokenFromHeader();
+        return (bool)$token->delete();
     }
 
     /**
@@ -83,15 +66,13 @@ class AuthenticationAction extends RestAction
             $accessToken = $data[0];
 
             // Retrieve the token object
-            $token = Token::getAccessTokenObjectFromString($accessToken);
+            $token = Token::find([
+                'accessToken' => $accessToken,
+                'userId'      => Yii::$app->user->id
+            ]);
 
             // Malformed header
             if (!$token) {
-                throw new UnauthorizedHttpException;
-            }
-
-            // This should never happen
-            if ($token['userId'] !== Yii::$app->user->id) {
                 throw new UnauthorizedHttpException;
             }
                 

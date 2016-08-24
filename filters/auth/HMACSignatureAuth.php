@@ -2,7 +2,7 @@
 
 namespace yrc\filters\auth;
 
-use app\models\User\Token;
+use app\models\Token;
 
 use yii\helpers\Json;
 use yii\filters\auth\AuthMethod;
@@ -65,7 +65,7 @@ final class HMACSignatureAuth extends AuthMethod
             }
 
             // Verify the HMAC Signature
-            if ($this->isHMACSignatureValid($accessToken, \base64_decode($token['salt']), \base64_decode($salt), $request, $hmac) === false) {
+            if ($this->isHMACSignatureValid($accessToken, \base64_decode($token['ikm']), \base64_decode($salt), $request, $hmac) === false) {
                 $this->handleFailure($response);
             }
             

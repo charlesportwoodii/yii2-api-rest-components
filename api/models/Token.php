@@ -38,6 +38,21 @@ abstract class Token extends \yii\base\Model
     public $ikm;
 
     /**
+     * Integer expiration date
+     * @var integer
+     */
+    public $expiresAt;
+
+    /**
+     * Deletes the current access token
+     * @return boolean
+     */
+    public function delete()
+    {
+        return Yii::$app->cache->delete($this->accessToken);
+    }
+
+    /**
      * Method for saving object data
      * @return boolean
      */
@@ -46,7 +61,8 @@ abstract class Token extends \yii\base\Model
         return Yii::$app->cache->set($this->accessToken, [
             'refreshToken'  => $this->refreshToken,
             'ikm'           => $this->ikm,
-            'userId'        => $this->userId
+            'userId'        => $this->userId,
+            'expiresAt'     => $this->expiresAt
         ], strtotime(self::TOKEN_EXPIRATION_TIME));
     }
 
@@ -65,14 +81,15 @@ abstract class Token extends \yii\base\Model
             throw new \yii\base\Exception('Invalid user');
         }
        
-        $token = new static;
-        $token->userId = $userId;
-        $token->accessToken = \str_replace('=', '', Base32::encode(\random_bytes(32)));
-        $token->refreshToken =  \str_replace('=', '', Base32::encode(\random_bytes(32)));
-        $token->ikm = \base64_encode(\random_bytes(32));
+        $token                  = new static;
+        $token->userId          = $userId;
+        $token->accessToken     = \str_replace('=', '', Base32::encode(\random_bytes(32)));
+        $token->refreshToken    = \str_replace('=', '', Base32::encode(\random_bytes(32)));
+        $token->ikm             = \base64_encode(\random_bytes(32));
+        $token->expiresAt       = strtotime(self::TOKEN_EXPIRATION_TIME);
 
         if ($token->save()) {
-            return \array_merge($token->attributes, ['expiresAt' => strtotime(self::TOKEN_EXPIRATION_TIME)]);
+            return $token->attributes;
         }
             
         throw new \yii\base\Exception('Token failed to save');
@@ -83,17 +100,27 @@ abstract class Token extends \yii\base\Model
      * @param string $tokenString   The string access token
      * @return Token|null
      */
-    public static function getAccessTokenObjectFromString($tokenString = null)
+    public static function find(array $params = [])
     {
-        static $token = null;
-        // Find the token, redundant check with user_id
-
-        $tokenData = Yii::$app->cache->get($tokenString);
+        $data = Yii::$app->cache->get($params['accessToken']);
 
         // If nothing was found, return null
-        if (!$token) {
+        if (!$data) {
             return null;
         }
+
+        if (isset($params['userId']) && isset($data['userId'])) {
+            if ($data['userId'] !== $params['userId']) {
+                return null;
+            }
+        }
+        
+        $token                  = new static;
+        $token->userId          = $data['userId'];
+        $token->accessToken     = $params['accessToken'];
+        $token->refreshToken    = $data['refreshToken'];
+        $token->ikm             = $data['ikm'];
+        $token->expiresAt       = $data['expiresAt'];
         
         return $token;
     }
