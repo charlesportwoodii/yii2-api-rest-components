@@ -6,7 +6,11 @@ use app\models\User\Token;
 
 use Base32\Base32;
 use OTPHP\TOTP;
+
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\filters\RateLimitInterface;
+use yii\web\IdentityInterface;
 use Yii;
 
 /**
@@ -25,13 +29,25 @@ use Yii;
  *
  * @property Tokens[] $tokens
  */
-abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
+abstract class User extends ActiveRecord implements IdentityInterface, RateLimitInterface
 {
     /**
      * password_hash Algorithm
      * @var integer
      */
     private $passwordHashAlgorithm = PASSWORD_BCRYPT;
+    
+    /**
+     * The rate limit
+     * @var integer
+     */
+    private $rateLimit = 150;
+
+    /**
+     * The rate limit window
+     * @var integer
+     */
+    private $rateLimitWindow = 900;
     
     /**
      * password_hash options
@@ -71,6 +87,49 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
         return [
             TimestampBehavior::className(),
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRateLimit($request, $action)
+    {
+        return [
+            $this->rateLimit,
+            $this->rateLimitWindow
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function loadAllowance($request, $action)
+    {
+        $hash = Yii::$app->user->id . $request->getUrl() . $action->id;
+        $allowance = Yii::$app->cache->get($hash);
+
+        if ($allowance === false) {
+            return [
+                $this->rateLimit,
+                time()
+            ];
+        }
+
+        return $allowance;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function saveAllowance($request, $action, $allowance, $timestamp)
+    {
+        $hash = Yii::$app->user->id . $request->getUrl() . $action->id;
+        $allowance = [
+            'allowance' => $allowance,
+            'timestmap' => $timestamp
+        ];
+
+        Yii::$app->cache->set($hash, $allowance, $this->rateLimitWindow);
     }
     
     /**

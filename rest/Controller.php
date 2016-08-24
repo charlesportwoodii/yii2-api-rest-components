@@ -49,7 +49,10 @@ class Controller extends RestController
                     'X-Pagination-Total-Count',
                     'X-Pagination-Current-Page',
                     'X-Pagination-Page-Count',
-                    'Allow'
+                    'Allow',
+                    'X-Rate-Limit-Limit',
+                    'X-Rate-Limit-Remaining',
+                    'X-Rate-Limit-Reset'
                 ],
             ]
         ];
@@ -57,6 +60,11 @@ class Controller extends RestController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => $this->getVerbFilterActionMap()
+        ];
+
+        $behaviors['rateLimiter'] = [
+            'class' => \yii\filters\RateLimiter::className(),
+            'enableRateLimitHeaders' => true
         ];
 
         return $behaviors;
