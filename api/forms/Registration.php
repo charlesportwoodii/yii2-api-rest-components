@@ -18,6 +18,12 @@ abstract class Registration extends \yii\base\Model
     public $email;
 
     /**
+     * The username
+     * @var string $username
+     */
+    public $username;
+
+    /**
      * The password
      * @var string $password
      */
@@ -36,9 +42,10 @@ abstract class Registration extends \yii\base\Model
     public function rules()
     {
         return [
-            [['email', 'password', 'password_verify'], 'required'],
+            [['email', 'password', 'password_verify', 'username'], 'required'],
             [['email'], 'email'],
-            [['password', 'password_verify'], 'string', 'min' => 8],
+            [['password', 'password_verify'], 'string', 'length' => [8, 100]],
+            [['username'], 'string', 'length' => [1, 100]],
             [['password_verify'], 'compare', 'compareAttribute' => 'password']
         ];
     }
@@ -54,6 +61,7 @@ abstract class Registration extends \yii\base\Model
             
             $user->attributes = [
                 'email'             => $this->email,
+                'username'          => $this->username,
                 'password'          => $this->password,
                 'otp_enabled'       => 0,
                 'otp_secret'        => '',
@@ -72,6 +80,5 @@ abstract class Registration extends \yii\base\Model
         }
 
         return false;
-        
     }
 }

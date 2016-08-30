@@ -12,6 +12,7 @@ class m000000_000000_api_user extends Migration
         $this->createTable('user', [
             'id'                => $this->primaryKey(),
             'email'             => $this->string(255)->notNull(),
+            'username'          => $this->string(255)->notNull(),
             'password'          => $this->string(255)->notNull(),
             'verified'          => $this->integer()->defaultValue(0),
             'otp_secret'        => $this->string(600),
@@ -21,6 +22,7 @@ class m000000_000000_api_user extends Migration
         ]);
         
         $this->createIndex('user__email_unique_index', 'user', ['email'], true);
+        $this->createIndex('user__username_unique_index', 'user', ['username'], true);
     }
     
     /**

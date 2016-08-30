@@ -18,6 +18,7 @@ use Yii;
  *
  * @property integer $id
  * @property string $email
+ * @property strin $username
  * @property string $password
  * @property string $activation_token
  * @property string $reset_token
@@ -144,12 +145,14 @@ abstract class User extends ActiveRecord implements IdentityInterface, RateLimit
     public function rules()
     {
         return [
-            [['password', 'email'], 'required'],
+            [['password', 'email', 'username'], 'required'],
             [['email'], 'email'],
             [['password'], 'string', 'length' => [8, 100]],
+            [['username'], 'string', 'length' => [1, 100]],
             [['created_at', 'updated_at', 'otp_enabled', 'verified'], 'integer'],
             [['password', 'email'], 'string', 'max' => 255],
             [['email'], 'unique'],
+            [['username'], 'unique'],
         ];
     }
 
@@ -161,6 +164,7 @@ abstract class User extends ActiveRecord implements IdentityInterface, RateLimit
         return [
             'id'                => 'ID',
             'email'             => 'Email Address',
+            'username'          => 'Username',
             'password'          => 'Password',
             'activation_token'  => 'Activation Token',
             'otp_secret'        => 'One Time Password Secret Value',
@@ -233,7 +237,7 @@ abstract class User extends ActiveRecord implements IdentityInterface, RateLimit
         $secret = \random_bytes(256);
         $encodedSecret = Base32::encode($secret);
         $totp = new TOTP(
-            $this->email,
+            $this->username,
             $encodedSecret,
             30,             // 30 second window
             'sha256',       // SHA256 for the hashing algorithm
@@ -288,7 +292,7 @@ abstract class User extends ActiveRecord implements IdentityInterface, RateLimit
     public function verifyOTP($code)
     {
         $totp = new TOTP(
-            $this->email,
+            $this->username,
             $this->otp_secret,
             30,             // 30 second window
             'sha256',       // SHA256 for the hashing algorithm
