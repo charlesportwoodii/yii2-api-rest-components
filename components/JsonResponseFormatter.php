@@ -24,9 +24,6 @@ class JsonResponseFormatter extends YiiJsonResponseFormatter
             if ($this->prettyPrint) {
                 $options |= JSON_PRETTY_PRINT;
             }
-
-            // Preserve floating precision values
-            $options |= JSON_PRESERVE_ZERO_FRACTION;
             
             $status = 200;
 

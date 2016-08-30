@@ -82,7 +82,7 @@ abstract class ResetPassword extends \yii\base\model
             $this->user = Yii::$app->yrc->userClass::findOne(['email' => $this->email]);
 
             if ($this->user === null) {
-                $this->addError('email', 'The provided email address is not valid');
+                $this->addError('email', Yii::t('yrc', 'The provided email address is not valid'));
             }
         }
     }
@@ -99,13 +99,13 @@ abstract class ResetPassword extends \yii\base\model
             );
             
             if ($tokenInfo === null) {
-                $this->addError('reset_token', 'The password reset token provided is not valid.');
+                $this->addError('reset_token', Yii::t('yrc', 'The password reset token provided is not valid.'));
             }
 
             $this->user = Yii::$app->yrc->userClass::find()->where(['id' => $tokenInfo['id']])->one();
 
             if ($this->user === null) {
-                $this->addError('reset_token', 'The password reset token provided is not valid.');
+                $this->addError('reset_token', Yii::t('yrc', 'The password reset token provided is not valid.'));
             }
         }
     }
@@ -135,12 +135,12 @@ abstract class ResetPassword extends \yii\base\model
                     'id' => $this->user->id
                 ], strtotime(self::EXPIRY_TIME));
 
-                return Yii::$app->yrc->userClass::sendPasswordResetEmail($this->user->email, $token);
+                return Yii::$app->yrc->sendEmail('password_reset', Yii::t('app', 'A request has been made to change your password'), $this->user->email, ['token' => $token]);
             } elseif ($this->getScenario() === self::SCENARIO_RESET) {
                 $this->user->password = $this->password;
 
                 if ($this->user->save()) {
-                    return Yii::$app->yrc->userClass::sendPasswordChangedEmail($this->email);
+                    return Yii::$app->yrc->sendEmail('password_change', Yii::t('app', 'Your password has been changed'), $this->email);
                 }
             }
         }

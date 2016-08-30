@@ -372,28 +372,4 @@ abstract class User extends ActiveRecord implements IdentityInterface, RateLimit
     {
         return $this->id;
     }
-
-    /**
-     * @todo
-     */
-    public static function sendActivationEmail($email, $token)
-    {
-        return true;
-    }
-
-    /**
-     * @todo
-     */
-    public static function sendPasswordResetEmail($email, $token)
-    {
-        return true;
-    }
-
-    /**
-     * @todo
-     */
-    public static function sendPasswordChangedEmail($email)
-    {
-        return true;
-    }
 }

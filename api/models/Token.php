@@ -73,10 +73,7 @@ abstract class Token extends \yii\base\Model
      */
     public static function generate($userId = null)
     {
-        $config = require  Yii::getAlias('@app') . '/config/loader.php';
-        $userClass = $config['yii2']['user'];
-
-        $user = $userClass::findOne(['id' => $userId]);
+        $user = Yii::$app->yrc->userClass::findOne(['id' => $userId]);
         if ($user == null) {
             throw new \yii\base\Exception('Invalid user');
         }
@@ -92,7 +89,7 @@ abstract class Token extends \yii\base\Model
             return $token->attributes;
         }
             
-        throw new \yii\base\Exception('Token failed to save');
+        throw new \yii\base\Exception(Yii::t('yrc', 'Token failed to save'));
     }
 
     /**

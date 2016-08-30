@@ -83,18 +83,18 @@ abstract class Login extends \yii\base\model
 
             // If the user is null or false, an error occured when fetching them, thus throw an error
             if (!$user) {
-                $this->addError($attribute, 'Incorrect email address or password.');
+                $this->addError($attribute, Yii::t('yrc', 'Incorrect email address or password.'));
             } else {
                 // If the password doesn't validate, throw an error
                 if (!$user->validatePassword($this->password)) {
-                    $this->addError($attribute, 'Incorrect email address or password.');
+                    $this->addError($attribute, Yii::t('yrc', 'Incorrect email address or password.'));
                 }
 
                 // Check the OTP code if it is enabled for the account
                 if ($user->isOTPEnabled() === true) {
                     // Verify the OTP code is valid
                     if ($user->verifyOTP((string)$this->otp) === false) {
-                        $this->addError($attribute, 'Incorrect email address or password.');
+                        $this->addError($attribute, Yii::t('yrc', 'Incorrect email address or password.'));
                     }
                 }
             }

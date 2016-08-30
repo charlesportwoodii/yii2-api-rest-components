@@ -28,7 +28,7 @@ class OTPAction extends RestAction
         }
 
         if ($user->isOTPEnabled() === true) {
-            throw new HttpException(400, 'OTP is already enabled');
+            throw new HttpException(400, Yii::t('yrc', 'OTP is already enabled'));
         }
 
         // If an OTP code was provided, assume the account has been provisioned and just needs activation
@@ -61,7 +61,7 @@ class OTPAction extends RestAction
         }
 
         if ($user->isOTPEnabled() === false) {
-            throw new HttpException(400, 'OTP is not enabled');
+            throw new HttpException(400, Yii::t('yrc', 'Two-factor is not enabled'));
         }
 
         // Grab the code from the GET parameter, and check it

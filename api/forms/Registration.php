@@ -75,7 +75,7 @@ abstract class Registration extends \yii\base\Model
                     'id' => $user->id
                 ]);
 
-                return Yii::$app->yrc->userClass::sendActivationEmail($user->email, $token);
+                return Yii::$app->yrc->sendEmail('activate', Yii::t('app', 'Activate your account'), $user->email, ['token' => $token]);
             }
         }
 

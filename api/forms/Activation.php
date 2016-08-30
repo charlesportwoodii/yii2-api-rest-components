@@ -48,13 +48,13 @@ abstract class Activation extends \yii\base\model
             );
             
             if ($tokenInfo === null) {
-                $this->addError('activation_code', 'The activation code provided is not valid.');
+                $this->addError('activation_code', Yii::t('yrc', 'The activation code provided is not valid.'));
             }
 
             $this->user = Yii::$app->yrc->userClass::find()->where(['id' => $tokenInfo['id']])->one();
 
             if ($this->user === null) {
-                $this->addError('activation_code', 'The activation code provided is not valid.');
+                $this->addError('activation_code', Yii::t('yrc', 'The activation code provided is not valid.'));
             }
         }
     }
