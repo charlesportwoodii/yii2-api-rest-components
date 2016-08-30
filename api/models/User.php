@@ -176,12 +176,12 @@ abstract class User extends ActiveRecord implements IdentityInterface, RateLimit
     }
 
     /**
-     * Pre-validation
+     * Before save occurs
      * @return bool
      */
-    public function beforeValidate()
+    public function beforeSave($insert)
     {
-        if (parent::beforeValidate()) {
+        if (parent::beforeSave($insert)) {
             if ($this->isNewRecord || $this->password !== $this->oldAttributes['password']) {
                 $this->password = password_hash($this->password, $this->passwordHashAlgorithm, $this->passwordHashOptions);
             }

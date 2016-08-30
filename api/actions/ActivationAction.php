@@ -16,7 +16,7 @@ class ActivationAction extends RestAction
 {
     /**
      * [POST] /api/[...]/activate
-     * Actives a user given their activation token
+     * activates a user given their activation token
      * @return mixed
      */
     public static function post($params)

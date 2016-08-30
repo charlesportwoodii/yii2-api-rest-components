@@ -94,11 +94,6 @@ abstract class ResetPassword extends \yii\base\model
     public function validateResetToken($attributes, $params)
     {
         if (!$this->hasErrors()) {
-            // If the user object is set, consider the user pre-authenticated
-            if ($this->user !== null) {
-                return;
-            }
-
             $tokenInfo = Yii::$app->cache->get(
                 hash('sha256', $this->reset_token . '_reset_token')
             );
@@ -122,26 +117,7 @@ abstract class ResetPassword extends \yii\base\model
     public function setUser($user)
     {
         $this->user = $user;
-    }
-
-    /**
-     * Initializes a password reset request
-     * @return boolean
-     */
-    public function initReset()
-    {
-        if ($this->validate()) {
-            // Create an reset token for the user, and store it in the cache
-            $token = Base32::encode(\random_bytes(64));
-            
-            Yii::$app->cache->set(hash('sha256', $token . '_reset_token'), [
-                'id' => $this->user->id
-            ], strtotime(self::EXPIRY_TIME));
-
-            return Yii::$app->yrc->userClass::sendPasswordResetEmail($this->user->email, $token);
-        }
-
-        return false;
+        $this->email = $user->email;
     }
 
     /**
@@ -151,10 +127,21 @@ abstract class ResetPassword extends \yii\base\model
     public function reset()
     {
         if ($this->validate()) {
-            $this->user->password = $this->password;
+            if ($this->getScenario() === self::SCENARIO_INIT) {
+                // Create an reset token for the user, and store it in the cache
+                $token = Base32::encode(\random_bytes(64));
+                
+                Yii::$app->cache->set(hash('sha256', $token . '_reset_token'), [
+                    'id' => $this->user->id
+                ], strtotime(self::EXPIRY_TIME));
 
-            if ($this->user->save()) {
-                return Yii::$app->yrc->userClass::sendPasswordChangedEmail($this->email);
+                return Yii::$app->yrc->userClass::sendPasswordResetEmail($this->user->email, $token);
+            } elseif ($this->getScenario() === self::SCENARIO_RESET) {
+                $this->user->password = $this->password;
+
+                if ($this->user->save()) {
+                    return Yii::$app->yrc->userClass::sendPasswordChangedEmail($this->email);
+                }
             }
         }
 
