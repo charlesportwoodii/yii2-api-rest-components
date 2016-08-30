@@ -175,6 +175,16 @@ abstract class User extends ActiveRecord implements IdentityInterface, RateLimit
         ];
     }
 
+    public function beforeValidate()
+    {
+        if (parent::beforeValidate()) {
+            $this->username = \strtolower($this->username);
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Before save occurs
      * @return bool
