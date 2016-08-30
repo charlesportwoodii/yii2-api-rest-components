@@ -2,17 +2,17 @@
 
 namespace yrc\api\actions;
 
-use app\forms\Register;
+use app\forms\Registration;
 use yrc\rest\Action as RestAction;
 
 use yii\web\HttpException;
 use Yii;
 
 /**
- * @class RegistrationAction
+ * @class RegisterAction
  * Handles user registration
  */
-class RegistrationAction extends RestAction
+class RegisterAction extends RestAction
 {
     /**
      * [POST] /api/[...]/register

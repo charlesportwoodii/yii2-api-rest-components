@@ -125,8 +125,8 @@ abstract class User extends ActiveRecord implements IdentityInterface, RateLimit
     {
         $hash = Yii::$app->user->id . $request->getUrl() . $action->id;
         $allowance = [
-            'allowance' => $allowance,
-            'timestmap' => $timestamp
+            $allowance,
+            $timestamp
         ];
 
         Yii::$app->cache->set($hash, $allowance, $this->rateLimitWindow);
