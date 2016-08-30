@@ -21,11 +21,6 @@ class OTPAction extends RestAction
      */
     public static function post($params)
     {
-        // If the user is a guest, do not proceed (endpoint should be protected)
-        if (Yii::$app->user->isGuest) {
-            return false;
-        }
-
         // Find the user
         $user = User::findOne(Yii::$app->user->id);
         if ($user === null) {
@@ -37,14 +32,19 @@ class OTPAction extends RestAction
         }
 
         // If an OTP code was provided, assume the account has been provisioned and just needs activation
-        if (Yii::$app->request->post('code', false) !== false) {
-            if ($user->verifyOTP(Yii::$app->request->post('code', false)) !== false) {
+        $otpVerificationCode = Yii::$app->request->post('code', false);
+        if ($otpVerificationCode !== false) {
+            if ($user->verifyOTP((string)$otpVerificationCode) !== false) {
                 return $user->enableOTP();
             }
         } else {
             // Otherwise return the provisioning string
-            return $user->provisionOTP();
+            return [
+                'provisioning_code' => $user->provisionOTP()
+            ];
         }
+
+        return false;
     }
 
     /**
@@ -54,11 +54,6 @@ class OTPAction extends RestAction
      */
     public static function delete($params)
     {
-        // If the user is a guest, do not proceed (endpoint should be protected)
-        if (Yii::$app->user->isGuest) {
-            return false;
-        }
-
         // Find the user
         $user = User::findOne(Yii::$app->user->id);
         if ($user === null) {
@@ -70,8 +65,9 @@ class OTPAction extends RestAction
         }
 
         // Grab the code from the GET parameter, and check it
-        if (Yii::$app->request->get('code', false) !== false) {
-            if ($user->verifyOTP(Yii::$app->request->post('code', false)) !== false) {
+        $otpVerificationCode = Yii::$app->request->post('code', false);
+        if ($otpVerificationCode !== false) {
+            if ($user->verifyOTP((string)$otpVerificationCode) !== false) {
                 return $user->disableOTP();
             }
         }
