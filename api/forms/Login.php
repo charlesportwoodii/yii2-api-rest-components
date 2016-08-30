@@ -71,7 +71,7 @@ abstract class Login extends \yii\base\model
 
     /**
      * Validates the users' password and OTP code
-     * @param array $attributes
+     * @param array $attribute
      * @param array $params
      */
     public function validatePasswordAndOTP($attribute, $params)

@@ -97,7 +97,7 @@ abstract class Token extends \yii\base\Model
 
     /**
      * Retrieves an instance of self
-     * @param string $tokenString   The string access token
+     * @param array $params
      * @return Token|null
      */
     public static function find(array $params = [])

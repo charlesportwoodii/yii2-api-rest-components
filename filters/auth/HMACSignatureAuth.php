@@ -86,7 +86,7 @@ final class HMACSignatureAuth extends AuthMethod
      * @param string $hmac
      * @param string $accessToken
      * @param string $salt
-     * @param yii\web\request $request
+     * @param \yii\web\request $request
      * @return bool
      */
     private function isHMACSignatureValid($accessToken, $ikm, $salt, $request, $hmac = null)

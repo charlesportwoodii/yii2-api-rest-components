@@ -2,7 +2,7 @@
 
 namespace yrc\api\models;
 
-use app\models\User\Token;
+use app\models\Token;
 
 use Base32\Base32;
 use OTPHP\TOTP;
@@ -26,8 +26,6 @@ use Yii;
  * @property string $otp_enabled
  * @property integer $created_at
  * @property integer $updated_at
- *
- * @property Tokens[] $tokens
  */
 abstract class User extends ActiveRecord implements IdentityInterface, RateLimitInterface
 {
