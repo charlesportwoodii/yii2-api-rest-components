@@ -27,7 +27,7 @@ class AuthenticationAction extends RestAction
             $data = $model->authenticate();
 
             if ($data === false) {
-                throw new UnauthorizedHttpException;
+                throw new UnauthorizedHttpException(null, $model->exitStatus);
             } else {
                 return [
                     'access_token'  => $data['accessToken'],
