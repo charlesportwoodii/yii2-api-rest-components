@@ -35,7 +35,7 @@ class JsonResponseFormatter extends YiiJsonResponseFormatter
 
                 if (isset($copy['message'])) {
                     $message = \json_decode($copy['message']);
-                    if (json_last_error() === JSON_ERROR_NONE) {
+                    if (\json_last_error() === JSON_ERROR_NONE) {
                         $copy['message'] = $message;
                     }
                 }

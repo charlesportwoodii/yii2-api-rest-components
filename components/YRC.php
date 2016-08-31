@@ -52,6 +52,11 @@ class YRC extends Object
             }
         }
 
+        if (!\file_exists(Yii::getAlias($viewFilePath))) {
+            Yii::warning(sprintf('The requested view (%s) file does not exist', $viewFilePath));
+            return false;
+        }
+
         $view = Yii::$app->view->renderFile($viewFilePath, $params);
 
         if ($this->realSend === true) {
