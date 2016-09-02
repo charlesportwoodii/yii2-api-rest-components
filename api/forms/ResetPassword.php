@@ -37,6 +37,12 @@ abstract class ResetPassword extends \yii\base\model
     public $password_verify;
 
     /**
+     * The user's current password
+     * @var string $password_current
+     */
+    public $password_current;
+
+    /**
      * The user associated to the email
      * @var User $user
      */
@@ -65,13 +71,27 @@ abstract class ResetPassword extends \yii\base\model
             [['email'], 'email', 'on' =>  self::SCENARIO_INIT],
             [['email'], 'validateUser', 'on' =>  self::SCENARIO_INIT],
 
-            [['reset_token'], 'required', 'on' => self::SCENARIO_RESET],
+            [['reset_token', 'password', 'password_verify', 'password_current'], 'required', 'on' => self::SCENARIO_RESET],
             [['reset_token'], 'validateResetToken', 'on' => self::SCENARIO_RESET],
-            [['password', 'password_verify'], 'string', 'min' => 8, 'on' => self::SCENARIO_RESET],
+            [['password_current'], 'validatePassword', 'on' => self::SCENARIO_RESET],
+            [['password', 'password_verify', 'current_password'], 'string', 'min' => 8, 'on' => self::SCENARIO_RESET],
             [['password_verify'], 'compare', 'compareAttribute' => 'password', 'on' => self::SCENARIO_RESET]
         ];
     }
 
+    /**
+     * Validates the user's current password
+     * @inheritdoc
+     */
+    public function validatePassword($attributes, $params)
+    {
+        if (!$this->hasErrors()) {
+            if (!$this->user->validatePassword($this->password_current)) {
+                $this->addError('password_current', Yii::t('yrc', 'The provided password is not valid'));
+            }
+        }
+    }
+    
     /**
      * Validates the users email
      * @inheritdoc
@@ -102,7 +122,9 @@ abstract class ResetPassword extends \yii\base\model
                 $this->addError('reset_token', Yii::t('yrc', 'The password reset token provided is not valid.'));
             }
 
-            $this->user = Yii::$app->yrc->userClass::find()->where(['id' => $tokenInfo['id']])->one();
+            $this->user = Yii::$app->yrc->userClass::find()->where([
+                'id' => $tokenInfo['id']
+            ])->one();
 
             if ($this->user === null) {
                 $this->addError('reset_token', Yii::t('yrc', 'The password reset token provided is not valid.'));

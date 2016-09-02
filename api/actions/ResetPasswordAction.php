@@ -15,14 +15,13 @@ use Yii;
 class ResetPasswordAction extends RestAction
 {
     /**
-     * [POST] /api/[...]/reset_password
      * Allows a user to reset their password
      * @return mixed
      */
     public static function post($params)
     {
         static $form;
-        $token = Yii::$app->request->post('reset_token', false);
+        $token = Yii::$app->request->get('reset_token', false);
 
         // Determine the correct scenario to use based upon the reset token
         if ($token === false) {
@@ -33,8 +32,10 @@ class ResetPasswordAction extends RestAction
         
         // Load the form
         if ($form->load(['ResetPassword' => Yii::$app->request->post()])) {
+            $form->reset_token = Yii::$app->request->get('reset_token', null);
             $form->password = Yii::$app->request->post('password', null);
             $form->password_verify = Yii::$app->request->post('password_verify', null);
+            $form->password_current = Yii::$app->request->post('password_current', null);
 
             // If the user is authenticated, populate the model
             if (!Yii::$app->user->isGuest) {

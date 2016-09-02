@@ -15,7 +15,7 @@ use Yii;
 class OTPAction extends RestAction
 {
     /**
-     * [POST] /api/v1/otp
+     * [POST] /api/[...]/otp
      * Enables OTP for an account
      * @return mixed
      */
@@ -48,7 +48,7 @@ class OTPAction extends RestAction
     }
 
     /**
-     * [POST] /api/v1/otp
+     * [DELETE] /api/[...]/otp
      * Disables OTP for an account
      * @return mixed
      */

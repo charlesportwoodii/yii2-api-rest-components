@@ -15,8 +15,7 @@ use Yii;
 class ActivationAction extends RestAction
 {
     /**
-     * [POST] /api/[...]/activate
-     * activates a user given their activation token
+     * Activates a user given their activation token
      * @return mixed
      */
     public static function post($params)

@@ -15,7 +15,6 @@ use Yii;
 class RefreshAction extends RestAction
 {
     /**
-     * [POST] /api/[...]/refresh
      * Refreshes the user's token
      * @return bool
      */
