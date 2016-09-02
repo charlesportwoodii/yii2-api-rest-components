@@ -4,6 +4,7 @@ namespace yrc\rest;
 
 use yii\rest\Controller as RestController;
 use yii\filters\Cors;
+use yii\filters\RateLimiter;
 use yii\filters\VerbFilter;
 use yii\web\HttpException;
 use Yii;
@@ -23,6 +24,21 @@ class Controller extends RestController
      */
     private $httpVerbs = ['post', 'get', 'delete', 'put', 'patch', 'options', 'head'];
     
+    /**
+     * Global access filter
+     */
+    public function beforeAction($action)
+    {
+        $parent = parent::beforeAction($action);
+
+        // Check the global access control header
+        if (!Yii::$app->yrc->checkAccessHeader(Yii::$app->request)) {
+            throw new HttpException(401);
+        }
+
+        return $parent;
+    }
+
     /**
      * RestController automatically applies HTTP verb filtering and CORS headers
      * @return array
@@ -63,7 +79,7 @@ class Controller extends RestController
         ];
 
         $behaviors['rateLimiter'] = [
-            'class' => \yii\filters\RateLimiter::className(),
+            'class' => RateLimiter::className(),
             'enableRateLimitHeaders' => true
         ];
 

@@ -22,6 +22,8 @@ return [
     'The activation code provided is not valid.' => '',
     'The password reset token provided is not valid.' => '',
     'The provided email address is not valid' => '',
+    'The provided password is not valid' => '',
     'Token failed to save' => '',
+    'Two factor authentication is enabled for this account.' => '',
     'Two-factor is not enabled' => '',
 ];
