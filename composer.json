@@ -20,12 +20,6 @@
         "yiisoft/yii2-swiftmailer": "~2.0.0",
         "yiisoft/yii2-twig": "~2.0.0"
     },
-    "require-dev": {
-        "codeception/codeception": "^2.2",
-        "yiisoft/yii2-codeception": "^2.0",
-        "codeception/specify": "*",
-        "codeception/verify": "*"
-    },
     "autoload": {
         "psr-4": { "yrc\\": "" }
     }
