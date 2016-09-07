@@ -23,7 +23,6 @@ class ChangeEmailAction extends RestAction
         $model = new ChangeEmail;
         
         if ($model->load(['ChangeEmail' => Yii::$app->request->post()])) {
-            // Set the user
             $model->setUser(Yii::$app->yrc->userClass::findOne([
                 'id' => Yii::$app->user->id
             ]));

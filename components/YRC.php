@@ -22,6 +22,12 @@ class YRC extends Object
      * @var string
      */
     public $fromEmail;
+    
+    /**
+     * The name to associate with the origin email
+     * @var string
+     */
+    public $fromName;
 
     /**
      * Whether or not we should really send emails
@@ -56,11 +62,6 @@ class YRC extends Object
 
         // Fetch the access header from the request
         $header = $request->getHeaders()->get($this->accessHeader);
-
-        // If the header isn't set, deny
-        if ($header === null) {
-            return false;
-        }
 
         // Allow if the header values match
         if (\hash_equals($this->accessHeaderSecret, $header)) {
