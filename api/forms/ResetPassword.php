@@ -37,10 +37,10 @@ abstract class ResetPassword extends \yii\base\model
     public $password_verify;
 
     /**
-     * The user's current password
-     * @var string $password_current
+     * The OTP code (optional)
+     * @var string $otp
      */
-    public $password_current;
+    public $otp;
 
     /**
      * The user associated to the email
@@ -71,25 +71,11 @@ abstract class ResetPassword extends \yii\base\model
             [['email'], 'email', 'on' =>  self::SCENARIO_INIT],
             [['email'], 'validateUser', 'on' =>  self::SCENARIO_INIT],
 
-            [['reset_token', 'password', 'password_verify', 'password_current'], 'required', 'on' => self::SCENARIO_RESET],
+            [['reset_token', 'password', 'password_verify'], 'required', 'on' => self::SCENARIO_RESET],
             [['reset_token'], 'validateResetToken', 'on' => self::SCENARIO_RESET],
-            [['password_current'], 'validatePassword', 'on' => self::SCENARIO_RESET],
-            [['password', 'password_verify', 'current_password'], 'string', 'min' => 8, 'on' => self::SCENARIO_RESET],
+            [['password', 'password_verify'], 'string', 'min' => 8, 'on' => self::SCENARIO_RESET],
             [['password_verify'], 'compare', 'compareAttribute' => 'password', 'on' => self::SCENARIO_RESET]
         ];
-    }
-
-    /**
-     * Validates the user's current password
-     * @inheritdoc
-     */
-    public function validatePassword($attributes, $params)
-    {
-        if (!$this->hasErrors()) {
-            if (!$this->user->validatePassword($this->password_current)) {
-                $this->addError('password_current', Yii::t('yrc', 'The provided password is not valid'));
-            }
-        }
     }
     
     /**
@@ -128,6 +114,13 @@ abstract class ResetPassword extends \yii\base\model
 
             if ($this->user === null) {
                 $this->addError('reset_token', Yii::t('yrc', 'The password reset token provided is not valid.'));
+            } else {
+                // If two factor authentication is enabled on the account, prevent it from being changed without a valid code
+                if ($this->user->isOTPEnabled()) {
+                    if ($this->otp === null || !$this->user->verifyOTP((string)$this->otp)) {
+                        $this->addError('otp', Yii::t('yrc', 'This account is protected with two factor authentication, and a valid OTP code is required to change the password.'));
+                    }
+                }
             }
         }
     }

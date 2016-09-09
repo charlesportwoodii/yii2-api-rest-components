@@ -35,7 +35,7 @@ class ResetPasswordAction extends RestAction
             $form->reset_token = Yii::$app->request->get('reset_token', null);
             $form->password = Yii::$app->request->post('password', null);
             $form->password_verify = Yii::$app->request->post('password_verify', null);
-            $form->password_current = Yii::$app->request->post('password_current', null);
+            $form->otp = Yii::$app->request->post('otp', null);
 
             // If the user is authenticated, populate the model
             if (!Yii::$app->user->isGuest) {
@@ -50,6 +50,10 @@ class ResetPasswordAction extends RestAction
                 return $form->reset();
             }
 
+            if ($form->getScenario() === ResetPassword::SCENARIO_INIT) {
+                return true;
+            }
+            
             throw new HttpException(400, \json_encode($form->getErrors()));
         }
             
