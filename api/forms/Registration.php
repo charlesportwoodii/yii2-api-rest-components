@@ -44,10 +44,31 @@ abstract class Registration extends \yii\base\Model
         return [
             [['email', 'password', 'password_verify', 'username'], 'required'],
             [['email'], 'email'],
+            [['email'], 'verifyUsernameOrEmail'],
+            [['username'], 'verifyUsernameOrEmail'],
             [['password', 'password_verify'], 'string', 'length' => [8, 100]],
             [['username'], 'string', 'length' => [1, 100]],
             [['password_verify'], 'compare', 'compareAttribute' => 'password']
         ];
+    }
+
+    /**
+     * Verifies the username
+     * @param string $attribute
+     * @param array $params
+     */
+    public function verifyUsernameOrEmail($attribute, $params)
+    {
+        if (!$this->hasErrors()) {
+            $user = new Yii::$app->yrc->userClass;
+            $user->$attribute = $this->$attribute;
+
+            $user->validate([$attribute]);
+
+            if ($user->hasErrors($attribute)) {
+                $this->addError($attribute, $user->getErrors($attribute));
+            }
+        }
     }
 
     /**

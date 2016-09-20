@@ -23,7 +23,9 @@ return [
     'The password reset token provided is not valid.' => '',
     'The provided email address is not valid' => '',
     'The provided password is not valid' => '',
+    'This account is protected with two factor authentication, and a valid OTP code is required to change the password.' => '',
     'Token failed to save' => '',
     'Two factor authentication is enabled for this account.' => '',
     'Two-factor is not enabled' => '',
+    'You cannot change your email to your current email address' => '',
 ];
