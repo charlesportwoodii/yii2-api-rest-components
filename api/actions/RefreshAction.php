@@ -32,12 +32,7 @@ class RefreshAction extends RestAction
         // If we can delete the token, send a newly generated token out
         if ($token->delete()) {
             $tokens = Token::generate(Yii::$app->user->id);
-            return [
-                'access_token'  => $tokens['accessToken'],
-                'refresh_token' => $tokens['refreshToken'],
-                'ikm'           => $tokens['ikm'],
-                'expires_at'    => $tokens['expiresAt']
-            ];
+            return $data;
         }
 
         // Return false for any other reasons

@@ -29,12 +29,7 @@ class AuthenticationAction extends RestAction
             if ($data === false) {
                 throw new UnauthorizedHttpException(null, $model->exitStatus);
             } else {
-                return [
-                    'access_token'  => $data['accessToken'],
-                    'refresh_token' => $data['refreshToken'],
-                    'ikm'           => $data['ikm'],
-                    'expires_at'    => $data['expiresAt']
-                ];
+                return $data;
             }
         }
             
@@ -67,7 +62,7 @@ class AuthenticationAction extends RestAction
 
             // Retrieve the token object
             $token = Token::find([
-                'accessToken' => $accessToken,
+                'access_token' => $accessToken,
                 'userId'      => Yii::$app->user->id
             ]);
 

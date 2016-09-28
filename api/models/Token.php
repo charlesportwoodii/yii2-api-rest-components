@@ -23,13 +23,13 @@ abstract class Token extends \yii\base\Model
      * The access token
      * @var string
      */
-    public $accessToken;
+    public $access_token;
 
     /**
      * The refresh token
      * @var string
      */
-    public $refreshToken;
+    public $refresh_token;
 
     /**
      * The initial key material for HKDF hashing
@@ -41,7 +41,7 @@ abstract class Token extends \yii\base\Model
      * Integer expiration date
      * @var integer
      */
-    public $expiresAt;
+    public $expires_at;
 
     /**
      * Deletes the current access token
@@ -49,7 +49,7 @@ abstract class Token extends \yii\base\Model
      */
     public function delete()
     {
-        return Yii::$app->cache->delete($this->accessToken);
+        return Yii::$app->cache->delete($this->access_token);
     }
 
     /**
@@ -58,11 +58,11 @@ abstract class Token extends \yii\base\Model
      */
     public function save()
     {
-        return Yii::$app->cache->set($this->accessToken, [
-            'refreshToken'  => $this->refreshToken,
-            'ikm'           => $this->ikm,
-            'userId'        => $this->userId,
-            'expiresAt'     => $this->expiresAt
+        return Yii::$app->cache->set($this->access_token, [
+            'refresh_token'     => $this->refresh_token,
+            'ikm'               => $this->ikm,
+            'userId'            => $this->userId,
+            'expires_at'        => $this->expires_at
         ], strtotime(self::TOKEN_EXPIRATION_TIME));
     }
 
@@ -80,10 +80,10 @@ abstract class Token extends \yii\base\Model
        
         $token                  = new static;
         $token->userId          = $userId;
-        $token->accessToken     = \str_replace('=', '', Base32::encode(\random_bytes(32)));
-        $token->refreshToken    = \str_replace('=', '', Base32::encode(\random_bytes(32)));
+        $token->access_token    = \str_replace('=', '', Base32::encode(\random_bytes(32)));
+        $token->refresh_token   = \str_replace('=', '', Base32::encode(\random_bytes(32)));
         $token->ikm             = \base64_encode(\random_bytes(32));
-        $token->expiresAt       = strtotime(self::TOKEN_EXPIRATION_TIME);
+        $token->expires_at      = strtotime(self::TOKEN_EXPIRATION_TIME);
 
         if ($token->save()) {
             return $token->attributes;
@@ -99,7 +99,7 @@ abstract class Token extends \yii\base\Model
      */
     public static function find(array $params = [])
     {
-        $data = Yii::$app->cache->get($params['accessToken']);
+        $data = Yii::$app->cache->get($params['access_token']);
 
         // If nothing was found, return null
         if (!$data) {
@@ -114,10 +114,10 @@ abstract class Token extends \yii\base\Model
         
         $token                  = new static;
         $token->userId          = $data['userId'];
-        $token->accessToken     = $params['accessToken'];
-        $token->refreshToken    = $data['refreshToken'];
+        $token->access_token    = $params['access_token'];
+        $token->refresh_token   = $data['refresh_token'];
         $token->ikm             = $data['ikm'];
-        $token->expiresAt       = $data['expiresAt'];
+        $token->expires_at      = $data['expires_at'];
         
         return $token;
     }
