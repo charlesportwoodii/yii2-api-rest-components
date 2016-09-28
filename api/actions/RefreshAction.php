@@ -25,14 +25,14 @@ class RefreshAction extends RestAction
         
         $refreshToken = Yii::$app->request->post('refresh_token', false);
 
-        if ($refreshToken !== $token->refreshToken) {
+        if ($refreshToken !== $token->refresh_token) {
             return false;
         }
 
         // If we can delete the token, send a newly generated token out
         if ($token->delete()) {
             $tokens = Token::generate(Yii::$app->user->id);
-            return $data;
+            return $tokens;
         }
 
         // Return false for any other reasons
