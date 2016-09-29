@@ -45,13 +45,13 @@ class ResetPasswordAction extends RestAction
             // Validate the form and make sure all of the attributes are set, then perform the reset task depending upon the scenario
             if ($form->validate()) {
                 return $form->reset();
-            } else {
-                throw new HttpException(400, \json_encode($form->getErrors()));
             }
 
             if ($form->getScenario() === ResetPassword::SCENARIO_INIT) {
                 return true;
             }
+
+            throw new HttpException(400, \json_encode($form->getErrors()));
         }
             
         return false;
