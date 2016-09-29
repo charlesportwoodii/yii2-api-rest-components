@@ -46,7 +46,7 @@ abstract class ResetPassword extends \yii\base\model
      * The user associated to the email
      * @var User $user
      */
-    private $user = null;
+    protected $user = null;
 
     /**
      * Validation scenarios
@@ -74,7 +74,8 @@ abstract class ResetPassword extends \yii\base\model
             [['reset_token', 'password', 'password_verify'], 'required', 'on' => self::SCENARIO_RESET],
             [['reset_token'], 'validateResetToken', 'on' => self::SCENARIO_RESET],
             [['password', 'password_verify'], 'string', 'min' => 8, 'on' => self::SCENARIO_RESET],
-            [['password_verify'], 'compare', 'compareAttribute' => 'password', 'on' => self::SCENARIO_RESET]
+            [['password_verify'], 'compare', 'compareAttribute' => 'password', 'on' => self::SCENARIO_RESET],
+            [['password', 'password_verify'], 'required', 'on' => self::SCENARIO_RESET],
         ];
     }
     

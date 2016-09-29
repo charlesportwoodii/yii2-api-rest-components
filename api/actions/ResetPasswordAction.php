@@ -31,11 +31,8 @@ class ResetPasswordAction extends RestAction
         }
         
         // Load the form
-        if ($form->load(['ResetPassword' => Yii::$app->request->post()])) {
+        if (self::load($form, Yii::$app->request->post())) {
             $form->reset_token = Yii::$app->request->get('reset_token', null);
-            $form->password = Yii::$app->request->post('password', null);
-            $form->password_verify = Yii::$app->request->post('password_verify', null);
-            $form->otp = Yii::$app->request->post('otp', null);
 
             // If the user is authenticated, populate the model
             if (!Yii::$app->user->isGuest) {
@@ -48,15 +45,26 @@ class ResetPasswordAction extends RestAction
             // Validate the form and make sure all of the attributes are set, then perform the reset task depending upon the scenario
             if ($form->validate()) {
                 return $form->reset();
+            } else {
+                throw new HttpException(400, \json_encode($form->getErrors()));
             }
 
             if ($form->getScenario() === ResetPassword::SCENARIO_INIT) {
                 return true;
             }
-            
-            throw new HttpException(400, \json_encode($form->getErrors()));
         }
             
         return false;
+    }
+
+    private static function load(&$form, $attributes)
+    {
+        foreach ($attributes as $k => $v) {
+            if (property_exists($form, $k)) {
+                $form->$k = $v;
+            }
+        }
+
+        return $form;
     }
 }
