@@ -5,7 +5,7 @@ namespace yrc\api\forms;
 use Base32\Base32;
 use Yii;
 
-abstract class ResetPassword extends \yii\base\model
+abstract class ResetPassword extends \yii\base\Model
 {
     const SCENARIO_INIT = 'init';
     const SCENARIO_RESET = 'reset';

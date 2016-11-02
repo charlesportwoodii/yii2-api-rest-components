@@ -9,7 +9,7 @@ use Yii;
  * @class Activation
  * The form for validating the activation form
  */
-abstract class Activation extends \yii\base\model
+abstract class Activation extends \yii\base\Model
 {
     /**
      * The activation code

@@ -9,7 +9,7 @@ use Yii;
  * @class ChangeEmail
  * The form for validating the activation form
  */
-abstract class ChangeEmail extends \yii\base\model
+abstract class ChangeEmail extends \yii\base\Model
 {
     /**
      * The new email to be changed

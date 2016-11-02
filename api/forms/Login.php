@@ -10,7 +10,7 @@ use Yii;
  * @class Login
  * Form for authenticating users
  */
-abstract class Login extends \yii\base\model
+abstract class Login extends \yii\base\Model
 {
     /**
      * The user's email
