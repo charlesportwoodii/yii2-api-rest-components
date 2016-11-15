@@ -103,6 +103,10 @@ class Controller extends RestController
     {
         $result = [];
 
+        if (is_array($class)) {
+            $class = $class['class'];
+        }
+
         // Fetch the static methods for the class
         $reflection = new ReflectionClass($class);
         $methods = $reflection->getMethods(ReflectionMethod::IS_STATIC);

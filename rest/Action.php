@@ -3,7 +3,10 @@
 namespace yrc\rest;
 
 use yii\web\HttpException;
+use yii\helpers\ArrayHelper;
 use Yii;
+use ReflectionProperty;
+use ReflectionClass;
 
 abstract class Action extends \yii\base\Action
 {
@@ -18,6 +21,18 @@ abstract class Action extends \yii\base\Action
         $method = Yii::$app->request->method;
         $method = strtolower($method);
 
+        $reflect = new ReflectionClass(get_called_class());
+        $props   = $reflect->getProperties(ReflectionProperty::IS_PUBLIC);
+
+        foreach ($props as $prop) {
+            $name = $prop->name;
+            if (in_array($name, ['id', 'controller'])) {
+                break;
+            }
+
+            $args['class'][$name] = $this->$name;
+        }
+        
         // Make sure the method exists before trying to call it
         if (method_exists(get_called_class(), $method)) {
             return static::$method($args);
