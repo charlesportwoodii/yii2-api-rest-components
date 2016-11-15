@@ -47,12 +47,12 @@ class Controller extends RestController
     {
         $behaviors = parent::behaviors();
 
-		$authenticator = false;
+        $authenticator = false;
 
-		if (isset($behaviors['authenticator'])) {
-			$authenticator = $behaviors['authenticator'];
-			unset($behaviors['authenticator']);        
-		}
+        if (isset($behaviors['authenticator'])) {
+            $authenticator = $behaviors['authenticator'];
+            unset($behaviors['authenticator']);
+        }
 
         $behaviors['corsFilter'] = [
             'class' => Cors::className(),
@@ -61,7 +61,7 @@ class Controller extends RestController
                 'Access-Control-Request-Method' => $this->getHttpVerbMethodsFromClass($this->actions()[$this->action->id]),
                 'Access-Control-Request-Headers' => ['*'],
                 'Access-Control-Expose-Headers' => [
-					'Access-Control-Allow-Origin',
+                    'Access-Control-Allow-Origin',
                     'X-Pagination-Per-Page',
                     'X-Pagination-Total-Count',
                     'X-Pagination-Current-Page',
@@ -79,18 +79,18 @@ class Controller extends RestController
             'actions' => $this->getVerbFilterActionMap()
         ];
 
+        if ($authenticator != false) {
+            $behaviors['authenticator'] = $authenticator;
+            $behaviors['authenticator']['except'] = ['options'];
+        }
+
         $behaviors['rateLimiter'] = [
             'class' => RateLimiter::className(),
             'enableRateLimitHeaders' => true
         ];
 
-		if ($authenticator != false) {
-			$behaviors['authenticator'] = $authenticator;
-			$behaviors['authenticator']['except'] = ['options'];
-		}
-
-		// Manually add the ACAO header because Yii2 is terrible at doing it
-		header("Access-Control-Allow-Origin: " . \implode(',', $behaviors['corsFilter']['cors']['Origin']));
+        // Manually add the ACAO header because Yii2 is terrible at doing it
+        header("Access-Control-Allow-Origin: " . \implode(',', $behaviors['corsFilter']['cors']['Origin']));
         return $behaviors;
     }
 
