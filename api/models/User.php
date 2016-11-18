@@ -2,8 +2,6 @@
 
 namespace yrc\api\models;
 
-use app\models\Token;
-
 use Base32\Base32;
 use OTPHP\TOTP;
 
