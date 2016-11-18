@@ -61,13 +61,15 @@ class AuthenticationAction extends RestAction
             $accessToken = $data[0];
 
             // Retrieve the token object
-            $token = Token::find([
-                'access_token' => $accessToken,
-                'userId'      => Yii::$app->user->id
-            ]);
+            $token = Token::find()
+                ->where([
+                    'access_token' => $accessToken,
+                    'user_id'      => Yii::$app->user->id
+                ])
+                ->one();
 
             // Malformed header
-            if (!$token) {
+            if ($token === null || $token->isExpired()) {
                 throw new UnauthorizedHttpException;
             }
                 

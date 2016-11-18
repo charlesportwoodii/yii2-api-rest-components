@@ -59,8 +59,11 @@ final class HMACSignatureAuth extends AuthMethod
             $salt        = $data[2];
 
             // Check the access token, and make sure we get a valid token data back
-            $token = Yii::$app->cache->get($accessToken);
-            if (!$token) {
+            $token = Token::find()
+                ->where(['access_token' => $accessToken])
+                ->one();
+
+            if ($token === null || $token->isExpired()) {
                 $this->handleFailure($response);
             }
 

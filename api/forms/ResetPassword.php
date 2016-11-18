@@ -4,6 +4,7 @@ namespace yrc\api\forms;
 
 use Base32\Base32;
 use Yii;
+use yrc\api\models\Code;
 
 abstract class ResetPassword extends \yii\base\Model
 {
@@ -101,16 +102,17 @@ abstract class ResetPassword extends \yii\base\Model
     public function validateResetToken($attributes, $params)
     {
         if (!$this->hasErrors()) {
-            $tokenInfo = Yii::$app->cache->get(
-                hash('sha256', $this->reset_token . '_reset_token')
-            );
+            $code = Code::find()->where([
+                'hash' => hash('sha256', $this->reset_token . '_reset_token')
+            ])->one();
             
-            if ($tokenInfo === null) {
+            if ($code === null || $code->isExpired()) {
                 $this->addError('reset_token', Yii::t('yrc', 'The password reset token provided is not valid.'));
+                return;
             }
 
             $this->user = Yii::$app->yrc->userClass::find()->where([
-                'id' => $tokenInfo['id']
+                'id' => $code->user_id
             ])->one();
 
             if ($this->user === null) {
@@ -147,9 +149,14 @@ abstract class ResetPassword extends \yii\base\Model
                 // Create an reset token for the user, and store it in the cache
                 $token = Base32::encode(\random_bytes(64));
                 
-                Yii::$app->cache->set(hash('sha256', $token . '_reset_token'), [
-                    'id' => $this->user->id
-                ], strtotime(self::EXPIRY_TIME));
+                $code = new Code;
+                $code->hash = hash('sha256', $token . '_reset_token');
+                $code->user_id = $this->user->id;
+                $code->expires_at = strtotime(self::EXPIRY_TIME);
+
+                if (!$code->save()) {
+                    return false;
+                }
 
                 return Yii::$app->yrc->sendEmail('password_reset', Yii::t('app', 'A request has been made to change your password'), $this->user->email, ['token' => $token]);
             } elseif ($this->getScenario() === self::SCENARIO_RESET) {

@@ -4,6 +4,7 @@ namespace yrc\api\actions;
 
 use app\forms\ResetPassword;
 use yrc\rest\Action as RestAction;
+use yrc\api\models\Code;
 
 use yii\web\HttpException;
 use Yii;

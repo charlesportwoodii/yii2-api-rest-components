@@ -349,13 +349,16 @@ abstract class User extends ActiveRecord implements IdentityInterface, RateLimit
             return null;
         }
         
-        return static::findOne(['id' => $token['userId']]);
+        return static::findOne(['id' => $token->user_id]);
     }
 
     /**
      * @inheritdoc
      */
-    public function getAuthKey() {}
+    public function getAuthKey()
+    {
+        
+    }
 
     /**
      * @inheritdoc

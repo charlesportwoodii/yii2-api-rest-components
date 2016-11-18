@@ -5,6 +5,8 @@ namespace yrc\api\forms;
 use Base32\Base32;
 use Yii;
 
+use yrc\api\models\Code;
+
 /**
  * @class Activation
  * The form for validating the activation form
@@ -43,15 +45,16 @@ abstract class Activation extends \yii\base\Model
     public function belongsToUserAndIsNotExpired($attribute, $params)
     {
         if (!$this->hasErrors()) {
-            $tokenInfo = Yii::$app->cache->get(
-                hash('sha256', $this->activation_code . '_activation_token')
-            );
+            $code = Code::find()->where([
+                'hash' => hash('sha256', $this->activation_code . '_activation_token')
+            ])->one();
             
-            if ($tokenInfo === null) {
+            if ($code === null) {
                 $this->addError('activation_code', Yii::t('yrc', 'The activation code provided is not valid.'));
+                return;
             }
 
-            $this->user = Yii::$app->yrc->userClass::find()->where(['id' => $tokenInfo['id']])->one();
+            $this->user = Yii::$app->yrc->userClass::find()->where(['id' => $code->user_id])->one();
 
             if ($this->user === null) {
                 $this->addError('activation_code', Yii::t('yrc', 'The activation code provided is not valid.'));
@@ -67,7 +70,7 @@ abstract class Activation extends \yii\base\Model
     {
         if ($this->validate()) {
             if ($this->user->activate()) {
-                Yii::$app->cache->delete($this->activation_code);
+                Code::deleteAll(['hash' => hash('sha256', $this->activation_code . '_activation_token')]);
                 return true;
             }
         }
