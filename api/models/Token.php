@@ -49,7 +49,7 @@ abstract class Token extends \yii\redis\ActiveRecord
         $token->access_token = \str_replace('=', '', Base32::encode(\random_bytes(32)));
         $token->refresh_token = \str_replace('=', '', Base32::encode(\random_bytes(32)));
         $token->ikm =  \base64_encode(\random_bytes(32));
-        $token->expires_at = strtotime(self::TOKEN_EXPIRATION_TIME);
+        $token->expires_at = strtotime(static::TOKEN_EXPIRATION_TIME);
 
         if ($token->save()) {
             return $token->attributes;
