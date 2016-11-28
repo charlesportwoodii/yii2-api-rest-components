@@ -10,7 +10,9 @@ abstract class ResetPassword extends \yii\base\Model
 {
     const SCENARIO_INIT = 'init';
     const SCENARIO_RESET = 'reset';
+    const SCENARIO_RESET_AUTHENTICATED = 'reset_authenticated';
 
+    // The expiration time of the token
     const EXPIRY_TIME = '+4 hours';
 
     /**
@@ -24,6 +26,18 @@ abstract class ResetPassword extends \yii\base\Model
      * @var string $reset_token
      */
     public $reset_token;
+
+    /**
+     * The user ID for credentialless password resets
+     * @var int $user_id
+     */
+    public $user_id;
+
+    /**
+     * The old password
+     * @var string $old_password
+     */
+    public $old_password;
 
     /**
      * The new password
@@ -50,18 +64,6 @@ abstract class ResetPassword extends \yii\base\Model
     protected $user = null;
 
     /**
-     * Validation scenarios
-     * @return array
-     */
-    public function scenarios()
-    {
-        return [
-            self::SCENARIO_INIT => ['email'],
-            self::SCENARIO_RESET => ['reset_token'],
-        ];
-    }
-
-    /**
      * Validation rules
      * @return array
      */
@@ -77,9 +79,64 @@ abstract class ResetPassword extends \yii\base\Model
             [['password', 'password_verify'], 'string', 'min' => 8, 'on' => self::SCENARIO_RESET],
             [['password_verify'], 'compare', 'compareAttribute' => 'password', 'on' => self::SCENARIO_RESET],
             [['password', 'password_verify'], 'required', 'on' => self::SCENARIO_RESET],
+            [['otp'], 'validateOTP', 'on' => self::SCENARIO_RESET],
+
+            [['user_id'], 'validateAuthUser', 'on' => self::SCENARIO_RESET_AUTHENTICATED],
+            [['old_password'], 'validateOldPassword', 'on' => self::SCENARIO_RESET_AUTHENTICATED],
+            [['old_password', 'password', 'password_verify'], 'required', 'on' => self::SCENARIO_RESET_AUTHENTICATED],
+            [['password', 'password_verify'], 'string', 'min' => 8, 'on' => self::SCENARIO_RESET_AUTHENTICATED],
+            [['password_verify'], 'compare', 'compareAttribute' => 'password', 'on' => self::SCENARIO_RESET_AUTHENTICATED],
+            [['password', 'password_verify'], 'required', 'on' => self::SCENARIO_RESET_AUTHENTICATED],
+            [['otp'], 'validateOTP', 'on' => self::SCENARIO_RESET_AUTHENTICATED],
         ];
     }
     
+    /**
+     * Validates the users OTP code, if they provided
+     * @inheritdoc
+     */
+    public function validateOTP($attributes, $params)
+    {
+        if (!$this->hasErrors()) {
+            if ($this->getUser()->isOTPEnabled()) {
+                if ($this->otp === null || !$this->getUser()->verifyOTP((string)$this->otp)) {
+                    $this->addError('otp', Yii::t('yrc', 'This account is protected with two factor authentication, and a valid OTP code is required to change the password.'));
+                    return;
+                }
+            }
+        }
+    }
+
+    /**
+     * Validates the users old password
+     * @inheritdoc
+     */
+    public function validateOldPassword($attributes, $params)
+    {
+        if (!$this->hasErrors()) {
+            if (!$this->getUser()->validatePassword($this->old_password)) {
+                $this->addError('old_password', Yii::t('yrc', 'Your current password is not valid.'));
+                return;
+            }
+            
+            $this->validateOTP('otp', $this->otp);
+        }
+    }
+
+    /**
+     * Validates the authenticated users state
+     * @inheritdoc
+     */
+    public function validateAuthUser($attributes, $params)
+    {
+        if (!$this->hasErrors()) {
+            if ($this->getUser() === null) {
+                $this->addError('email', Yii::t('yrc', 'The provided email address is not valid.'));
+                return;
+            }
+        }
+    }
+
     /**
      * Validates the users email
      * @inheritdoc
@@ -87,10 +144,9 @@ abstract class ResetPassword extends \yii\base\Model
     public function validateUser($attributes, $params)
     {
         if (!$this->hasErrors()) {
-            $this->user = Yii::$app->yrc->userClass::findOne(['email' => $this->email]);
-
-            if ($this->user === null) {
+            if ($this->getUser() === null) {
                 $this->addError('email', Yii::t('yrc', 'The provided email address is not valid'));
+                return;
             }
         }
     }
@@ -111,20 +167,16 @@ abstract class ResetPassword extends \yii\base\Model
                 return;
             }
 
-            $this->user = Yii::$app->yrc->userClass::find()->where([
+            $this->setUser(Yii::$app->yrc->userClass::find()->where([
                 'id' => $code->user_id
-            ])->one();
+            ])->one());
 
-            if ($this->user === null) {
+            if ($this->getUser() === null) {
                 $this->addError('reset_token', Yii::t('yrc', 'The password reset token provided is not valid.'));
-            } else {
-                // If two factor authentication is enabled on the account, prevent it from being changed without a valid code
-                if ($this->user->isOTPEnabled()) {
-                    if ($this->otp === null || !$this->user->verifyOTP((string)$this->otp)) {
-                        $this->addError('otp', Yii::t('yrc', 'This account is protected with two factor authentication, and a valid OTP code is required to change the password.'));
-                    }
-                }
+                return;
             }
+
+            $this->validateOTP('otp', $this->otp);
         }
     }
 
@@ -136,6 +188,25 @@ abstract class ResetPassword extends \yii\base\Model
     {
         $this->user = $user;
         $this->email = $user->email;
+    }
+
+    /**
+     * Helper method to get the current user
+     * @return User
+     */
+    public function getUser()
+    {
+        if ($this->user !== null) {
+            return $this->user;
+        }
+
+        if (isset($this->user_id)) {
+            $this->user = Yii::$app->yrc->userClass::findOne(['id' => $this->user_id]);
+        } elseif (isset($this->email)) {
+            $this->user = Yii::$app->yrc->userClass::findOne(['email' => $this->email]);
+        }
+
+        return $this->user;
     }
 
     /**
@@ -151,18 +222,18 @@ abstract class ResetPassword extends \yii\base\Model
                 
                 $code = new Code;
                 $code->hash = hash('sha256', $token . '_reset_token');
-                $code->user_id = $this->user->id;
+                $code->user_id = $this->getUser()->id;
                 $code->expires_at = strtotime(self::EXPIRY_TIME);
 
                 if (!$code->save()) {
                     return false;
                 }
 
-                return Yii::$app->yrc->sendEmail('password_reset', Yii::t('app', 'A request has been made to change your password'), $this->user->email, ['token' => $token]);
-            } elseif ($this->getScenario() === self::SCENARIO_RESET) {
-                $this->user->password = $this->password;
+                return Yii::$app->yrc->sendEmail('password_reset', Yii::t('app', 'A request has been made to change your password'), $this->getUser()->email, ['token' => $token]);
+            } elseif ($this->getScenario() === self::SCENARIO_RESET || $this->getScenario() === self::SCENARIO_RESET_AUTHENTICATED) {
+                $this->getUser()->password = $this->password;
 
-                if ($this->user->save()) {
+                if ($this->getUser()->save()) {
                     return Yii::$app->yrc->sendEmail('password_change', Yii::t('app', 'Your password has been changed'), $this->email);
                 }
             }
