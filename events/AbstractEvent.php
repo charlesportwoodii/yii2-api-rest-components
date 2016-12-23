@@ -19,4 +19,26 @@ abstract class AbstractEvent extends \yii\base\Event
         $this->queue = $queue;
         $this->job = $job;
     }
+
+    /**
+     * Mark the event as handled, then tell the queue it's been handled
+     * @return true
+     */
+    public function handled()
+    {
+        $this->handled = true;
+        $this->queue->processed($this->job);
+        return true;
+    }
+    
+    /**
+     * Requeue the event
+     * @return true
+     */
+    public function retry()
+    {
+        $this->handled = true;
+        $this->queue->failed($this->job);
+        return true;
+    }
 }

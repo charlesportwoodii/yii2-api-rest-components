@@ -27,19 +27,22 @@ final class SendEmailEvent extends \yrc\events\AbstractEvent
 
         if (!\file_exists(Yii::getAlias($viewFilePath))) {
             Yii::warning(sprintf('The requested view (%s) file does not exist', $viewFilePath));
-            return false;
+            return $this->handled();
         }
 
         $view = Yii::$app->view->renderFile($viewFilePath, $this->viewParams);
         try {
-            return Yii::$app->mailer->compose()
+            $sent = Yii::$app->mailer->compose()
                 ->setFrom(Yii::$app->yrc->fromEmail)
                 ->setTo($this->destination)
                 ->setSubject($this->subject)
                 ->setHtmlBody($view)
                 ->send();
+            
+            return $this->handled();
         } catch (\Exception $e) {
-            return false;
+            Yii::error('Failed to send email notification: ' . $e->getMessage());
+            return $this->handled();
         }
     }
 }
