@@ -1,4 +1,3 @@
-
 {
     "name": "charlesportwoodii/yii2-api-rest-components",
     "description": "Restful API components for Yii framework 2",
@@ -18,7 +17,8 @@
         "yiisoft/yii2": ">=2.0.9",
         "spomky-labs/otphp": ">=8.2.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0",
-        "yiisoft/yii2-twig": "~2.0.0"
+        "yiisoft/yii2-twig": "~2.0.0",
+        "mariano/disque-php": "^2.0"
     },
     "autoload": {
         "psr-4": { "yrc\\": "" }

@@ -111,16 +111,28 @@ abstract class ChangeEmail extends \yii\base\Model
             if ($this->user->validate()) {
                 // Save chec
                 if ($this->user->save()) {
-                    // Notify the user via their new email that their login information has been changed
-                    Yii::$app->yrc->sendEmail('email_change', Yii::t('app', 'Your login information has changed'), $this->email, [
-                        'oldEmail' => $oldEmail,
-                        'newEmail' => $this->email
+                    Yii::$app->queue->addJob([
+                        'class' => '\yrc\events\SendEmailEvent',
+                        'viewFile' => 'email_change',
+                        'subject' => Yii::t('app', 'Your login information has changed'),
+                        'destination' => $this->email,
+                        'locales' => Yii::$app->request->getAcceptableLanguages(),
+                        'viewParams' => [
+                            'oldEmail' => $oldEmail,
+                            'newEmail' => $this->email
+                        ]
                     ]);
 
-                    // Send a notice to the old email notifying them their login information has been changed
-                    Yii::$app->yrc->sendEmail('email_change', Yii::t('app', 'Your login information has changed'), $oldEmail, [
-                        'oldEmail' => $oldEmail,
-                        'newEmail' => $this->email
+                    Yii::$app->queue->addJob([
+                        'class' => '\yrc\events\SendEmailEvent',
+                        'viewFile' => 'email_change',
+                        'subject' => Yii::t('app', 'Your login information has changed'),
+                        'destination' => $oldEmail,
+                        'locales' => Yii::$app->request->getAcceptableLanguages(),
+                        'viewParams' => [
+                            'oldEmail' => $oldEmail,
+                            'newEmail' => $this->email
+                        ]
                     ]);
 
                     return true;

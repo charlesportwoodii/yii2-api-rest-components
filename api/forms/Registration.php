@@ -96,7 +96,18 @@ abstract class Registration extends \yii\base\Model
                     'id' => $user->id
                 ]);
 
-                return Yii::$app->yrc->sendEmail('activate', Yii::t('app', 'Activate your account'), $user->email, ['token' => $token]);
+                Yii::$app->queue->addJob([
+                    'class' => '\yrc\events\SendEmailEvent',
+                    'viewFile' => 'activate',
+                    'subject' => Yii::t('app', 'Activate your account'),
+                    'destination' => $this->email,
+                    'locales' => Yii::$app->request->getAcceptableLanguages(),
+                    'viewParams' => [
+                        'token' => $token
+                    ]
+                ]);
+
+                return true;
             }
         }
 

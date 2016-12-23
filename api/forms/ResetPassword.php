@@ -229,12 +229,30 @@ abstract class ResetPassword extends \yii\base\Model
                     return false;
                 }
 
-                return Yii::$app->yrc->sendEmail('password_reset', Yii::t('app', 'A request has been made to change your password'), $this->getUser()->email, ['token' => $token]);
+                Yii::$app->queue->addJob([
+                    'class' => '\yrc\events\SendEmailEvent',
+                    'viewFile' => 'password_reset',
+                    'subject' => Yii::t('app', 'A request has been made to change your password'),
+                    'destination' => $this->getUser()->email,
+                    'locales' => Yii::$app->request->getAcceptableLanguages(),
+                    'viewParams' => [
+                        'token' => $token
+                    ]
+                ]);
+
+                return true;
             } elseif ($this->getScenario() === self::SCENARIO_RESET || $this->getScenario() === self::SCENARIO_RESET_AUTHENTICATED) {
                 $this->getUser()->password = $this->password;
 
                 if ($this->getUser()->save()) {
-                    return Yii::$app->yrc->sendEmail('password_change', Yii::t('app', 'Your password has been changed'), $this->email);
+                    Yii::$app->queue->addJob([
+                    'class' => '\yrc\events\SendEmailEvent',
+                        'viewFile' => 'password_change',
+                        'subject' => Yii::t('app', 'Your password has been changed'),
+                        'locales' => Yii::$app->request->getAcceptableLanguages(),
+                        'destination' => $this->email
+                    ]);
+                    return true;
                 }
             }
         }
