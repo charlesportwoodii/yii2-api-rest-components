@@ -18,7 +18,7 @@ class RegisterAction extends RestAction
      * Handles registration of users
      * @return mixed
      */
-    public static function post($params)
+    public function post($params)
     {
         $model = new Registration;
         

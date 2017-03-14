@@ -22,7 +22,7 @@ class RefreshAction extends RestAction
      * Refreshes the user's token
      * @return bool
      */
-    public static function post($params)
+    public function post($params)
     {
         // Get the token
         $token = AuthenticationAction::getAccessTokenFromHeader();
@@ -36,9 +36,9 @@ class RefreshAction extends RestAction
         // If we can delete the token, send a newly generated token out
         if ($token->delete()) {
             // Merge any extra attributes with the generated tokens
-            $tokens = ArrayHelper::merge($params['class']['extraAttributes'], Token::generate(Yii::$app->user->id));
+            $tokens = ArrayHelper::merge($this->extraAttributes, Token::generate(Yii::$app->user->id));
             // Merge the identity attributes
-            foreach ($params['class']['identityAttributes'] as $attr) {
+            foreach ($this->identityAttributes as $attr) {
                 $tokens[$attr] = Yii::$app->user->getIdentity()->$attr;
             }
 

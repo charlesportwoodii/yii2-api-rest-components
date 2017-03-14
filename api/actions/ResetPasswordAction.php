@@ -29,10 +29,10 @@ class ResetPasswordAction extends RestAction
      * @param array $params
      * @return boolean
      */
-    public static function post($params)
+    public function post($params)
     {
         static $form;
-        if ($params['class']['scenario'] === null || $params['class']['scenario'] === static::SCENARIO_TOKENIZED) {
+        if ($this->scenario === null || $this->scenario === static::SCENARIO_TOKENIZED) {
             $token = Yii::$app->request->get('reset_token', false);
 
             // Determine the correct scenario to use based upon the reset token
@@ -51,7 +51,7 @@ class ResetPasswordAction extends RestAction
             }
 
             $form->reset_token = Yii::$app->request->get('reset_token', null);
-        } elseif ($params['class']['scenario'] === static::SCENARIO_AUTHENTICATED) {
+        } elseif ($this->scenario === static::SCENARIO_AUTHENTICATED) {
             if (Yii::$app->user->isGuest) {
                 throw new HttpException(400, Yii::t('yrc', 'You must be authenticated to reset your password'));
                 return;

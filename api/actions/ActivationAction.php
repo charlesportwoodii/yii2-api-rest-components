@@ -18,7 +18,7 @@ class ActivationAction extends RestAction
      * Activates a user given their activation token
      * @return mixed
      */
-    public static function post($params)
+    public function post($params)
     {
         $model = new Activation;
         

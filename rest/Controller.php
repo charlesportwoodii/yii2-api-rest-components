@@ -107,11 +107,11 @@ class Controller extends RestController
             $class = $class['class'];
         }
 
-        // Fetch the static methods for the class
+        // Fetch the public methods for the class then filter them out by the http verbs
         $reflection = new ReflectionClass($class);
-        $methods = $reflection->getMethods(ReflectionMethod::IS_STATIC);
+        $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
-            if (in_array($method->name, $this->httpVerbs)) {
+            if (\in_array($method->name, $this->httpVerbs)) {
                 $result[] = $method->name;
             }
         }

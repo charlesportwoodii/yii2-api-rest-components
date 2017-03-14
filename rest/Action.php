@@ -20,22 +20,10 @@ abstract class Action extends \yii\base\Action
     {
         $method = Yii::$app->request->method;
         $method = strtolower($method);
-
-        $reflect = new ReflectionClass(get_called_class());
-        $props   = $reflect->getProperties(ReflectionProperty::IS_PUBLIC);
-
-        foreach ($props as $prop) {
-            $name = $prop->name;
-            if (in_array($name, ['id', 'controller'])) {
-                break;
-            }
-
-            $args['class'][$name] = $this->$name;
-        }
         
         // Make sure the method exists before trying to call it
         if (method_exists(get_called_class(), $method)) {
-            return static::$method($args);
+            return $this->$method($args);
         }
 
         // Return a 405 if the method isn't implemented
@@ -44,7 +32,7 @@ abstract class Action extends \yii\base\Action
         throw new HttpException(405);
     }
 
-    public static function options($params)
+    public function options($params)
     {
         Yii::$app->response->statusCode = 204;
         return;

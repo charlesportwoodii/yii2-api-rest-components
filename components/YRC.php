@@ -44,6 +44,15 @@ class YRC extends Object
     public $accessHeaderSecret;
 
     /**
+     * Helper method to get the user class
+     * @return string
+     */
+    public function getUserClass()
+    {
+        return $this->userClass;
+    }
+
+    /**
      * Helper method to check the access header
      * @return boolean
      */

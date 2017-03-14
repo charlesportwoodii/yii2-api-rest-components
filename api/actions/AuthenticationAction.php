@@ -19,7 +19,7 @@ class AuthenticationAction extends RestAction
      * Authenticates a user using their username and password
      * @return mixed
      */
-    public static function post($params)
+    public function post($params)
     {
         $model = new Login;
         
@@ -40,7 +40,7 @@ class AuthenticationAction extends RestAction
      * Deauthenticates a user
      * @return mixed
      */
-    public static function delete($params)
+    public function delete($params)
     {
         $token = self::getAccessTokenFromHeader();
         return (bool)$token->delete();
@@ -50,7 +50,7 @@ class AuthenticationAction extends RestAction
      * Helper method to grab the User Token object from the header
      * @return User\Token|bool
      */
-    public static function getAccessTokenFromHeader()
+    public function getAccessTokenFromHeader()
     {
         // Grab the authentication header
         $authHeader = Yii::$app->request->getHeaders()->get('Authorization');

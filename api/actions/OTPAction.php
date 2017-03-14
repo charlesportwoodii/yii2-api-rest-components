@@ -19,7 +19,7 @@ class OTPAction extends RestAction
      * Enables OTP for an account
      * @return mixed
      */
-    public static function post($params)
+    public function post($params)
     {
         // Find the user
         $user = User::findOne(Yii::$app->user->id);
@@ -52,7 +52,7 @@ class OTPAction extends RestAction
      * Disables OTP for an account
      * @return mixed
      */
-    public static function delete($params)
+    public function delete($params)
     {
         // Find the user
         $user = User::findOne(Yii::$app->user->id);

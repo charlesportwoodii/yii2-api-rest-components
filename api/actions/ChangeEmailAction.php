@@ -18,7 +18,7 @@ class ChangeEmailAction extends RestAction
      * Allows the user to change the email address associated to their account
      * @return boolean
      */
-    public static function post($params)
+    public function post($params)
     {
         $model = new ChangeEmail;
         
