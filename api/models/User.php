@@ -58,6 +58,33 @@ abstract class User extends ActiveRecord implements IdentityInterface, RateLimit
     ];
     
     /**
+     * The token used to authenticate the user
+     * @var app\models\Token
+     */
+    protected $token;
+
+    /**
+     * Sets the token used to authenticate the user
+     * @return app\models\Token
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Sets the token that was used to authenticate the user
+     */
+    public function setToken($token)
+    {
+        if ($this->token !== null) {
+            throw new \yii\base\Exception(Yii::t('yrc', 'The user has already been authenticated.'));
+        }
+
+        $this->token = $token;
+    }
+
+    /**
      * Overrides init
      */
     public function init()
@@ -347,7 +374,7 @@ abstract class User extends ActiveRecord implements IdentityInterface, RateLimit
             return null;
         }
         
-        return static::findOne(['id' => $token->user_id]);
+        return static::find(['id' => $token->user_id])->one();
     }
 
     /**

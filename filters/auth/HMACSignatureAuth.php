@@ -59,9 +59,14 @@ final class HMACSignatureAuth extends AuthMethod
             $salt        = $data[2];
 
             // Check the access token, and make sure we get a valid token data back
-            $token = Token::find()
-                ->where(['access_token' => $accessToken])
-                ->one();
+            // Expired tokens throw an exception
+            try {
+                $token = Token::find()
+                    ->where(['access_token' => $accessToken])
+                    ->one();
+            } catch (\Exception $e) {
+                $this->handleFailure($response);
+            }
 
             if ($token === null || $token->isExpired()) {
                 $this->handleFailure($response);

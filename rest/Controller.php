@@ -6,7 +6,10 @@ use yii\rest\Controller as RestController;
 use yii\filters\Cors;
 use yii\filters\RateLimiter;
 use yii\filters\VerbFilter;
+use yii\filters\ContentNegotiator;
 use yii\web\HttpException;
+use yrc\web\Response;
+
 use Yii;
 
 use ReflectionClass;
@@ -54,6 +57,15 @@ class Controller extends RestController
             unset($behaviors['authenticator']);
         }
 
+        $behaviors['contentNegotiator'] = [
+            'class' => ContentNegotiator::className(),
+            'formats' => [
+                'application/json' => Response::FORMAT_JSON,
+                'application/json+25519' => Response::FORMAT_JSON25519,
+                'application/xml' => Response::FORMAT_XML,
+            ]
+        ];
+
         $behaviors['corsFilter'] = [
             'class' => Cors::className(),
             'cors' => [
@@ -79,9 +91,9 @@ class Controller extends RestController
             'actions' => $this->getVerbFilterActionMap()
         ];
 
+        // Move authenticator after verbs and cors
         if ($authenticator != false) {
             $behaviors['authenticator'] = $authenticator;
-            $behaviors['authenticator']['except'] = ['options'];
         }
 
         $behaviors['rateLimiter'] = [

@@ -1,6 +1,6 @@
 <?php
 
-namespace yrc\components;
+namespace yrc\web;
 
 use yii\helpers\Json;
 use yii\web\JsonResponseFormatter as YiiJsonResponseFormatter;

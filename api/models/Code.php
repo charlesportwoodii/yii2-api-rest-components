@@ -9,7 +9,7 @@ use Yii;
  * Class for generating and storing codes
  * @class Code
  */
-class Code extends \yii\redis\ActiveRecord
+class Code extends \yrc\redis\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -22,18 +22,5 @@ class Code extends \yii\redis\ActiveRecord
             'user_id',
             'expires_at'
         ];
-    }
-
-    /**
-     * Return true if the token is expired
-     * @return boolean
-     */
-    public function isExpired()
-    {
-        if (!$this->expires_at) {
-            return false;
-        }
-        
-        return $this->expires_at < time();
     }
 }

@@ -31,6 +31,12 @@ abstract class Login extends \yii\base\Model
     public $otp;
 
     /**
+     * The client's public key to use for encryption
+     * @var string
+     */
+    public $pubkey = null;
+
+    /**
      * The user object
      * @var User
      */
@@ -64,6 +70,7 @@ abstract class Login extends \yii\base\Model
             [['otp'], 'string', 'length' => 6],
             [['password'], 'string', 'min' => 8],
             [['password'], 'validatePasswordAndOTP'],
+            [['pubkey'], 'string']
         ];
     }
 
@@ -130,7 +137,18 @@ abstract class Login extends \yii\base\Model
     public function authenticate()
     {
         if ($this->validate()) {
-            return Token::generate($this->getUser()->id);
+            $token = Token::generate($this->getUser()->id, $this->pubkey);
+
+            // @todo: Can we reduce the redis call here?
+            $t = Token::find(['access_token' => $token['access_token']])->one();
+
+            // @todo: Why isn't Redis storing this?
+            $t->client_public = $token['client_public'];
+            $t->crypt_id = $token['crypt_id'];
+
+            // Actually log the user into the application so we can access global user state
+            Yii::$app->user->loginByAccessToken($t);
+            return $token;
         }
 
         return false;
