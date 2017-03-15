@@ -29,7 +29,6 @@ abstract class Token extends \yrc\redis\ActiveRecord
             'access_token',
             'refresh_token',
             'ikm',
-            'client_public',
             'crypt_id',
             'expires_at'
         ];
@@ -41,7 +40,7 @@ abstract class Token extends \yrc\redis\ActiveRecord
      */
     public function getCryptToken()
     {
-        return TokenKeyPair::find(['id' => $this->crypt_id])->one();
+        return TokenKeyPair::find()->where(['id' => $this->crypt_id])->one();
     }
 
     /**
@@ -65,31 +64,39 @@ abstract class Token extends \yrc\redis\ActiveRecord
         $token->ikm =  \base64_encode(\random_bytes(32));
         $token->expires_at = \strtotime(static::TOKEN_EXPIRATION_TIME);
 
-        // Prevent encrypted sessions from being downgraded
-        $token->client_public = $pubkey;
-
         if ($pubkey !== null) {
-            $model = TokenKeyPair::generate();
+            $model = TokenKeyPair::generate(TokenKeyPair::DEFAULT_TYPE, $pubkey);
             $token->crypt_id = $model->id;
         }
 
         if ($token->save()) {
-            $tokens = $token->attributes;
-            if ($model !== null) {
-                $tokens['crypt'] = [
-                    'public' => \base64_encode($model->getBoxPublicKey()),
-                    'signing' => \base64_encode($model->getSignPublicKey()),
-                    'signature' => \base64_encode(\Sodium\crypto_sign(
-                        $model->getBoxPublicKey(),
-                        \base64_decode($model->secret_sign_kp)
-                    )),
-                    'hash' => $model->hash
-                ];
-            }
-
-            return $tokens;
+            return $token;
         }
             
         throw new \yii\base\Exception(Yii::t('yrc', 'Token failed to save'));
+    }
+
+    /**
+     * Helper method to get the auth response data
+     * @return array
+     */
+    public function getAuthResponse()
+    {
+        $attributes = $this->getAttributes();
+        $model = $this->getCryptToken();
+
+        if ($model !== null) {
+            $attributes['crypt'] = [
+                'public' => \base64_encode($model->getBoxPublicKey()),
+                'signing' => \base64_encode($model->getSignPublicKey()),
+                'signature' => \base64_encode(\Sodium\crypto_sign(
+                    $model->getBoxPublicKey(),
+                    \base64_decode($model->secret_sign_kp)
+                )),
+                'hash' => $model->hash
+            ];
+        }
+
+        return $attributes;
     }
 }

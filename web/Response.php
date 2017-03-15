@@ -7,6 +7,9 @@ use Yii;
 
 class Response extends YiiResponse
 {
+    /**
+     * @const FORMAT_JSON25519
+     */
     const FORMAT_JSON25519 = 'json+25519';
 
     /**

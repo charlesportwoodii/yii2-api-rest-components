@@ -38,10 +38,11 @@ final class TokenKeyPair extends \yrc\redis\ActiveRecord
     {
         return [
             'id',
-            'secret_box_kp',
-            'secret_sign_kp',
             'type',
             'hash',
+            'secret_box_kp',
+            'secret_sign_kp',
+            'client_public',
             'expires_at'
         ];
     }
@@ -87,7 +88,7 @@ final class TokenKeyPair extends \yrc\redis\ActiveRecord
      * @param int $type
      * @return $array
      */
-    public static function generate($type = TokenKeyPair::DEFAULT_TYPE)
+    public static function generate($type = TokenKeyPair::DEFAULT_TYPE, $pubkey = null)
     {
         if ($type === self::OTK_TYPE) {
             $expires_at = \strtotime(static::OTK_EXPIRATION_TIME);
@@ -103,6 +104,7 @@ final class TokenKeyPair extends \yrc\redis\ActiveRecord
         $token->secret_box_kp = \base64_encode(\Sodium\crypto_box_secretkey($boxKp));
         $token->secret_sign_kp = \base64_encode(\Sodium\crypto_sign_secretkey($signKp));
         $token->expires_at = $expires_at;
+        $token->client_public = $pubkey;
         $token->hash = \hash('sha256', uniqid('__TokenKeyPairHash', true));
 
         if ($token->save()) {

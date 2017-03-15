@@ -3,6 +3,7 @@
 namespace yrc\web;
 
 use yrc\web\JsonResponseFormatter;
+use yii\web\NotAcceptableHttpException;
 use Yii;
 
 class Json25519ResponseFormatter extends JsonResponseFormatter
@@ -16,19 +17,29 @@ class Json25519ResponseFormatter extends JsonResponseFormatter
         parent::formatJson($response);
         $response->getHeaders()->set('Content-Type', 'application/json+25519; charset=UTF-8');
 
+        // If we do not have a user identity in place we cannot encrypt the response. Tell the user the Accept headers are not acceptable
+        if (Yii::$app->user->isGuest) {
+            throw new NotAcceptableHttpException;
+        }
+
         // Retrieve the token object from the user
         $token = Yii::$app->user->getIdentity()->getToken();
 
         // Calculate the keypair
         $keyPair = \Sodium\crypto_box_keypair_from_secretkey_and_publickey(
             \base64_decode($token->getCryptToken()->secret_box_kp),
-            \base64_decode($token->client_public)
+            \base64_decode($token->getCryptToken()->client_public)
         );
 
         // Calculate a nonce and set it in the header
         $nonce = \Sodium\randombytes_buf(\Sodium\CRYPTO_BOX_NONCEBYTES);
         $response->getHeaders()->set('x-nonce', \base64_encode($nonce));
+
+        // Send the public key for future requests back to the client
         $response->getHeaders()->set('x-pubkey', \base64_encode($token->getCryptToken()->getBoxPublicKey()));
+        //$response->getHeaders()->set('x-hashid', $token->hash);
+        // Sign the response and send that in the headers
+
 
         // Encrypt the content
         $response->content = \base64_encode(\Sodium\crypto_box(

@@ -139,15 +139,8 @@ abstract class Login extends \yii\base\Model
         if ($this->validate()) {
             $token = Token::generate($this->getUser()->id, $this->pubkey);
 
-            // @todo: Can we reduce the redis call here?
-            $t = Token::find(['access_token' => $token['access_token']])->one();
-
-            // @todo: Why isn't Redis storing this?
-            $t->client_public = $token['client_public'];
-            $t->crypt_id = $token['crypt_id'];
-
             // Actually log the user into the application so we can access global user state
-            Yii::$app->user->loginByAccessToken($t);
+            Yii::$app->user->loginByAccessToken($token);
             return $token;
         }
 
