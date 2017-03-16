@@ -16,10 +16,19 @@ use Yii;
  */
 class Json25519Parser extends JsonParser
 {
+    /**
+     * @const HASH_HEADER
+     */
     const HASH_HEADER = 'x-hashid';
 
+    /**
+     * @const PUBLICKEY_HEADER
+     */
     const PUBLICKEY_HEADER = 'x-pubkey';
 
+    /**
+     * @const NONCE_HEADER
+     */
     const NONCE_HEADER = 'x-nonce';
 
     /**
@@ -32,35 +41,15 @@ class Json25519Parser extends JsonParser
     public function parse($rawBody, $contentType)
     {
         $token = self::getTokenFromHash(Yii::$app->request->getHeaders()->get(self::HASH_HEADER, null));
+        $nonce = Yii::$app->request->getHeaders()->get(self::NONCE_HEADER, null);
 
         try {
-            $nonce = Yii::$app->request->getHeaders()->get(self::NONCE_HEADER, null);
-
-            // If a nonce is not provided, use crypto_box_seal
             if ($nonce === null) {
-                $rawBody = \Sodium\crypto_box_seal_open(
-                    \base64_decode($rawBody),
-                    $token->getBoxKeyPair()
-                );
-
-                // If this is a One Time Use Token, delete it to prevent it from being reused
-                if ($token->type === TokenKeyPair::OTK_TYPE) {
-                    $token->delete();
-                }
+                // If a nonce is not provided, use crypto_box_seal
+                $rawBody = $this->getRawBodyFromToken($token, $rawBody);
             } else {
                 // Otherwise, decrypt the box using the nonce and key
-                // Construct a keypair from the client_public and the server private key
-                $kp = \Sodium\crypto_box_keypair_from_secretkey_and_publickey(
-                    \base64_decode($token->secret_box_kp),
-                    \base64_decode($token->client_public)
-                );
-
-                // Decrypt the raw body
-                $rawBody = \Sodium\crypto_box_open(
-                    \base64_decode($rawBody),
-                    \base64_decode($nonce),
-                    $kp
-                );
+                $rawBody = $this->getRawBodyFromTokenAndNonce($token, $nonce, $rawBody);
             }
 
             if ($rawBody === false) {
@@ -68,7 +57,7 @@ class Json25519Parser extends JsonParser
             }
 
         } catch (\Exception $e) {
-            throw new BadRequestHttpException(Yii::t('yrc', 'Invalid x-hashid header. The provided header is either invalid or expired.'));
+            throw new BadRequestHttpException(Yii::t('yrc', 'Invalid security headers. Your session is either invalid or has expired.'));
         }
 
         try {
@@ -80,6 +69,52 @@ class Json25519Parser extends JsonParser
             }
             return [];
         }
+    }
+
+    /**
+     * Decrypts the raw body using TokenKeyPair, the client submitted nonce and crypto_box_open
+     * @param TokenKeyPair $token
+     * @param string $nonce
+     * @param string $rawBody
+     * @return string
+     */
+    private function getRawBodyFromTokenAndNonce($token, $nonce, $rawBody)
+    {
+        // Construct a keypair from the client_public and the server private key
+        $kp = \Sodium\crypto_box_keypair_from_secretkey_and_publickey(
+            \base64_decode($token->secret_box_kp),
+            \base64_decode($token->client_public)
+        );
+
+        // Decrypt the raw body
+        $rawBody = \Sodium\crypto_box_open(
+            \base64_decode($rawBody),
+            \base64_decode($nonce),
+            $kp
+        );
+        
+        return $rawBody;
+    }
+
+    /**
+     * Decrypts the raw body using TokenKeyPair and crypto_box_seal_open
+     * @param TokenKeyPair $token
+     * @param string $rawBody
+     * @return string
+     */
+    private function getRawBodyFromToken($token, $rawBody)
+    {
+        $rawBody = \Sodium\crypto_box_seal_open(
+            \base64_decode($rawBody),
+            $token->getBoxKeyPair()
+        );
+
+        // If this is a One Time Use Token, delete it to prevent it from being reused
+        if ($token->type === TokenKeyPair::OTK_TYPE) {
+            $token->delete();
+        }
+
+        return $rawBody;
     }
 
     /**
