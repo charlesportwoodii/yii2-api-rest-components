@@ -22,7 +22,7 @@ class OneTimeKeyAction extends RestAction
         return [
             'public'        => \base64_encode($model->getBoxPublicKey()),
             'signing'       => \base64_encode($model->getSignPublicKey()),
-            'signature'     => \base64_encode(\Sodium\crypto_sign(
+            'signature'     => \base64_encode(\Sodium\crypto_sign_detached(
                 $model->getBoxPublicKey(),
                 \base64_decode($model->secret_sign_kp)
             )),
