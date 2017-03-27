@@ -8,6 +8,12 @@ use Yii;
 final class EncryptionKey extends ActiveRecord
 {
     /**
+     * This is our default token lifespan
+     * @const TOKEN_EXPIRATION_TIME
+     */
+    const OBJECT_EXPIRATION_TIME = '+15 minutes';
+
+    /**
      * Model attributes
      * @return array
      */
@@ -16,6 +22,7 @@ final class EncryptionKey extends ActiveRecord
         return [
             'id',
             'secret',
+            'expires_at',
             'hash'
         ];
     }
@@ -48,6 +55,7 @@ final class EncryptionKey extends ActiveRecord
         $obj = new static;
         $obj->secret = \base64_encode(\Sodium\crypto_box_secretkey($boxKp));
         $obj->hash = \hash('sha256', uniqid('__EncryptionKeyPairHash', true));
+        $obj->expires_at = \strtotime(static::OBJECT_EXPIRATION_TIME);
 
         if ($obj->save()) {
             return $obj;

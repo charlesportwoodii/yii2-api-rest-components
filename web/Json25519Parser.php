@@ -75,7 +75,7 @@ class Json25519Parser extends JsonParser
      */
     private function getRawBodyFromTokenAndNonce($key, $nonce, $public, $rawBody)
     {
-        if ($key === null || $nonce === null || $public === null) {
+        if ($key === null || empty($nonce) || empty($public)) {
             throw new HttpException(400, Yii::t('yrc', 'Invalid security headers.'));
         }
 
