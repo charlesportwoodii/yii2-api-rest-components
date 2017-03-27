@@ -31,12 +31,6 @@ abstract class Login extends \yii\base\Model
     public $otp;
 
     /**
-     * The client's public key to use for encryption
-     * @var string
-     */
-    public $pubkey = null;
-
-    /**
      * The user object
      * @var User
      */
@@ -70,7 +64,6 @@ abstract class Login extends \yii\base\Model
             [['otp'], 'string', 'length' => 6],
             [['password'], 'string', 'min' => 8],
             [['password'], 'validatePasswordAndOTP'],
-            [['pubkey'], 'string']
         ];
     }
 
@@ -137,7 +130,7 @@ abstract class Login extends \yii\base\Model
     public function authenticate()
     {
         if ($this->validate()) {
-            $token = Token::generate($this->getUser()->id, $this->pubkey);
+            $token = Token::generate($this->getUser()->id);
 
             // Actually log the user into the application so we can access global user state
             Yii::$app->user->loginByAccessToken($token);

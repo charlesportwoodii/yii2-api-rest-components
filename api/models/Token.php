@@ -29,18 +29,27 @@ abstract class Token extends \yrc\redis\ActiveRecord
             'access_token',
             'refresh_token',
             'ikm',
-            'crypt_id',
+            'secret_sign_kp',
             'expires_at'
         ];
     }
 
     /**
-     * Returns the token key pair object
-     * @return TokenKeyPair
+     * @return \Sodium\crypto_sign_keypair
      */
-    public function getCryptToken()
+    public function getSignKeyPair()
     {
-        return TokenKeyPair::find()->where(['id' => $this->crypt_id])->one();
+        $secret = \base64_decode($this->secret_sign_kp);
+        $public = \Sodium\crypto_sign_publickey_from_secretkey($secret);
+        return \Sodium\crypto_sign_keypair_from_secretkey_and_publickey($secret, $public);
+    }
+
+    /**
+     * @return \Sodium\crypto_sign_publickey
+     */
+    public function getSignPublicKey()
+    {
+        return \Sodium\crypto_sign_publickey($this->getSignKeyPair());
     }
 
     /**
@@ -49,9 +58,11 @@ abstract class Token extends \yrc\redis\ActiveRecord
      * @param bool $pubkey
      * @return array
      */
-    public static function generate($userId = null, $pubkey = null)
+    public static function generate($userId = null)
     {
         $model = null;
+        $signKp = \Sodium\crypto_sign_keypair();
+
         $user = Yii::$app->yrc->userClass::findOne(['id' => $userId]);
         if ($user === null) {
             throw new \yii\base\Exception('Invalid user');
@@ -62,12 +73,8 @@ abstract class Token extends \yrc\redis\ActiveRecord
         $token->access_token = \str_replace('=', '', Base32::encode(\random_bytes(32)));
         $token->refresh_token = \str_replace('=', '', Base32::encode(\random_bytes(32)));
         $token->ikm =  \base64_encode(\random_bytes(32));
+        $token->secret_sign_kp = \base64_encode(\Sodium\crypto_sign_secretkey($signKp));
         $token->expires_at = \strtotime(static::TOKEN_EXPIRATION_TIME);
-
-        if ($pubkey !== null) {
-            $model = TokenKeyPair::generate(TokenKeyPair::DEFAULT_TYPE, $pubkey);
-            $token->crypt_id = $model->id;
-        }
 
         if ($token->save()) {
             return $token;
@@ -83,20 +90,10 @@ abstract class Token extends \yrc\redis\ActiveRecord
     public function getAuthResponse()
     {
         $attributes = $this->getAttributes();
-        $model = $this->getCryptToken();
+        unset($attributes['id']);
 
-        if ($model !== null) {
-            $attributes['crypt'] = [
-                'public' => \base64_encode($model->getBoxPublicKey()),
-                'signing' => \base64_encode($model->getSignPublicKey()),
-                'signature' => \base64_encode(\Sodium\crypto_sign(
-                    $model->getBoxPublicKey(),
-                    \base64_decode($model->secret_sign_kp)
-                )),
-                'hash' => $model->hash
-            ];
-        }
-
+        $attributes['signing'] = \base64_encode($this->getSignPublicKey());
+        unset($attributes['secret_sign_kp']);
         return $attributes;
     }
 }

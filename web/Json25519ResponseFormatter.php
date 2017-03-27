@@ -4,6 +4,10 @@ namespace yrc\web;
 
 use yrc\web\JsonResponseFormatter;
 use yii\web\NotAcceptableHttpException;
+use yrc\web\Json25519Parser;
+use yrc\api\models\EncryptionKey;
+use yii\web\HttpException;
+
 use Yii;
 
 class Json25519ResponseFormatter extends JsonResponseFormatter
@@ -22,18 +26,23 @@ class Json25519ResponseFormatter extends JsonResponseFormatter
             throw new NotAcceptableHttpException;
         }
 
-        // Retrieve the token object from the user
         $token = Yii::$app->user->getIdentity()->getToken();
-
-        // Abort if we don't get a token back.
         if ($token === null) {
             throw new NotAcceptableHttpException;
         }
 
+        // Generate a new encryption key
+        $key = EncryptionKey::generate();
+        $public = Yii::$app->request->getHeaders()->get(Json25519Parser::PUBLICKEY_HEADER, null);
+
+        if ($public === null) {
+            throw new HttpException(400, Yii::t('yrc', 'Accept: application/json+25515 requires x-pubkey header to be set'));
+        }
+
         // Calculate the keypair
         $keyPair = \Sodium\crypto_box_keypair_from_secretkey_and_publickey(
-            \base64_decode($token->getCryptToken()->secret_box_kp),
-            \base64_decode($token->getCryptToken()->client_public)
+            \base64_decode($key->secret),
+            \base64_decode($public)
         );
 
         // Encrypt the content
@@ -44,17 +53,18 @@ class Json25519ResponseFormatter extends JsonResponseFormatter
             $keyPair
         );
 
+        // Sign the request using the new authentication key
         $signature = \Sodium\crypto_sign_detached(
             $content,
-            \base64_decode($token->getCryptToken()->secret_sign_kp)
+            \base64_decode($token->secret_sign_kp)
         );
 
         // Calculate a nonce and set it in the header
         $response->getHeaders()->set('x-nonce', \base64_encode($nonce));
 
         // Send the public key in the clear. The client may need this on the initial authentication request
-        $response->getHeaders()->set('x-pubkey', \base64_encode($token->getCryptToken()->getBoxPublicKey()));
-        $response->getHeaders()->set('x-sigpubkey', \base64_encode($token->getCryptToken()->getSignPublicKey()));
+        $response->getHeaders()->set('x-pubkey', \base64_encode($key->getBoxPublicKey()));
+        $response->getHeaders()->set('x-sigpubkey', \base64_encode($token->getSignPublicKey()));
         // Sign the raw response and send the signature alongside the header
         $response->getHeaders()->set('x-signature', \base64_encode($signature));
 
