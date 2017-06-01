@@ -29,7 +29,7 @@ class JsonResponseFormatter extends YiiJsonResponseFormatter
 
             // Pull the exception
             $exception = Yii::$app->errorHandler->exception;
-            if ($exception && is_subclass_of($exception, 'yii\web\HttpException') || get_class($exception) === 'yii\web\HttpException' ) {
+            if ($exception && is_a($exception, 'yii\web\HttpException')) {
                 $copy = $response->data;
                 $response->data = null;
 
