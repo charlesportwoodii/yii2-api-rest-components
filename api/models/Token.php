@@ -35,21 +35,21 @@ abstract class Token extends \yrc\redis\ActiveRecord
     }
 
     /**
-     * @return \Sodium\crypto_sign_keypair
+     * @return sodium_crypto_sign_keypair
      */
     public function getSignKeyPair()
     {
         $secret = \base64_decode($this->secret_sign_kp);
-        $public = \Sodium\crypto_sign_publickey_from_secretkey($secret);
-        return \Sodium\crypto_sign_keypair_from_secretkey_and_publickey($secret, $public);
+        $public = sodium_crypto_sign_publickey_from_secretkey($secret);
+        return sodium_crypto_sign_keypair_from_secretkey_and_publickey($secret, $public);
     }
 
     /**
-     * @return \Sodium\crypto_sign_publickey
+     * @return sodium_crypto_sign_publickey
      */
     public function getSignPublicKey()
     {
-        return \Sodium\crypto_sign_publickey($this->getSignKeyPair());
+        return sodium_crypto_sign_publickey($this->getSignKeyPair());
     }
 
     /**
@@ -61,7 +61,7 @@ abstract class Token extends \yrc\redis\ActiveRecord
     public static function generate($userId = null)
     {
         $model = null;
-        $signKp = \Sodium\crypto_sign_keypair();
+        $signKp = sodium_crypto_sign_keypair();
 
         $user = Yii::$app->yrc->userClass::findOne(['id' => $userId]);
         if ($user === null) {
@@ -73,7 +73,7 @@ abstract class Token extends \yrc\redis\ActiveRecord
         $token->access_token = \str_replace('=', '', Base32::encode(\random_bytes(32)));
         $token->refresh_token = \str_replace('=', '', Base32::encode(\random_bytes(32)));
         $token->ikm =  \base64_encode(\random_bytes(32));
-        $token->secret_sign_kp = \base64_encode(\Sodium\crypto_sign_secretkey($signKp));
+        $token->secret_sign_kp = \base64_encode(sodium_crypto_sign_secretkey($signKp));
         $token->expires_at = \strtotime(static::TOKEN_EXPIRATION_TIME);
 
         if ($token->save()) {

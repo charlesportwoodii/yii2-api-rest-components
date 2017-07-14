@@ -28,21 +28,21 @@ final class EncryptionKey extends ActiveRecord
     }
 
     /**
-     * @return \Sodium\crypto_box_publickey
+     * @return sodium_crypto_box_publickey
      */
     public function getBoxPublicKey()
     {
-        return \Sodium\crypto_box_publickey($this->getBoxKeyPair());
+        return sodium_crypto_box_publickey($this->getBoxKeyPair());
     }
 
     /**
-     * @return \Sodium\crypto_box_keypair
+     * @return sodium_crypto_box_keypair
      */
     public function getBoxKeyPair()
     {
         $secret = \base64_decode($this->secret);
-        $public = \Sodium\crypto_box_publickey_from_secretkey($secret);
-        return \Sodium\crypto_box_keypair_from_secretkey_and_publickey($secret, $public);
+        $public = sodium_crypto_box_publickey_from_secretkey($secret);
+        return sodium_crypto_box_keypair_from_secretkey_and_publickey($secret, $public);
     }
 
     /**
@@ -51,9 +51,9 @@ final class EncryptionKey extends ActiveRecord
      */
     public function generate()
     {
-        $boxKp = \Sodium\crypto_box_keypair();
+        $boxKp = sodium_crypto_box_keypair();
         $obj = new static;
-        $obj->secret = \base64_encode(\Sodium\crypto_box_secretkey($boxKp));
+        $obj->secret = \base64_encode(sodium_crypto_box_secretkey($boxKp));
         $obj->hash = \hash('sha256', uniqid('__EncryptionKeyPairHash', true));
         $obj->expires_at = \strtotime(static::OBJECT_EXPIRATION_TIME);
 

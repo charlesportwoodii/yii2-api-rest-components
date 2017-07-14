@@ -80,13 +80,13 @@ class Json25519Parser extends JsonParser
         }
 
         // Construct a keypair from the client_public and the server private key
-        $kp = \Sodium\crypto_box_keypair_from_secretkey_and_publickey(
+        $kp = sodium_crypto_box_keypair_from_secretkey_and_publickey(
             \base64_decode($key->secret),
             \base64_decode($public)
         );
 
         // Decrypt the raw body
-        $rawBody = \Sodium\crypto_box_open(
+        $rawBody = sodium_crypto_box_open(
             \base64_decode($rawBody),
             \base64_decode($nonce),
             $kp

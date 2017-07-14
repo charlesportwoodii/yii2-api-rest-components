@@ -40,21 +40,21 @@ class Json25519ResponseFormatter extends JsonResponseFormatter
         }
 
         // Calculate the keypair
-        $keyPair = \Sodium\crypto_box_keypair_from_secretkey_and_publickey(
+        $keyPair = sodium_crypto_box_keypair_from_secretkey_and_publickey(
             \base64_decode($key->secret),
             \base64_decode($public)
         );
 
         // Encrypt the content
-        $nonce = \Sodium\randombytes_buf(\Sodium\CRYPTO_BOX_NONCEBYTES);
-        $content = \Sodium\crypto_box(
+        $nonce = sodium_randombytes_buf(sodium_CRYPTO_BOX_NONCEBYTES);
+        $content = sodium_crypto_box(
             $response->content,
             $nonce,
             $keyPair
         );
 
         // Sign the request using the new authentication key
-        $signature = \Sodium\crypto_sign_detached(
+        $signature = sodium_crypto_sign_detached(
             $content,
             \base64_decode($token->secret_sign_kp)
         );
