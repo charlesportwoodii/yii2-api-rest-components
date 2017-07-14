@@ -46,7 +46,7 @@ class Json25519ResponseFormatter extends JsonResponseFormatter
         );
 
         // Encrypt the content
-        $nonce = sodium_randombytes_buf(sodium_CRYPTO_BOX_NONCEBYTES);
+        $nonce = random_bytes(SODIUM_CRYPTO_BOX_NONCEBYTES);
         $content = sodium_crypto_box(
             $response->content,
             $nonce,

@@ -271,13 +271,13 @@ abstract class User extends ActiveRecord implements IdentityInterface, RateLimit
 
         $secret = \random_bytes(256);
         $encodedSecret = Base32::encode($secret);
-        $totp = new TOTP(
-            $this->username,
+        $totp = TOTP::create(
             $encodedSecret,
             30,             // 30 second window
             'sha256',       // SHA256 for the hashing algorithm
             6               // 6 digits
         );
+        $totp->setLabel($this->username);
 
         $this->otp_secret = $encodedSecret;
 
@@ -326,13 +326,14 @@ abstract class User extends ActiveRecord implements IdentityInterface, RateLimit
      */
     public function verifyOTP($code)
     {
-        $totp = new TOTP(
-            $this->username,
+        $totp = TOTP::create(
             $this->otp_secret,
             30,             // 30 second window
             'sha256',       // SHA256 for the hashing algorithm
             6               // 6 digits
         );
+
+        $totp->setLabel($this->username);
 
         return $totp->verify($code);
     }
