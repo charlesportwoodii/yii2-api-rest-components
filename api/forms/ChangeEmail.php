@@ -111,29 +111,6 @@ abstract class ChangeEmail extends \yii\base\Model
             if ($this->user->validate()) {
                 // Save chec
                 if ($this->user->save()) {
-                    Yii::$app->queue->addJob([
-                        'class' => '\yrc\events\SendEmailEvent',
-                        'viewFile' => 'email_change',
-                        'subject' => Yii::t('app', 'Your login information has changed'),
-                        'destination' => $this->email,
-                        'locales' => Yii::$app->request->getAcceptableLanguages(),
-                        'viewParams' => [
-                            'oldEmail' => $oldEmail,
-                            'newEmail' => $this->email
-                        ]
-                    ]);
-
-                    Yii::$app->queue->addJob([
-                        'class' => '\yrc\events\SendEmailEvent',
-                        'viewFile' => 'email_change',
-                        'subject' => Yii::t('app', 'Your login information has changed'),
-                        'destination' => $oldEmail,
-                        'locales' => Yii::$app->request->getAcceptableLanguages(),
-                        'viewParams' => [
-                            'oldEmail' => $oldEmail,
-                            'newEmail' => $this->email
-                        ]
-                    ]);
 
                     return true;
                 }

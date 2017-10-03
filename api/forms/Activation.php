@@ -71,6 +71,7 @@ abstract class Activation extends \yii\base\Model
         if ($this->validate()) {
             if ($this->user->activate()) {
                 Code::deleteAll(['hash' => hash('sha256', $this->activation_code . '_activation_token')]);
+
                 return true;
             }
         }

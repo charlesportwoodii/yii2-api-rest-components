@@ -142,7 +142,7 @@ final class HMACSignatureAuth extends AuthMethod
                            \base64_encode($salt);
        
         // Calculate the HMAC
-        $selfHMAC = \base64_encode(\hash_hmac('sha256', $signatureString, $hkdf, true));
+        $selfHMAC = \base64_encode(\hash_hmac('sha256', $signatureString, \bin2hex($hkdf), true));
         
         // Verify the HMAC worked
         if ($selfHMAC === null) {
