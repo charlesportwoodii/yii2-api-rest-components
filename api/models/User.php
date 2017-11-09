@@ -94,7 +94,7 @@ abstract class User extends ActiveRecord implements IdentityInterface, RateLimit
 
         // Prefer Argon2 if it is available, but fall back to BCRYPT if it isn't
         if (defined('PASSWORD_ARGON2')) {
-            $this->passwordHashAlgorithm = PASSWORD_ARGON2;
+            $this->passwordHashAlgorithm = PASSWORD_ARGON2I;
         }
 
         // Lower the bcrypt cost when running tests
