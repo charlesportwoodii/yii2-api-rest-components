@@ -61,7 +61,7 @@ class Controller extends RestController
             'class' => ContentNegotiator::className(),
             'formats' => [
                 'application/json' => Response::FORMAT_JSON,
-                'application/json+25519' => Response::FORMAT_JSON25519,
+                'application/vnd.25519+json' => Response::FORMAT_JSON25519,
                 'application/xml' => Response::FORMAT_XML,
             ]
         ];
