@@ -19,7 +19,7 @@ class Json25519ResponseFormatter extends JsonResponseFormatter
     protected function formatJson($response)
     {
         parent::formatJson($response);
-        $response->getHeaders()->set('Content-Type', 'application/json+25519; charset=UTF-8');
+        $response->getHeaders()->set('Content-Type', 'application/vnd.25519+json; charset=UTF-8');
 
         // If we do not have a user identity in place we cannot encrypt the response. Tell the user the Accept headers are not acceptable
         if (Yii::$app->user->isGuest) {
@@ -36,7 +36,7 @@ class Json25519ResponseFormatter extends JsonResponseFormatter
         $public = Yii::$app->request->getHeaders()->get(Json25519Parser::PUBLICKEY_HEADER, null);
 
         if ($public === null) {
-            throw new HttpException(400, Yii::t('yrc', 'Accept: application/json+25515 requires x-pubkey header to be set'));
+            throw new HttpException(400, Yii::t('yrc', 'Accept: application/vnd.25519+json requires x-pubkey header to be set'));
         }
 
         // Calculate the keypair
