@@ -3,13 +3,13 @@
 namespace yrc\components;
 
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * Yii2 Rest Component 
  * @class YRC
  */
-class YRC extends Object
+class YRC extends BaseObject
 {
     /**
      * The user class
