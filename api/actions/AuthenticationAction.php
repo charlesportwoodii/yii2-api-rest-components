@@ -27,7 +27,7 @@ class AuthenticationAction extends RestAction
             $token = $model->authenticate();
 
             if ($token === false) {
-                throw new UnauthorizedHttpException(null, $model->exitStatus);
+                throw new UnauthorizedHttpException('The credentials you provided are not valid', $model->exitStatus);
             } else {
                 return $token->getAuthResponse();
             }
