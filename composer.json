@@ -24,13 +24,15 @@
 		"bower-asset/jquery": "*",
 		"bower-asset/inputmask": "*",
         "bower-asset/punycode": "*",
-		"bower-asset/yii2-pjax": "*"
+        "bower-asset/yii2-pjax": "*",
+        "bower-asset/typeahead.js": "*"
 	},
 	"conflict": {
 		"bower-asset/jquery": "*",
 		"bower-asset/inputmask": "*",
 		"bower-asset/punycode": "*",
-        "bower-asset/yii2-pjax": "*"
+        "bower-asset/yii2-pjax": "*",
+        "bower-asset/typeahead.js": "*"
     },
     "autoload": {
         "psr-4": { "yrc\\": "" }

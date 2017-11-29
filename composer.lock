@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "7e4efcd1cb1d3e10248e6b234de77512",
+    "content-hash": "b14b3fc4c9cfd2960075fd44af46ee83",
     "packages": [
         {
             "name": "beberlei/assert",
-            "version": "v2.7.8",
+            "version": "v2.7.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/beberlei/assert.git",
-                "reference": "be6aa40e3f2d2f0766f159409ab9a80c8db6ca23"
+                "reference": "53991547d6f0b8c81354fb2d098dcb71e81678cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/beberlei/assert/zipball/be6aa40e3f2d2f0766f159409ab9a80c8db6ca23",
-                "reference": "be6aa40e3f2d2f0766f159409ab9a80c8db6ca23",
+                "url": "https://api.github.com/repos/beberlei/assert/zipball/53991547d6f0b8c81354fb2d098dcb71e81678cb",
+                "reference": "53991547d6f0b8c81354fb2d098dcb71e81678cb",
                 "shasum": ""
             },
             "require": {
@@ -26,7 +26,7 @@
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^2.1.1",
-                "phpunit/phpunit": "^4|^5"
+                "phpunit/phpunit": "^4.8.35|^5.7"
             },
             "type": "library",
             "autoload": {
@@ -59,7 +59,7 @@
                 "assertion",
                 "validation"
             ],
-            "time": "2017-10-20T15:59:40+00:00"
+            "time": "2017-11-13T18:35:09+00:00"
         },
         {
             "name": "cebe/markdown",
@@ -232,16 +232,16 @@
         },
         {
             "name": "spomky-labs/otphp",
-            "version": "v9.0.2",
+            "version": "v9.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/otphp.git",
-                "reference": "94f9fd53ce3b283ed56cf190e55b48cfd340fa3e"
+                "reference": "26d19c0baff675fb64193e22b777aa9be63b8deb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/otphp/zipball/94f9fd53ce3b283ed56cf190e55b48cfd340fa3e",
-                "reference": "94f9fd53ce3b283ed56cf190e55b48cfd340fa3e",
+                "url": "https://api.github.com/repos/Spomky-Labs/otphp/zipball/26d19c0baff675fb64193e22b777aa9be63b8deb",
+                "reference": "26d19c0baff675fb64193e22b777aa9be63b8deb",
                 "shasum": ""
             },
             "require": {
@@ -289,7 +289,7 @@
                 "otp",
                 "totp"
             ],
-            "time": "2017-07-24T10:25:54+00:00"
+            "time": "2017-11-23T08:44:21+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -412,16 +412,16 @@
         },
         {
             "name": "yiisoft/yii2",
-            "version": "2.0.13",
+            "version": "2.0.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "9f82b8f0df9adb4b8a410be5aaa97818153689d9"
+                "reference": "7af96d8da5ea3e9a5dd05d0e734b21c5726a6ddf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/9f82b8f0df9adb4b8a410be5aaa97818153689d9",
-                "reference": "9f82b8f0df9adb4b8a410be5aaa97818153689d9",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/7af96d8da5ea3e9a5dd05d0e734b21c5726a6ddf",
+                "reference": "7af96d8da5ea3e9a5dd05d0e734b21c5726a6ddf",
                 "shasum": ""
             },
             "require": {
@@ -508,7 +508,7 @@
                 "framework",
                 "yii2"
             ],
-            "time": "2017-11-02T22:09:29+00:00"
+            "time": "2017-11-14T11:08:21+00:00"
         },
         {
             "name": "yiisoft/yii2-composer",
