@@ -50,7 +50,7 @@ class AuthenticationAction extends RestAction
      * Helper method to grab the User Token object from the header
      * @return User\Token|bool
      */
-    public function getAccessTokenFromHeader()
+    public static function getAccessTokenFromHeader()
     {
         // Grab the authentication header
         $authHeader = Yii::$app->request->getHeaders()->get('Authorization');
