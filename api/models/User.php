@@ -375,7 +375,7 @@ abstract class User extends ActiveRecord implements IdentityInterface, RateLimit
             return null;
         }
         
-        return static::find(['id' => $token->user_id])->one();
+        return static::find()->where(['id' => $token->user_id])->one();
     }
 
     /**
