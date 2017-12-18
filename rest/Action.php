@@ -11,6 +11,12 @@ use ReflectionClass;
 abstract class Action extends \yii\base\Action
 {
     /**
+     * The access control list for this endpoint
+     * @var array
+     */
+    public $acl;
+
+    /**
      * Action runner
      *
      * @param array $args

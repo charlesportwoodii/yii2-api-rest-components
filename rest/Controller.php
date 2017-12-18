@@ -4,10 +4,12 @@ namespace yrc\rest;
 
 use yii\rest\Controller as RestController;
 use yii\filters\Cors;
+use yii\filters\AccessControl;
 use yii\filters\RateLimiter;
 use yii\filters\VerbFilter;
 use yii\filters\ContentNegotiator;
 use yii\web\HttpException;
+use yii\web\ForbiddenHttpException;
 use yrc\web\Response;
 
 use Yii;
@@ -101,9 +103,50 @@ class Controller extends RestController
             'enableRateLimitHeaders' => true
         ];
 
+        $access = $this->getAccessControl();
+
+        if ($access !== null) {
+            $behaviors['access'] = $access;
+        }
+
         // Manually add the ACAO header because Yii2 is terrible at doing it
         header("Access-Control-Allow-Origin: " . \implode(',', $behaviors['corsFilter']['cors']['Origin']));
         return $behaviors;
+    }
+
+    /**
+     * Pulls the ACL list from the action
+     * @return array
+     */
+    private function getAccessControl()
+    {
+        $access = [
+            'class' => AccessControl::className(),
+            'denyCallback' => function($rule, $action) {
+                throw new ForbiddenHttpException(Yii::t('yrc', 'You do not have permission to access this resource'));
+            }
+        ];
+
+        $acl = $this->action->acl;
+        if ($acl === null) {
+            return null;
+        }
+        
+        foreach ($acl as $verb => $perms) {
+            $access['rules'][] = [
+                'allow' => true,
+                'verbs' => [$verb],
+                'roles' => $perms
+            ];
+        }
+
+        // Allow HTTP Options
+        $access['rules'][] = [
+            'allow' => true,
+            'verbs' => ['OPTIONS']
+        ];
+
+        return $access;
     }
 
     /**
