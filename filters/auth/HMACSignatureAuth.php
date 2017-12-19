@@ -132,7 +132,7 @@ final class HMACSignatureAuth extends AuthMethod
         if ($request->getRawBody() === '') {
             $body = $request->getRawBody();
         } else {
-            $body = JSON::encode($request->bodyParams);
+            $body = JSON::encode($request->bodyParams, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 
         // Calculate the signature string
@@ -141,6 +141,11 @@ final class HMACSignatureAuth extends AuthMethod
                            $request->getHeaders()->get(self::DATE_HEADER) . "\n" .
                            \base64_encode($salt);
        
+        Yii::trace([
+            'message' => sprintf('Derived Signature String %s', $signatureString),
+            'body' => $body
+        ], 'hmac-signature');
+
         // Calculate the HMAC
         $selfHMAC = \base64_encode(\hash_hmac('sha256', $signatureString, \bin2hex($hkdf), true));
         
