@@ -5,7 +5,7 @@ namespace yrc\forms;
 use Base32\Base32;
 use Yii;
 
-use yrc\models\Code;
+use yrc\models\redis\Code;
 
 /**
  * @class Activation
