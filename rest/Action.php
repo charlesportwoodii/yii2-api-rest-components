@@ -11,15 +11,21 @@ use ReflectionClass;
 abstract class Action extends \yii\base\Action
 {
     /**
+     * The access control list for this endpoint
+     * @var array
+     */
+    public $acl;
+
+    /**
      * Action runner
      *
-     * @param varadic $args
+     * @param array $args
      * @return mixed
+     * @throws HttpException
      */
     public function run(array $args = [])
     {
-        $method = Yii::$app->request->method;
-        $method = strtolower($method);
+        $method = strtolower(Yii::$app->request->method);
         
         // Make sure the method exists before trying to call it
         if (method_exists(get_called_class(), $method)) {
@@ -32,7 +38,12 @@ abstract class Action extends \yii\base\Action
         throw new HttpException(405);
     }
 
-    public function options($params)
+    /**
+     * HTTP Options defaults
+     * @param array $params
+     * @return void
+     */
+    public function options(array $params = [])
     {
         Yii::$app->response->statusCode = 204;
         return;

@@ -49,7 +49,7 @@ final class EncryptionKey extends ActiveRecord
      * Helper method to return an encryption key
      * @return EncryptionKey
      */
-    public function generate()
+    public static function generate()
     {
         $boxKp = sodium_crypto_box_keypair();
         $obj = new static;

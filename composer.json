@@ -24,7 +24,7 @@
 		"bower-asset/jquery": "*",
 		"bower-asset/inputmask": "*",
         "bower-asset/punycode": "*",
-		"bower-asset/yii2-pjax": "*"
+        "bower-asset/yii2-pjax": "*"
 	},
 	"conflict": {
 		"bower-asset/jquery": "*",
