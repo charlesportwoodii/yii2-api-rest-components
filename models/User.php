@@ -1,6 +1,6 @@
 <?php
 
-namespace yrc\api\models;
+namespace yrc\models;
 
 use Base32\Base32;
 use OTPHP\TOTP;
