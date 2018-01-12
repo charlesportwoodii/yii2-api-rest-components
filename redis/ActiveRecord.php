@@ -17,7 +17,6 @@ abstract class ActiveRecord extends YiiRedisActiveRecord
             throw new \yii\base\Exception(Yii::t('yrc', 'Element has expired.'));
         }
         
-        $this->attributes = \json_decode($this->attributes, true);
         return parent::afterFind();
     }
 
