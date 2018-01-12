@@ -1,6 +1,6 @@
 <?php
 
-namespace yrc\api\models\redis;
+namespace yrc\models\redis;
 
 use Base32\Base32;
 use yrc\models\TokenKeyPair;

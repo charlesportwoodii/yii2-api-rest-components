@@ -1,6 +1,6 @@
 <?php
 
-namespace yrc\modelsredis\;
+namespace yrc\models\redis;
 
 use Base32\Base32;
 use Yii;
