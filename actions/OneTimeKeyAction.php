@@ -3,7 +3,7 @@
 namespace yrc\actions;
 
 use yrc\rest\Action as RestAction;
-use yrc\models\EncryptionKey;
+use yrc\models\redis\EncryptionKey;
 use Sodium;
 use Yii;
 

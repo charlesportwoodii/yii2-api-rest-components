@@ -4,7 +4,7 @@ namespace yrc\web;
 
 use yii\helpers\Json;
 use yii\web\JsonParser;
-use yrc\api\models\EncryptionKey;
+use yrc\models\redis\EncryptionKey;
 
 use yii\web\BadRequestHttpException;
 use yii\base\InvalidParamException;

@@ -3,8 +3,7 @@
 namespace yrc\actions;
 
 use yrc\api\actions\AuthenticationAction;
-use app\models\Token;
-use yrc\models\TokenKeyPair;
+use app\models\redis\Token;
 use yrc\web\Json25519Parser;
 use yrc\rest\Action as RestAction;
 use yii\helpers\ArrayHelper;

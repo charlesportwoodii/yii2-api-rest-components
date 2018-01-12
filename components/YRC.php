@@ -18,18 +18,6 @@ class YRC extends BaseObject
     public $userClass;
 
     /**
-     * The email address that emails should be sent from
-     * @var string
-     */
-    public $fromEmail;
-    
-    /**
-     * The name to associate with the origin email
-     * @var string
-     */
-    public $fromName;
-
-    /**
      * The access header
      * If set access to controller actions is granted if and only if the HTTP header value
      * identified by this parameters equals the $accessHeaderSecret property

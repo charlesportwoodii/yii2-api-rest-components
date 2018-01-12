@@ -56,11 +56,11 @@ abstract class ChangeEmail extends \yii\base\Model
      * Validates the email address
      * @inheritdoc
      */
-    public function validateNewemail($attributes, $params)
+    public function validateNewEmail($attributes, $params)
     {
         if (!$this->hasErrors()) {
             if ($this->user === null) {
-                throw new \Exception('User object not set. Unable to proceed.');
+                throw new \yii\base\Exception('User object not set. Unable to proceed.');
             }
 
             if ($this->email === $this->user->email) {

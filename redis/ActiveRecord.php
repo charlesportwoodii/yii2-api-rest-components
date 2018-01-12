@@ -41,7 +41,6 @@ abstract class ActiveRecord extends YiiRedisActiveRecord
         return false;
     }
 
-
     /**
      * Before save, serialized the attributes array if it is not null
      * @param boolean $insert
@@ -65,7 +64,7 @@ abstract class ActiveRecord extends YiiRedisActiveRecord
         if (parent::beforeDelete()) {
             // Log that the code was deleted
             Yii::info([
-                'message' => 'Deleting single use token',
+                'message' => 'Deleting redis object',
                 'code_id' => $this->id
             ]);
 

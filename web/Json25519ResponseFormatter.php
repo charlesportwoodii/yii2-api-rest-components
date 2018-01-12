@@ -5,7 +5,7 @@ namespace yrc\web;
 use yrc\web\JsonResponseFormatter;
 use yii\web\NotAcceptableHttpException;
 use yrc\web\Json25519Parser;
-use yrc\api\models\EncryptionKey;
+use yrc\models\redis\EncryptionKey;
 use yii\web\HttpException;
 
 use Yii;
