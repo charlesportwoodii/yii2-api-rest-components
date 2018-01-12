@@ -1,10 +1,10 @@
 <?php
 
-namespace yrc\api\actions;
+namespace yrc\actions;
 
 use yrc\api\actions\AuthenticationAction;
 use app\models\Token;
-use yrc\api\models\TokenKeyPair;
+use yrc\models\TokenKeyPair;
 use yrc\web\Json25519Parser;
 use yrc\rest\Action as RestAction;
 use yii\helpers\ArrayHelper;

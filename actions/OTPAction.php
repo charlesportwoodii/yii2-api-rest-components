@@ -1,6 +1,6 @@
 <?php
 
-namespace yrc\api\actions;
+namespace yrc\actions;
 
 use app\models\User;
 use yrc\rest\Action as RestAction;

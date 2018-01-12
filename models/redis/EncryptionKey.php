@@ -1,6 +1,6 @@
 <?php
 
-namespace yrc\api\models;
+namespace yrc\models\redis;
 
 use yrc\redis\ActiveRecord;
 use Yii;

@@ -1,6 +1,6 @@
 <?php
 
-namespace yrc\api\forms;
+namespace yrc\forms;
 
 use app\models\Token;
 use yii\web\UnauthorizedHttpException;

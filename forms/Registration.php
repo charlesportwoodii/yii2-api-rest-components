@@ -1,6 +1,6 @@
 <?php
 
-namespace yrc\api\forms;
+namespace yrc\forms;
 
 use Base32\Base32;
 use Yii;

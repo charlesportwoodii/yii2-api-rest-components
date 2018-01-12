@@ -1,9 +1,9 @@
 <?php
 
-namespace yrc\api\actions;
+namespace yrc\actions;
 
 use yrc\rest\Action as RestAction;
-use yrc\api\models\EncryptionKey;
+use yrc\models\EncryptionKey;
 use Sodium;
 use Yii;
 

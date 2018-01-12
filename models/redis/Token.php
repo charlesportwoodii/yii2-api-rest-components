@@ -1,9 +1,9 @@
 <?php
 
-namespace yrc\api\models;
+namespace yrc\api\models\redis;
 
 use Base32\Base32;
-use yrc\api\models\TokenKeyPair;
+use yrc\models\TokenKeyPair;
 use Yii;
 
 /**

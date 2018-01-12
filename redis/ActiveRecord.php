@@ -17,6 +17,7 @@ abstract class ActiveRecord extends YiiRedisActiveRecord
             throw new \yii\base\Exception(Yii::t('yrc', 'Element has expired.'));
         }
         
+        $this->attributes = \json_decode($this->attributes, true);
         return parent::afterFind();
     }
 
@@ -33,6 +34,40 @@ abstract class ActiveRecord extends YiiRedisActiveRecord
         // Handle token expiration by actually deleting the token
         if ($this->expires_at < time()) {
             $this->delete();
+
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Before save, serialized the attributes array if it is not null
+     * @param boolean $insert
+     * @return boolean
+     */
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            $this->attributes = \json_encode($this->attributes);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeDelete()
+    {
+        if (parent::beforeDelete()) {
+            // Log that the code was deleted
+            Yii::info([
+                'message' => 'Deleting single use token',
+                'code_id' => $this->id
+            ]);
 
             return true;
         }

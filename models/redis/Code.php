@@ -1,13 +1,12 @@
 <?php
 
-namespace yrc\api\models;
+namespace yrc\modelsredis\;
 
 use Base32\Base32;
 use Yii;
 
 /**
- * Class for generating and storing codes
- * @class Code
+ * Represents a temporary, (ideally) single use code for operations where passwords cannot be used
  */
 class Code extends \yrc\redis\ActiveRecord
 {
@@ -20,6 +19,8 @@ class Code extends \yrc\redis\ActiveRecord
             'id',
             'hash',
             'user_id',
+            'type',
+            'attributes',
             'expires_at'
         ];
     }

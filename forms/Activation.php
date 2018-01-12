@@ -1,11 +1,11 @@
 <?php
 
-namespace yrc\api\forms;
+namespace yrc\forms;
 
 use Base32\Base32;
 use Yii;
 
-use yrc\api\models\Code;
+use yrc\models\Code;
 
 /**
  * @class Activation

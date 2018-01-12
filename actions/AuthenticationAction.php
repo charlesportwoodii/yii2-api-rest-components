@@ -1,6 +1,6 @@
 <?php
 
-namespace yrc\api\actions;
+namespace yrc\actions;
 
 use app\forms\Login;
 use app\models\Token;

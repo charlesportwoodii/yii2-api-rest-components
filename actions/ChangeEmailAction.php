@@ -1,6 +1,6 @@
 <?php
 
-namespace yrc\api\actions;
+namespace yrc\actions;
 
 use app\forms\ChangeEmail;
 use yrc\rest\Action as RestAction;
