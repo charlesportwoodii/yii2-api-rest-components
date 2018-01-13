@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace app\jobs\notifications\email;
+namespace yrc\jobs\notifications\email;
 
 use RPQ\Server\AbstractJob;
 use yii\mail\MessageInterface;
@@ -35,6 +35,8 @@ abstract class AbstractEmailNotification extends AbstractJob
      */
     protected $viewFile;
 
+    abstract protected function getSubject();
+
     /**
      * Generates a message composition and returns a MessageInterface
      * @param string|array $to 
@@ -50,8 +52,8 @@ abstract class AbstractEmailNotification extends AbstractJob
 
         // Compose a message, and return a MessageInterface if the consumer needs to modify the message interface in any way.
         $composition = Yii::$app->mailer->compose()
-            ->setFrom($this->origin)
-            ->setSubject(Yii::t('app', $this->subject)) // The subject should be translated, if possible
+            ->setFrom($args['origin'] ?? $this->origin)
+            ->setSubject(Yii::t('app', $this->getSubject())) // The subject should be translated, if possible
             ->setTo($to);
         
         $controller->layout = Yii::$app->mailer->htmlLayout;

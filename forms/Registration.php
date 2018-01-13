@@ -4,6 +4,7 @@ namespace yrc\forms;
 
 use Base32\Base32;
 use Yii;
+use yrc\models\redis\Code;
 
 /**
  * @class Registration
@@ -11,6 +12,8 @@ use Yii;
  */
 abstract class Registration extends \yii\base\Model
 {
+    const ACTIVATION_TOKEN_TIME = '+2 days';
+
     /**
      * The email
      * @var string $email
@@ -88,13 +91,37 @@ abstract class Registration extends \yii\base\Model
                 'otp_secret'        => '',
             ];
         
-            if ($user->save()) {
-                // Create an activation token for the user, and store it in the cache
-                $token = Base32::encode(\random_bytes(64));
-                
-                Yii::$app->cache->set(hash('sha256', $token . '_activation_token'), [
-                    'id' => $user->id
-                ]);
+            if ($user->save()) {                
+                $token = \str_replace('=', '', Base32::encode(\random_bytes(64)));
+        
+                $code = new Code;
+                $code->hash = hash('sha256', $token . '_activate');
+                $code->user_id = $user->id;
+                $code->type = 'activate_email';
+                $code->attributes = [
+                    'token' => $token,
+                    'email' => $user->email
+                ];
+                $code->expires_at = strtotime(static::ACTIVATION_TOKEN_TIME);
+
+                $job = Yii::$app->rpq->getQueue()->push(
+                    '\yrc\jobs\notifications\email\ActivationNotification',
+                    [
+                        'email' => $user->email,
+                        'token' => $token,
+                        'user_id' => $user->id
+                    ],
+                    true
+                );
+    
+                Yii::info([
+                    'message' => '[Email] Account activation notification scheduled',
+                    'user_id' => $user->id,
+                    'data' => [
+                        'email' => $user->email
+                    ],
+                    'job_id' => $job->getId()
+                ]);    
 
                 return true;
             }

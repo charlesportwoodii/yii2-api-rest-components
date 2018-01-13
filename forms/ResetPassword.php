@@ -229,11 +229,47 @@ abstract class ResetPassword extends \yii\base\Model
                     return false;
                 }
 
+                $job = Yii::$app->rpq->getQueue()->push(
+                    '\yrc\jobs\notifications\email\ResetPasswordNotification',
+                    [
+                        'email' => $this->getUser()->email,
+                        'token' => $token,
+                        'user_id' => $this->getUser()->id
+                    ],
+                    true
+                );
+    
+                Yii::info([
+                    'message' => '[Email] Reset Password Notification Scheduled',
+                    'user_id' => $this->getUser()->id,
+                    'data' => [
+                        'email' => $this->getUser()->email
+                    ],
+                    'job_id' => $job->getId()
+                ]);  
+
                 return true;
             } elseif ($this->getScenario() === self::SCENARIO_RESET || $this->getScenario() === self::SCENARIO_RESET_AUTHENTICATED) {
                 $this->getUser()->password = $this->password;
 
                 if ($this->getUser()->save()) {
+                    $job = Yii::$app->rpq->getQueue()->push(
+                        '\yrc\jobs\notifications\email\PasswordChangedNotification',
+                        [
+                            'email' => $this->getUser()->email,
+                            'user_id' => $this->getUser()->id
+                        ],
+                        true
+                    );
+        
+                    Yii::info([
+                        'message' => '[Email] Password Changed Notification Scheduled',
+                        'user_id' => $this->getUser()->id,
+                        'data' => [
+                            'email' => $this->getUser()->email
+                        ],
+                        'job_id' => $job->getId()
+                    ]);  
                     return true;
                 }
             }
