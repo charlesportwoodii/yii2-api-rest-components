@@ -20,7 +20,7 @@ class Code extends \yrc\redis\ActiveRecord
             'hash',
             'user_id',
             'type',
-            'attributes',
+            'data',
             'expires_at'
         ];
     }

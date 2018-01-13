@@ -4,6 +4,7 @@ namespace yrc\redis;
 
 use yii\redis\ActiveRecord as YiiRedisActiveRecord;
 use Yii;
+use yii\helpers\Json;
 
 abstract class ActiveRecord extends YiiRedisActiveRecord
 {
@@ -17,6 +18,10 @@ abstract class ActiveRecord extends YiiRedisActiveRecord
             throw new \yii\base\Exception(Yii::t('yrc', 'Element has expired.'));
         }
         
+        if ($this->hasAttribute('data')) { 
+            $this->data = Json::decode($this->data);
+        }
+
         return parent::afterFind();
     }
 
@@ -41,14 +46,15 @@ abstract class ActiveRecord extends YiiRedisActiveRecord
     }
 
     /**
-     * Before save, serialized the attributes array if it is not null
-     * @param boolean $insert
-     * @return boolean
+     * @inheritdoc
      */
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            $this->attributes = \json_encode($this->attributes);
+            if ($this->hasAttribute('data')) { 
+                $this->data = Json::encode($this->data);
+            }
+
             return true;
         }
 
