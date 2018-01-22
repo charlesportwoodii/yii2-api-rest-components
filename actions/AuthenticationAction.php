@@ -3,7 +3,6 @@
 namespace yrc\actions;
 
 use app\forms\Login;
-use app\models\Token;
 use yrc\rest\Action as RestAction;
 
 use yii\web\UnauthorizedHttpException;
@@ -61,7 +60,7 @@ class AuthenticationAction extends RestAction
             $accessToken = $data[0];
 
             // Retrieve the token object
-            $token = Token::find()
+            $token = Yii::$app->yrc->tokenClass::find()
                 ->where([
                     'access_token' => $accessToken,
                     'user_id'      => Yii::$app->user->id

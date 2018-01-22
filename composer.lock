@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a5cb62d5f3678eef48c973299b7b16ba",
+    "content-hash": "10c6c3f12636ca632e5a2243884610c8",
     "packages": [
         {
             "name": "2amigos/yii2-arrayquery-component",
@@ -698,16 +698,16 @@
         },
         {
             "name": "ramsey/uuid",
-            "version": "3.7.1",
+            "version": "3.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/uuid.git",
-                "reference": "45cffe822057a09e05f7bd09ec5fb88eeecd2334"
+                "reference": "44abcdad877d9a46685a3a4d221e3b2c4b87cb76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/45cffe822057a09e05f7bd09ec5fb88eeecd2334",
-                "reference": "45cffe822057a09e05f7bd09ec5fb88eeecd2334",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/44abcdad877d9a46685a3a4d221e3b2c4b87cb76",
+                "reference": "44abcdad877d9a46685a3a4d221e3b2c4b87cb76",
                 "shasum": ""
             },
             "require": {
@@ -718,17 +718,15 @@
                 "rhumsaa/uuid": "self.version"
             },
             "require-dev": {
-                "apigen/apigen": "^4.1",
-                "codeception/aspect-mock": "^1.0 | ^2.0",
+                "codeception/aspect-mock": "^1.0 | ~2.0.0",
                 "doctrine/annotations": "~1.2.0",
                 "goaop/framework": "1.0.0-alpha.2 | ^1.0 | ^2.1",
                 "ircmaxell/random-lib": "^1.1",
                 "jakub-onderka/php-parallel-lint": "^0.9.0",
-                "mockery/mockery": "^0.9.4",
+                "mockery/mockery": "^0.9.9",
                 "moontoast/math": "^1.1",
                 "php-mock/php-mock-phpunit": "^0.3|^1.1",
-                "phpunit/phpunit": "^4.7|>=5.0 <5.4",
-                "satooshi/php-coveralls": "^0.6.1",
+                "phpunit/phpunit": "^4.7|^5.0",
                 "squizlabs/php_codesniffer": "^2.3"
             },
             "suggest": {
@@ -776,7 +774,7 @@
                 "identifier",
                 "uuid"
             ],
-            "time": "2017-09-22T20:46:04+00:00"
+            "time": "2018-01-20T00:28:24+00:00"
         },
         {
             "name": "rpq/client",
@@ -1342,23 +1340,23 @@
         },
         {
             "name": "yii2mod/yii2-rbac",
-            "version": "2.2.1",
+            "version": "2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yii2mod/yii2-rbac.git",
-                "reference": "6f48971f0f4bfc1a53ce27cdd22df90f194a436b"
+                "reference": "d6d236ff45910726081061c49b91f54642371283"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yii2mod/yii2-rbac/zipball/6f48971f0f4bfc1a53ce27cdd22df90f194a436b",
-                "reference": "6f48971f0f4bfc1a53ce27cdd22df90f194a436b",
+                "url": "https://api.github.com/repos/yii2mod/yii2-rbac/zipball/d6d236ff45910726081061c49b91f54642371283",
+                "reference": "d6d236ff45910726081061c49b91f54642371283",
                 "shasum": ""
             },
             "require": {
-                "2amigos/yii2-arrayquery-component": "*",
+                "2amigos/yii2-arrayquery-component": "~1.0",
                 "php": ">=7.0.0",
-                "yiisoft/yii2": "~2.0.10",
-                "yiisoft/yii2-jui": "*"
+                "yiisoft/yii2": "~2.0.13",
+                "yiisoft/yii2-jui": "~2.0"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "~2.0",
@@ -1393,7 +1391,7 @@
                 "yii2 rbac",
                 "yii2-rbac"
             ],
-            "time": "2017-11-28T16:07:49+00:00"
+            "time": "2018-01-15T15:53:16+00:00"
         },
         {
             "name": "yiisoft/yii2",

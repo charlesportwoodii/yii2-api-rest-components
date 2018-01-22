@@ -15,7 +15,13 @@ class YRC extends BaseObject
      * The user class
      * @var string
      */
-    public $userClass;
+    public $user;
+
+    /**
+     * The token class
+     * @var string
+     */
+    public $token;
 
     /**
      * The access header
@@ -37,7 +43,16 @@ class YRC extends BaseObject
      */
     public function getUserClass()
     {
-        return $this->userClass;
+        return $this->user['class'];
+    }
+
+     /**
+     * Helper method to get the token class
+     * @return string
+     */
+    public function getTokenClass()
+    {
+        return $this->token['class'];
     }
 
     /**

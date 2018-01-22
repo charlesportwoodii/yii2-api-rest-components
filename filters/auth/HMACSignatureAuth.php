@@ -2,8 +2,6 @@
 
 namespace yrc\filters\auth;
 
-use app\models\Token;
-
 use yii\helpers\Json;
 use yii\filters\auth\AuthMethod;
 
@@ -61,7 +59,7 @@ final class HMACSignatureAuth extends AuthMethod
             // Check the access token, and make sure we get a valid token data back
             // Expired tokens throw an exception
             try {
-                $token = Token::find()
+                $token = Yii::$app->yrc->tokenClass::find()
                     ->where(['access_token' => $accessToken])
                     ->one();
             } catch (\Exception $e) {

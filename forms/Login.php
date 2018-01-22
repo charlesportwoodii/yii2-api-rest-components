@@ -2,7 +2,6 @@
 
 namespace yrc\forms;
 
-use app\models\Token;
 use yii\web\UnauthorizedHttpException;
 use Yii;
 
@@ -130,7 +129,7 @@ abstract class Login extends \yii\base\Model
     public function authenticate()
     {
         if ($this->validate()) {
-            $token = Token::generate($this->getUser()->id);
+            $token = Yii::$app->yrc->tokenClass::generate($this->getUser()->id);
 
             // Actually log the user into the application so we can access global user state
             Yii::$app->user->loginByAccessToken($token);

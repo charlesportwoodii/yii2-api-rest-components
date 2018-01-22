@@ -4,7 +4,6 @@ namespace yrc\actions;
 
 use yrc\rest\Action as RestAction;
 use yrc\models\redis\EncryptionKey;
-use Sodium;
 use Yii;
 
 class OneTimeKeyAction extends RestAction
@@ -20,8 +19,8 @@ class OneTimeKeyAction extends RestAction
 
         // Return the public keys, and a signature of the public key
         return [
-            'public'        => \base64_encode($model->getBoxPublicKey()),
-            'hash'          => $model->hash,
+            'public' => \base64_encode($model->getBoxPublicKey()),
+            'hash' => $model->hash,
         ];
     }
 }

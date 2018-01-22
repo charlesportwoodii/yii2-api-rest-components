@@ -66,7 +66,7 @@ class WorkerController extends Controller
                 'message' => $e->getMessage(),
                 'code' => $e->getCode(),
                 'file' => $e->getFile(),
-                'line' => $e->getLine()
+                'line' => $e->getLine(),
             ], 'rpq');
             return -1;
         }
