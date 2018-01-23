@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "dd9bc1fb2d3c578d284cba7bf5e58415",
+    "content-hash": "60e10ce26453e1009bf08a93bd5485b3",
     "packages": [
         {
             "name": "2amigos/yii2-arrayquery-component",
@@ -1222,20 +1222,21 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.35.0",
+            "version": "v2.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "daa657073e55b0a78cce8fdd22682fddecc6385f"
+                "reference": "eddb97148ad779f27e670e1e3f19fb323aedafeb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/daa657073e55b0a78cce8fdd22682fddecc6385f",
-                "reference": "daa657073e55b0a78cce8fdd22682fddecc6385f",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/eddb97148ad779f27e670e1e3f19fb323aedafeb",
+                "reference": "eddb97148ad779f27e670e1e3f19fb323aedafeb",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": "^7.0",
+                "symfony/polyfill-mbstring": "~1.0"
             },
             "require-dev": {
                 "psr/container": "^1.0",
@@ -1245,7 +1246,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.35-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -1283,7 +1284,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2017-09-27T18:06:46+00:00"
+            "time": "2017-09-27T18:10:31+00:00"
         },
         {
             "name": "yidas/yii2-bower-asset",
@@ -1721,20 +1722,20 @@
         },
         {
             "name": "yiisoft/yii2-twig",
-            "version": "2.1.1",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-twig.git",
-                "reference": "5175fe7e7c0944dbd62a97b80c341d3fa3f1909c"
+                "reference": "f91a99dcc6564abf6484951e41f0b022a6ea0c89"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-twig/zipball/5175fe7e7c0944dbd62a97b80c341d3fa3f1909c",
-                "reference": "5175fe7e7c0944dbd62a97b80c341d3fa3f1909c",
+                "url": "https://api.github.com/repos/yiisoft/yii2-twig/zipball/f91a99dcc6564abf6484951e41f0b022a6ea0c89",
+                "reference": "f91a99dcc6564abf6484951e41f0b022a6ea0c89",
                 "shasum": ""
             },
             "require": {
-                "twig/twig": "~1.0",
+                "twig/twig": "~2.0",
                 "yiisoft/yii2": "~2.0.4"
             },
             "type": "yii2-extension",
@@ -1764,7 +1765,7 @@
                 "twig",
                 "yii2"
             ],
-            "time": "2017-10-11T07:31:20+00:00"
+            "time": "2017-11-07T20:54:43+00:00"
         }
     ],
     "packages-dev": [],
