@@ -18,57 +18,67 @@ class Json25519ResponseFormatter extends JsonResponseFormatter
      */
     protected function formatJson($response)
     {
-        parent::formatJson($response);
-        $response->getHeaders()->set('Content-Type', 'application/vnd.25519+json; charset=UTF-8');
-
-        // If we do not have a user identity in place we cannot encrypt the response. Tell the user the Accept headers are not acceptable
-        if (Yii::$app->user->isGuest) {
-            throw new NotAcceptableHttpException;
-        }
-
-        $token = Yii::$app->user->getIdentity()->getToken();
-        if ($token === null) {
-            throw new NotAcceptableHttpException;
-        }
-
         // Generate a new encryption key
         $key = EncryptionKey::generate();
         $public = Yii::$app->request->getHeaders()->get(Json25519Parser::PUBLICKEY_HEADER, null);
 
         if ($public === null) {
-            throw new HttpException(400, Yii::t('yrc', 'Accept: application/vnd.25519+json requires x-pubkey header to be set'));
+            $response->statusCode = 400;
+            $response->content = '';
+            $response->getHeaders('x-reason', Yii::t('yrc', 'Accept: application/vnd.25519+json requires x-pubkey header to be set.'));
+            return;
         }
 
+        $rawPublic = \base64_decode($public);
+        if (strlen($rawPublic) !== 32) {
+            $response->statusCode = 400;
+            $response->getHeaders()->set('x-reason', Yii::t('yrc', 'Public key is not 32 bytes in length.'));
+            return;
+        }
+
+        parent::formatJson($response);
+        $response->getHeaders()->set('Content-Type', 'application/vnd.25519+json; charset=UTF-8');
+
         // Calculate the keypair
-        $keyPair = sodium_crypto_box_keypair_from_secretkey_and_publickey(
+        $keyPair = \sodium_crypto_box_keypair_from_secretkey_and_publickey(
             \base64_decode($key->secret),
-            \base64_decode($public)
+            $rawPublic
         );
 
         // Encrypt the content
-        $nonce = random_bytes(SODIUM_CRYPTO_BOX_NONCEBYTES);
-        $content = sodium_crypto_box(
+        $nonce = \random_bytes(SODIUM_CRYPTO_BOX_NONCEBYTES);
+        $content = \sodium_crypto_box(
             $response->content,
             $nonce,
             $keyPair
         );
 
-        // Sign the request using the new authentication key
-        $signature = sodium_crypto_sign_detached(
-            $content,
-            \base64_decode($token->secret_sign_kp)
-        );
+        // If the user is authenticated, we can sign the request using the signature associated to the session.
+        // If they are not authenticated, we can skip the signature generation
+        if (!Yii::$app->user->isGuest) {
+            $token = Yii::$app->user->getIdentity()->getToken();
+            if ($token === null) {
+                $response->statusCode = 406;
+                $response->content = '';
+                Yii::warning([
+                    'message' => 'Could not fetch token keypair. Unable to generate encrypted response.'
+                ]);
+                return;
+            }
 
-        // Calculate a nonce and set it in the header
+            // Sign the request using the new authentication key
+            $signature = \sodium_crypto_sign_detached(
+                $content,
+                \base64_decode($token->secret_sign_kp)
+            );
+
+            // Sign the raw response and send the signature alongside the header
+            $response->getHeaders()->set('x-sigpubkey', \base64_encode($token->getSignPublicKey()));
+            $response->getHeaders()->set('x-signature', \base64_encode($signature));
+        }
+
         $response->getHeaders()->set('x-nonce', \base64_encode($nonce));
-
-        // Send the public key in the clear. The client may need this on the initial authentication request
         $response->getHeaders()->set('x-pubkey', \base64_encode($key->getBoxPublicKey()));
-        $response->getHeaders()->set('x-sigpubkey', \base64_encode($token->getSignPublicKey()));
-        // Sign the raw response and send the signature alongside the header
-        $response->getHeaders()->set('x-signature', \base64_encode($signature));
-
-        // Update the response content
         $response->content = \base64_encode($content);
     }
 }
