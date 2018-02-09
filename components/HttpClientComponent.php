@@ -16,11 +16,11 @@ use Yii;
 final class HttpClientComponent extends BaseObject
 {
     /**
-     * The HTTP Transport to use
-     * @var string $transport
+     * Options to pass to yii\httpclient\Client;
+     * @var string $clientOptions
      */
-    public $transport;
-
+    public $clientOptions;
+    
     /**
      * HttpOptions
      * @var array $options
@@ -49,9 +49,7 @@ final class HttpClientComponent extends BaseObject
     public function init()
     {
         parent::init();
-        $this->client = new Client([
-            'transport' => $this->transport
-        ]);
+        $this->client = new Client($this->clientOptions);
 
         $this->client->on(Client::EVENT_BEFORE_SEND, function (RequestEvent $e) {
             Yii::info([
