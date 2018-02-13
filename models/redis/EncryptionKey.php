@@ -2,6 +2,9 @@
 
 namespace yrc\models\redis;
 
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
+
 use yrc\redis\ActiveRecord;
 use Yii;
 
@@ -54,7 +57,13 @@ final class EncryptionKey extends ActiveRecord
         $boxKp = sodium_crypto_box_keypair();
         $obj = new static;
         $obj->secret = \base64_encode(sodium_crypto_box_secretkey($boxKp));
-        $obj->hash = \hash('sha256', uniqid('__EncryptionKeyPairHash', true));
+        try {
+            $uuid = Uuid::uuid4();
+            $obj->hash = $uuid->toString();
+        } catch (UnsatisfiedDependencyException $e) {
+            throw new \yii\base\Exception(Yii::t('yrc', 'Failed to securely generate security token'));
+        }
+
         $obj->expires_at = \strtotime(static::OBJECT_EXPIRATION_TIME);
 
         if ($obj->save()) {
