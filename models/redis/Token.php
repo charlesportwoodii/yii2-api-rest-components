@@ -55,7 +55,6 @@ abstract class Token extends \yrc\redis\ActiveRecord
     /**
      * Generates a new auth and refresh token pair
      * @param int $userId
-     * @param bool $pubkey
      * @return array
      */
     public static function generate($userId = null)

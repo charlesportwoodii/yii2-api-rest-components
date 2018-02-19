@@ -60,7 +60,7 @@ class Controller extends RestController
         }
 
         $behaviors['contentNegotiator'] = [
-            'class' => ContentNegotiator::className(),
+            'class' => ContentNegotiator::class,
             'formats' => [
                 'application/json' => Response::FORMAT_JSON,
                 'application/vnd.25519+json' => Response::FORMAT_JSON25519,
@@ -69,7 +69,7 @@ class Controller extends RestController
         ];
 
         $behaviors['corsFilter'] = [
-            'class' => Cors::className(),
+            'class' => Cors::class,
             'cors' => [
                 'Origin' => ['*'],
                 'Access-Control-Request-Method' => $this->getHttpVerbMethodsFromClass($this->actions()[$this->action->id]),
@@ -89,7 +89,7 @@ class Controller extends RestController
         ];
 
         $behaviors['verbs'] = [
-            'class' => VerbFilter::className(),
+            'class' => VerbFilter::class,
             'actions' => $this->getVerbFilterActionMap()
         ];
 
@@ -99,7 +99,7 @@ class Controller extends RestController
         }
 
         $behaviors['rateLimiter'] = [
-            'class' => RateLimiter::className(),
+            'class' => RateLimiter::class,
             'enableRateLimitHeaders' => true
         ];
 
@@ -121,7 +121,7 @@ class Controller extends RestController
     private function getAccessControl()
     {
         $access = [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'denyCallback' => function($rule, $action) {
                 throw new ForbiddenHttpException(Yii::t('yrc', 'You do not have permission to access this resource'));
             }

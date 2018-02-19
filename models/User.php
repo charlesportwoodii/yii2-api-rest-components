@@ -109,7 +109,7 @@ abstract class User extends ActiveRecord implements IdentityInterface, RateLimit
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            TimestampBehavior::class,
         ];
     }
 

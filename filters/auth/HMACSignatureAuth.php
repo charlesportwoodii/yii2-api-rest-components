@@ -139,7 +139,7 @@ final class HMACSignatureAuth extends AuthMethod
                            $request->getHeaders()->get(self::DATE_HEADER) . "\n" .
                            \base64_encode($salt);
        
-        Yii::trace([
+        Yii::debug([
             'message' => sprintf('Derived Signature String %s', $signatureString),
             'body' => $body
         ], 'hmac-signature');
