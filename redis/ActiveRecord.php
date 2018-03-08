@@ -8,6 +8,8 @@ use yii\helpers\Json;
 
 abstract class ActiveRecord extends YiiRedisActiveRecord
 {
+    public $isExpired = false;
+
     /**
      * After find reconstitute the keypairs
      */
@@ -15,7 +17,7 @@ abstract class ActiveRecord extends YiiRedisActiveRecord
     {
         // If the object is expired, delete it
         if ($this->isExpired()) {
-            throw new \yii\base\Exception(Yii::t('yrc', 'Element has expired.'));
+            $this->isExpired = true;
         }
         
         if ($this->hasAttribute('data')) {
@@ -31,6 +33,10 @@ abstract class ActiveRecord extends YiiRedisActiveRecord
      */
     public function isExpired()
     {
+        if ($this->isExpired) {
+            return true;
+        }
+        
         if (empty($this->expires_at)) {
             return false;
         }
