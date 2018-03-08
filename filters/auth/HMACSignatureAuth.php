@@ -130,7 +130,7 @@ final class HMACSignatureAuth extends AuthMethod
         if ($request->getRawBody() === '') {
             $body = $request->getRawBody();
         } else {
-            $body = JSON::encode($request->bodyParams, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            $body = JSON::encode($request->bodyParams, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 
         // Calculate the signature string
