@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "0e787aa55970b9baa41c9bc30805d5ed",
+    "content-hash": "032b962707919402887c5b209e0cbf37",
     "packages": [
         {
             "name": "2amigos/yii2-arrayquery-component",
@@ -142,16 +142,16 @@
         },
         {
             "name": "amphp/byte-stream",
-            "version": "v1.2.2",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/byte-stream.git",
-                "reference": "1b0b8daed484b070a9ee329ba78675288d291558"
+                "reference": "6d6c89f58c213e600e2ab5e3b1678fb61333eeb7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/byte-stream/zipball/1b0b8daed484b070a9ee329ba78675288d291558",
-                "reference": "1b0b8daed484b070a9ee329ba78675288d291558",
+                "url": "https://api.github.com/repos/amphp/byte-stream/zipball/6d6c89f58c213e600e2ab5e3b1678fb61333eeb7",
+                "reference": "6d6c89f58c213e600e2ab5e3b1678fb61333eeb7",
                 "shasum": ""
             },
             "require": {
@@ -195,37 +195,40 @@
                 "non-blocking",
                 "stream"
             ],
-            "time": "2018-01-12T19:43:00+00:00"
+            "time": "2018-03-13T15:32:38+00:00"
         },
         {
             "name": "amphp/process",
-            "version": "v0.2.1",
+            "version": "v0.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/process.git",
-                "reference": "5aa6040fcf5c98bfb4f4a8e68305cb6cd6a3d37a"
+                "reference": "239605b2e8a9a7958563119e9b03fdabeb0ad4cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/process/zipball/5aa6040fcf5c98bfb4f4a8e68305cb6cd6a3d37a",
-                "reference": "5aa6040fcf5c98bfb4f4a8e68305cb6cd6a3d37a",
+                "url": "https://api.github.com/repos/amphp/process/zipball/239605b2e8a9a7958563119e9b03fdabeb0ad4cc",
+                "reference": "239605b2e8a9a7958563119e9b03fdabeb0ad4cc",
                 "shasum": ""
             },
             "require": {
                 "amphp/amp": "^2",
-                "amphp/byte-stream": "^1"
+                "amphp/byte-stream": "^1",
+                "php": ">=7"
             },
             "require-dev": {
                 "amphp/phpunit-util": "^1",
                 "friendsofphp/php-cs-fixer": "^2.3",
-                "kelunik/fqn-check": "^0.1.3",
                 "phpunit/phpunit": "^6"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
                     "Amp\\Process\\": "lib"
-                }
+                },
+                "files": [
+                    "lib/constants.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -237,13 +240,17 @@
                     "email": "bobwei9@hotmail.com"
                 },
                 {
+                    "name": "Niklas Keller",
+                    "email": "me@kelunik.com"
+                },
+                {
                     "name": "Aaron Piotrowski",
                     "email": "aaron@trowski.com"
                 }
             ],
-            "description": "Asynchronous process manager",
+            "description": "Asynchronous process manager.",
             "homepage": "https://github.com/amphp/process",
-            "time": "2017-07-18T03:37:19+00:00"
+            "time": "2018-03-08T15:09:10+00:00"
         },
         {
             "name": "beberlei/assert",
@@ -416,16 +423,16 @@
         },
         {
             "name": "ezyang/htmlpurifier",
-            "version": "v4.9.3",
+            "version": "v4.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ezyang/htmlpurifier.git",
-                "reference": "95e1bae3182efc0f3422896a3236e991049dac69"
+                "reference": "d85d39da4576a6934b72480be6978fb10c860021"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/95e1bae3182efc0f3422896a3236e991049dac69",
-                "reference": "95e1bae3182efc0f3422896a3236e991049dac69",
+                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/d85d39da4576a6934b72480be6978fb10c860021",
+                "reference": "d85d39da4576a6934b72480be6978fb10c860021",
                 "shasum": ""
             },
             "require": {
@@ -459,7 +466,7 @@
             "keywords": [
                 "html"
             ],
-            "time": "2017-06-03T02:28:16+00:00"
+            "time": "2018-02-23T01:58:20+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -541,24 +548,24 @@
         },
         {
             "name": "paragonie/constant_time_encoding",
-            "version": "v2.2.1",
+            "version": "v2.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/constant_time_encoding.git",
-                "reference": "7c74c5d08761ead7b5e89d07c854bc28eb0b2186"
+                "reference": "eccf915f45f911bfb189d1d1638d940ec6ee6e33"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/constant_time_encoding/zipball/7c74c5d08761ead7b5e89d07c854bc28eb0b2186",
-                "reference": "7c74c5d08761ead7b5e89d07c854bc28eb0b2186",
+                "url": "https://api.github.com/repos/paragonie/constant_time_encoding/zipball/eccf915f45f911bfb189d1d1638d940ec6ee6e33",
+                "reference": "eccf915f45f911bfb189d1d1638d940ec6ee6e33",
                 "shasum": ""
             },
             "require": {
                 "php": "^7"
             },
             "require-dev": {
-                "phpunit/phpunit": "^6",
-                "vimeo/psalm": "^0.3|^1"
+                "phpunit/phpunit": "^6|^7",
+                "vimeo/psalm": "^1"
             },
             "type": "library",
             "autoload": {
@@ -599,7 +606,7 @@
                 "hex2bin",
                 "rfc4648"
             ],
-            "time": "2018-01-23T00:54:57+00:00"
+            "time": "2018-03-10T19:47:49+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -782,21 +789,21 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/charlesportwoodii/rpq-client.git",
-                "reference": "940e47f7121c3e6533dbf0f66655931b410f09c5"
+                "reference": "cc6fa831fe2112f7ac1b3acaa79596961322c171"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/charlesportwoodii/rpq-client/zipball/940e47f7121c3e6533dbf0f66655931b410f09c5",
-                "reference": "940e47f7121c3e6533dbf0f66655931b410f09c5",
+                "url": "https://api.github.com/repos/charlesportwoodii/rpq-client/zipball/cc6fa831fe2112f7ac1b3acaa79596961322c171",
+                "reference": "cc6fa831fe2112f7ac1b3acaa79596961322c171",
                 "shasum": ""
             },
             "require": {
-                "ext-redis": "^3.1.0",
+                "ext-redis": "^3.1",
                 "php": "^7.1",
-                "ramsey/uuid": "^3.7.1"
+                "ramsey/uuid": "^3.7"
             },
             "require-dev": {
-                "phpunit/phpunit": "^6.4.1"
+                "phpunit/phpunit": "^7.0.2"
             },
             "type": "library",
             "autoload": {
@@ -815,7 +822,7 @@
                 }
             ],
             "description": "Redis Priority Queue Client implementation in pure PHP",
-            "time": "2018-01-13T17:53:53+00:00"
+            "time": "2018-03-13T20:03:14+00:00"
         },
         {
             "name": "rpq/server",
@@ -823,23 +830,25 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/charlesportwoodii/rpq-server.git",
-                "reference": "5f3ae6c4050f19f1fa0d1bb05ae98f3cacfa5fb2"
+                "reference": "12adbfbbe475f174fdfcb522943b0924c3ced85a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/charlesportwoodii/rpq-server/zipball/5f3ae6c4050f19f1fa0d1bb05ae98f3cacfa5fb2",
-                "reference": "5f3ae6c4050f19f1fa0d1bb05ae98f3cacfa5fb2",
+                "url": "https://api.github.com/repos/charlesportwoodii/rpq-server/zipball/12adbfbbe475f174fdfcb522943b0924c3ced85a",
+                "reference": "12adbfbbe475f174fdfcb522943b0924c3ced85a",
                 "shasum": ""
             },
             "require": {
-                "amphp/amp": "^2.0.2",
-                "amphp/process": "^v0.2.1",
+                "amphp/amp": "^2.0",
+                "amphp/process": "^v0.3",
+                "ext-pcntl": "*",
                 "ext-redis": "^3.1.0",
                 "monolog/monolog": "^1.23",
                 "php": "^7.1",
                 "rpq/client": "dev-master",
-                "symfony/console": "^3.3",
-                "symfony/yaml": "^3.3"
+                "symfony/console": "^4.0",
+                "symfony/process": "^4.0",
+                "symfony/yaml": "^4.0"
             },
             "bin": [
                 "rpq"
@@ -861,20 +870,20 @@
                 }
             ],
             "description": "Redis Priority Queue Server implementation in pure PHP",
-            "time": "2018-02-17T21:33:35+00:00"
+            "time": "2018-03-13T20:06:27+00:00"
         },
         {
             "name": "spomky-labs/otphp",
-            "version": "v9.0.3",
+            "version": "v9.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/otphp.git",
-                "reference": "26d19c0baff675fb64193e22b777aa9be63b8deb"
+                "reference": "4b303e33972f6c886f32b38fea60f41be6d74ec1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/otphp/zipball/26d19c0baff675fb64193e22b777aa9be63b8deb",
-                "reference": "26d19c0baff675fb64193e22b777aa9be63b8deb",
+                "url": "https://api.github.com/repos/Spomky-Labs/otphp/zipball/4b303e33972f6c886f32b38fea60f41be6d74ec1",
+                "reference": "4b303e33972f6c886f32b38fea60f41be6d74ec1",
                 "shasum": ""
             },
             "require": {
@@ -922,7 +931,7 @@
                 "otp",
                 "totp"
             ],
-            "time": "2017-11-23T08:44:21+00:00"
+            "time": "2018-02-26T13:45:15+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -980,21 +989,20 @@
         },
         {
             "name": "symfony/console",
-            "version": "v3.4.4",
+            "version": "v4.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "26b6f419edda16c19775211987651cb27baea7f1"
+                "reference": "555c8dbe0ae9e561740451eabdbed2cc554b6a51"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/26b6f419edda16c19775211987651cb27baea7f1",
-                "reference": "26b6f419edda16c19775211987651cb27baea7f1",
+                "url": "https://api.github.com/repos/symfony/console/zipball/555c8dbe0ae9e561740451eabdbed2cc554b6a51",
+                "reference": "555c8dbe0ae9e561740451eabdbed2cc554b6a51",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.5.9|>=7.0.8",
-                "symfony/debug": "~2.8|~3.0|~4.0",
+                "php": "^7.1.3",
                 "symfony/polyfill-mbstring": "~1.0"
             },
             "conflict": {
@@ -1003,11 +1011,11 @@
             },
             "require-dev": {
                 "psr/log": "~1.0",
-                "symfony/config": "~3.3|~4.0",
+                "symfony/config": "~3.4|~4.0",
                 "symfony/dependency-injection": "~3.4|~4.0",
-                "symfony/event-dispatcher": "~2.8|~3.0|~4.0",
+                "symfony/event-dispatcher": "~3.4|~4.0",
                 "symfony/lock": "~3.4|~4.0",
-                "symfony/process": "~3.3|~4.0"
+                "symfony/process": "~3.4|~4.0"
             },
             "suggest": {
                 "psr/log": "For using the console logger",
@@ -1018,7 +1026,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.4-dev"
+                    "dev-master": "4.0-dev"
                 }
             },
             "autoload": {
@@ -1045,63 +1053,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-29T09:03:43+00:00"
-        },
-        {
-            "name": "symfony/debug",
-            "version": "v4.0.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/debug.git",
-                "reference": "c77bb31d0f6310a2ac11e657475d396a92e5dc54"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/debug/zipball/c77bb31d0f6310a2ac11e657475d396a92e5dc54",
-                "reference": "c77bb31d0f6310a2ac11e657475d396a92e5dc54",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1.3",
-                "psr/log": "~1.0"
-            },
-            "conflict": {
-                "symfony/http-kernel": "<3.4"
-            },
-            "require-dev": {
-                "symfony/http-kernel": "~3.4|~4.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "4.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Debug\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Debug Component",
-            "homepage": "https://symfony.com",
-            "time": "2018-01-18T22:19:33+00:00"
+            "time": "2018-02-26T15:55:47+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -1163,21 +1115,70 @@
             "time": "2018-01-30T19:27:44+00:00"
         },
         {
-            "name": "symfony/yaml",
-            "version": "v3.4.4",
+            "name": "symfony/process",
+            "version": "v4.0.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/yaml.git",
-                "reference": "eab73b6c21d27ae4cd037c417618dfd4befb0bfe"
+                "url": "https://github.com/symfony/process.git",
+                "reference": "6ed08502a7c9559da8e60ea343bdbd19c3350b3e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/eab73b6c21d27ae4cd037c417618dfd4befb0bfe",
-                "reference": "eab73b6c21d27ae4cd037c417618dfd4befb0bfe",
+                "url": "https://api.github.com/repos/symfony/process/zipball/6ed08502a7c9559da8e60ea343bdbd19c3350b3e",
+                "reference": "6ed08502a7c9559da8e60ea343bdbd19c3350b3e",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.5.9|>=7.0.8"
+                "php": "^7.1.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Process\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Process Component",
+            "homepage": "https://symfony.com",
+            "time": "2018-02-19T12:18:43+00:00"
+        },
+        {
+            "name": "symfony/yaml",
+            "version": "v4.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/yaml.git",
+                "reference": "de5f125ea39de846b90b313b2cfb031a0152d223"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/de5f125ea39de846b90b313b2cfb031a0152d223",
+                "reference": "de5f125ea39de846b90b313b2cfb031a0152d223",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1.3"
             },
             "conflict": {
                 "symfony/console": "<3.4"
@@ -1191,7 +1192,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.4-dev"
+                    "dev-master": "4.0-dev"
                 }
             },
             "autoload": {
@@ -1218,20 +1219,20 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-21T19:05:02+00:00"
+            "time": "2018-02-19T20:08:53+00:00"
         },
         {
             "name": "twig/twig",
-            "version": "v2.4.4",
+            "version": "v2.4.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "eddb97148ad779f27e670e1e3f19fb323aedafeb"
+                "reference": "d2117ec118c1ff3d28ccddca8212d82787a4809f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/eddb97148ad779f27e670e1e3f19fb323aedafeb",
-                "reference": "eddb97148ad779f27e670e1e3f19fb323aedafeb",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/d2117ec118c1ff3d28ccddca8212d82787a4809f",
+                "reference": "d2117ec118c1ff3d28ccddca8212d82787a4809f",
                 "shasum": ""
             },
             "require": {
@@ -1284,7 +1285,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2017-09-27T18:10:31+00:00"
+            "time": "2018-03-03T16:23:01+00:00"
         },
         {
             "name": "yidas/yii2-bower-asset",
@@ -1384,16 +1385,16 @@
         },
         {
             "name": "yiisoft/yii2",
-            "version": "2.0.14",
+            "version": "2.0.14.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "1c9cf916b1394681c7d043e79e1522c33e5bc6c1"
+                "reference": "ef74f3783e964cea477f06e6d6ce209df1f37881"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/1c9cf916b1394681c7d043e79e1522c33e5bc6c1",
-                "reference": "1c9cf916b1394681c7d043e79e1522c33e5bc6c1",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/ef74f3783e964cea477f06e6d6ce209df1f37881",
+                "reference": "ef74f3783e964cea477f06e6d6ce209df1f37881",
                 "shasum": ""
             },
             "require": {
@@ -1480,7 +1481,7 @@
                 "framework",
                 "yii2"
             ],
-            "time": "2018-02-18T22:52:12+00:00"
+            "time": "2018-03-13T14:15:01+00:00"
         },
         {
             "name": "yiisoft/yii2-composer",
