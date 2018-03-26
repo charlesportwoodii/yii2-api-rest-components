@@ -54,6 +54,27 @@ abstract class ActiveRecord extends YiiRedisActiveRecord
     /**
      * @inheritdoc
      */
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
+        // If an expiration date is set in the model attributes, tell Redis to automatically handle it
+        if (!empty($this->expires_at)) {
+            $db = static::getDb();
+            $pk = [];
+            foreach ($this->primaryKey() as $key) {
+                $pk[$key] = $values[$key] = $this->getAttribute($key);
+            }
+
+            $pk = static::buildKey($pk);
+            $key = static::keyPrefix() . ':a:' . $pk;
+            $result = $db->executeCommand('EXPIREAT', [$key, $this->expires_at]);
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
