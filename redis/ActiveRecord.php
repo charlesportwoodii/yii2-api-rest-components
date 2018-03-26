@@ -63,7 +63,7 @@ abstract class ActiveRecord extends YiiRedisActiveRecord
             $db = static::getDb();
             $pk = [];
             foreach ($this->primaryKey() as $key) {
-                $pk[$key] = $values[$key] = $this->getAttribute($key);
+                $pk[$key] = $this->getAttribute($key);
             }
 
             $pk = static::buildKey($pk);
