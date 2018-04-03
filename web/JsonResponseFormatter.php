@@ -29,23 +29,38 @@ class JsonResponseFormatter extends YiiJsonResponseFormatter
 
             // Pull the exception
             $exception = Yii::$app->errorHandler->exception;
-            if ($exception && is_a($exception, 'yii\web\HttpException')) {
-                $copy = $response->data;
-                $response->data = null;
+            if ($exception) {
+                if (is_a($exception, 'yii\web\HttpException')) {
+                    $copy = $response->data;
+                    $response->data = null;
 
-                if (isset($copy['message'])) {
-                    $message = \json_decode($copy['message']);
-                    if (\json_last_error() === JSON_ERROR_NONE) {
-                        $copy['message'] = $message;
+                    if (isset($copy['message'])) {
+                        $message = \json_decode($copy['message']);
+                        if (\json_last_error() === JSON_ERROR_NONE) {
+                            $copy['message'] = $message;
+                        }
                     }
+
+                    $response->data['error'] = [
+                        'message'   => $copy['message'],
+                        'code'      => $copy['code']
+                    ];
+
+                    $status = $copy['status'];
+                } else {
+                    
+                    Yii::error([
+                        'message' => 'A fatal uncaught error occured.',
+                        'exception' => $exception
+                    ]);
+                    $status = 500;
+                    $response->data = [
+                        'error' => [
+                            'message' => Yii::t('yrc', 'An unexpected error occured.'),
+                            'code' => 0
+                        ]
+                    ];
                 }
-
-                $response->data['error'] = [
-                    'message'   => $copy['message'],
-                    'code'      => $copy['code']
-                ];
-
-                $status = $copy['status'];
             }
 
             // If the data attribute isn't set, transfer everything into it and build the new response object
