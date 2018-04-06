@@ -78,6 +78,7 @@ class Json25519ResponseFormatter extends JsonResponseFormatter
         }
 
         $response->getHeaders()->set('x-hashid', $key->hash);
+        $response->getHeaders()->set('x-pubkey-expiration', $key->expires_at);
         $response->getHeaders()->set('x-nonce', \base64_encode($nonce));
         $response->getHeaders()->set('x-pubkey', \base64_encode($key->getBoxPublicKey()));
         $response->content = \base64_encode($content);
