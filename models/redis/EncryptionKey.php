@@ -8,6 +8,13 @@ use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
 use yrc\redis\ActiveRecord;
 use Yii;
 
+/**
+ * Represents a libsodium keypair with an identifiable hash for encrypted requests & responses
+ * @property integer $id
+ * @property string $hash
+ * @property integer $secret
+ * @property integer $expires_at
+ */
 final class EncryptionKey extends ActiveRecord
 {
     /**

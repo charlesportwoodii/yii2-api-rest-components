@@ -16,7 +16,7 @@ use Yii;
  *
  * @property integer $id
  * @property string $email
- * @property strin $username
+ * @property string $username
  * @property string $password
  * @property string $activation_token
  * @property string $reset_token

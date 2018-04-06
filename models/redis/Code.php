@@ -6,7 +6,13 @@ use Base32\Base32;
 use Yii;
 
 /**
- * Represents a temporary, (ideally) single use code for operations where passwords cannot be used
+ * Represents a temporary single use consumable token
+ * @property integer $id
+ * @property string $hash
+ * @property integer $user_id
+ * @property mixed $type
+ * @property mixed $data
+ * @property integer $expires_at
  */
 class Code extends \yrc\redis\ActiveRecord
 {

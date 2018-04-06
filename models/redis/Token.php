@@ -4,13 +4,20 @@ namespace yrc\models\redis;
 
 use Base32\Base32;
 use yrc\models\TokenKeyPair;
+use yrc\redis\ActiveRecord;
 use Yii;
 
 /**
  * Abstract class for generating and storing tokens
- * @class Token
+ * @property integer $id
+ * @property integer $user_id
+ * @property string $access_token
+ * @property string $refresh_token
+ * @property string $ikm
+ * @property string $secret_sign_key
+ * @property integer $expires_at
  */
-abstract class Token extends \yrc\redis\ActiveRecord
+abstract class Token extends ActiveRecord
 {
     /**
      * This is our default token lifespan
