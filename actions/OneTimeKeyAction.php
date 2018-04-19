@@ -20,7 +20,7 @@ class OneTimeKeyAction extends RestAction
         // Return the public keys, and a signature of the public key
         return [
             'public' => \base64_encode($model->getBoxPublicKey()),
-            'hash' => $model->hash,
+            'hash' => $model->hash
         ];
     }
 }

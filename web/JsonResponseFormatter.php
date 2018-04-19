@@ -63,8 +63,10 @@ class JsonResponseFormatter extends YiiJsonResponseFormatter
                 }
             }
 
+            
+
             // If the data attribute isn't set, transfer everything into it and build the new response object
-            if (!isset($response->data['data'])) {
+            if (\is_array($response->data) && !isset($response->data['data'])) {
                 $copy = $response->data;
 
                 $error = $copy['error'] ?? null;
