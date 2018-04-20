@@ -67,6 +67,7 @@ class JsonResponseFormatter extends YiiJsonResponseFormatter
                 $copy = $response->data;
                 $response->data = [];
                 $response->data['data'] = $copy;
+                $response->data['status'] = $status;
             }
 
             // If the data attribute isn't set, transfer everything into it and build the new response object
