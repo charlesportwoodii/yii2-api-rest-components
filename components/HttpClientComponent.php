@@ -62,7 +62,13 @@ final class HttpClientComponent extends BaseObject
         $this->client->on(Client::EVENT_AFTER_SEND, function (RequestEvent $e) {
             Yii::info([
                 'message' => sprintf('Recieved HTTP response HTTP [%s] | [%s] %s', $e->response->getStatusCode(), $e->request->getMethod(), $e->request->getUrl()),
-                'data' =>  $e->response->getContent(),
+                'data' => (function () use ($e) {
+                    $content = $e->response->getContent();
+                    if (preg_match('~[^\x20-\x7E\t\r\n]~', $content) > 0) {
+                        return '[binary data]';
+                    }
+                    return $content;
+                })(),
                 'user_id' => Yii::$app->user->id ?? null
             ], 'httpclient');
         });
