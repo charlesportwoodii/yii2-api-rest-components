@@ -78,7 +78,7 @@ abstract class Token extends ActiveRecord
         $token->user_id = $userId;
         $token->access_token = \str_replace('=', '', Base32::encode(\random_bytes(32)));
         $token->refresh_token = \str_replace('=', '', Base32::encode(\random_bytes(32)));
-        $token->ikm =  \base64_encode(\random_bytes(32));
+        $token->ikm = \base64_encode(\random_bytes(32));
         $token->secret_sign_kp = \base64_encode(sodium_crypto_sign_secretkey($signKp));
         $token->expires_at = \strtotime(static::TOKEN_EXPIRATION_TIME);
 
