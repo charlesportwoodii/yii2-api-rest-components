@@ -28,11 +28,9 @@ class JsonResponseFormatter extends YiiJsonResponseFormatter
             $status = 200;
 
             // Pull the exception
-            $exception = Yii::$app->errorHandler->exception;
-            if ($exception) {
+            if ($exception = Yii::$app->errorHandler->exception) {
                 if (is_a($exception, 'yii\web\HttpException')) {
                     $copy = $response->data;
-                    $response->data = null;
 
                     if (isset($copy['message'])) {
                         $message = \json_decode($copy['message']);
@@ -41,20 +39,23 @@ class JsonResponseFormatter extends YiiJsonResponseFormatter
                         }
                     }
 
-                    $response->data['error'] = [
-                        'message'   => $copy['message'],
-                        'code'      => $copy['code']
+                    $response->data = [
+                        'data' => null,
+                        'error' => [
+                            'message'   => $copy['message'],
+                            'code'      => $copy['code']
+                        ]
                     ];
 
                     $status = $copy['status'];
                 } else {
-                    
                     Yii::error([
                         'message' => 'A fatal uncaught error occured.',
                         'exception' => $exception
                     ]);
                     $status = 500;
                     $response->data = [
+                        'data' => null,
                         'error' => [
                             'message' => Yii::t('yrc', 'An unexpected error occured.'),
                             'code' => 0
@@ -65,31 +66,26 @@ class JsonResponseFormatter extends YiiJsonResponseFormatter
 
             if (\is_object($response->data)) {
                 $copy = $response->data;
-                $response->data = [];
+                $response->data = null;
                 $response->data['data'] = $copy;
-                $response->data['status'] = $status;
             }
 
-            // If the data attribute isn't set, transfer everything into it and build the new response object
-            if (!isset($response->data['data'])) {
+            if (!\is_array($response->data) || (is_array($response->data) && !array_key_exists('data', $response->data))) {
                 $copy = $response->data;
 
                 $error = $copy['error'] ?? null;
                 unset($copy['error']);
-
-                $response->data = null;
-                $response->data['data'] = $copy;
                 if ($error !== null) {
                     $response->data['error'] = $error;
                 }
 
-                $response->data['status'] = $status;
-
-                if ($response->data['data'] === [] || $response->data['data'] === null) {
-                    $response->data['data'] =  null;
-                }
+                $response->data = [
+                    'data' => $copy,
+                    'error' => null
+                ];
             }
 
+            $response->data['status'] = $status;
             $response->content = Json::encode($response->data, $options);
         }
     }
