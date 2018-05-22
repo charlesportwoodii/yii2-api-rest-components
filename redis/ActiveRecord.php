@@ -95,10 +95,10 @@ abstract class ActiveRecord extends YiiRedisActiveRecord
     {
         if (parent::beforeDelete()) {
             // Log that the code was deleted
-            Yii::info([
+            Yii::debug([
                 'message' => 'Deleting redis object',
                 'code_id' => $this->id
-            ]);
+            ], 'yrc/redis/ActiveRecord:delete');
 
             return true;
         }

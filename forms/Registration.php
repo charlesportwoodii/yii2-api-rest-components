@@ -121,7 +121,7 @@ abstract class Registration extends \yii\base\Model
                         'email' => $user->email
                     ],
                     'job_id' => $job->getId()
-                ]);    
+                ], 'yrc/forms/Registration:register');    
 
                 return true;
             }

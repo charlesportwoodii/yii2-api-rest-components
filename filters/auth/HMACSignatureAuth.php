@@ -186,7 +186,7 @@ final class HMACSignatureAuth extends AuthMethod
         Yii::debug([
             'message' => sprintf('Derived Signature String %s', $signatureString),
             'body' => $body
-        ], 'hmac-signature');
+        ], 'yrc\filters\auth\HMACSignatureAuth:generateSignature');
 
         return $signatureString;
     }
