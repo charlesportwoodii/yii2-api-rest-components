@@ -60,7 +60,8 @@ class AuthenticationAction extends RestAction
             $accessToken = $data[0];
 
             // Retrieve the token object
-            $token = Yii::$app->yrc->tokenClass::find()
+            $tokenClass = (Yii::$app->user->identityClass::TOKEN_CLASS);
+            $token = $tokenClass::find()
                 ->where([
                     'access_token' => $accessToken,
                     'user_id'      => Yii::$app->user->id

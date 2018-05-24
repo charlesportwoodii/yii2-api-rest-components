@@ -78,7 +78,7 @@ abstract class Login extends \yii\base\Model
         
         // We only allow verified users to authenticate
         if ($this->user === null) {
-            $this->user = Yii::$app->yrc->userClass::findOne(['email' => $this->email, 'verified' => 1]);
+            $this->user = Yii::$app->user->identityClass::findOne(['email' => $this->email, 'verified' => 1]);
         }
 
         return $this->user;
@@ -129,7 +129,8 @@ abstract class Login extends \yii\base\Model
     public function authenticate()
     {
         if ($this->validate()) {
-            $token = Yii::$app->yrc->tokenClass::generate($this->getUser()->id);
+            $tokenClass = (Yii::$app->user->identityClass::TOKEN_CLASS);
+            $token = $tokenClass::generate($this->getUser()->id);
 
             // Actually log the user into the application so we can access global user state
             Yii::$app->user->loginByAccessToken($token);

@@ -69,7 +69,7 @@ abstract class Token extends ActiveRecord
         $model = null;
         $signKp = sodium_crypto_sign_keypair();
 
-        $user = Yii::$app->yrc->userClass::findOne(['id' => $userId]);
+        $user = Yii::$app->user->identityClass::findOne(['id' => $userId]);
         if ($user === null) {
             throw new \yii\base\Exception('Invalid user');
         }

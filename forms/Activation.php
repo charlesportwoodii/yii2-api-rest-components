@@ -54,7 +54,7 @@ abstract class Activation extends \yii\base\Model
                 return;
             }
 
-            $this->user = Yii::$app->yrc->userClass::find()->where(['id' => $code->user_id])->one();
+            $this->user = Yii::$app->user->identityClass::find()->where(['id' => $code->user_id])->one();
 
             if ($this->user === null) {
                 $this->addError('activation_code', Yii::t('yrc', 'The activation code provided is not valid.'));

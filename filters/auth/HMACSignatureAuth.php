@@ -141,7 +141,8 @@ final class HMACSignatureAuth extends AuthMethod
     private function getTokenFromAccessToken(string $accessToken)
     {
         try {
-            $token = Yii::$app->yrc->tokenClass::find()
+            $tokenClass = (Yii::$app->user->identityClass::TOKEN_CLASS);
+            $token = $tokenClass::find()
                 ->where(['access_token' => $accessToken])
                 ->one();
         } catch (\Exception $e) {

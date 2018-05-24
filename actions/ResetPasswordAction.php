@@ -44,7 +44,7 @@ class ResetPasswordAction extends RestAction
 
             // If the user is authenticated, populate the model
             if (!Yii::$app->user->isGuest) {
-                $user = Yii::$app->yrc->userClass::findOne(['id' => Yii::$app->user->id]);
+                $user = Yii::$app->user->identityClass::findOne(['id' => Yii::$app->user->id]);
                 $form->setUser($user);
             } else {
                 $form->email = Yii::$app->request->post('email', null);

@@ -28,6 +28,8 @@ use Yii;
  */
 abstract class User extends ActiveRecord implements IdentityInterface, RateLimitInterface
 {
+    const TOKEN_CLASS = '\yrc\models\redis\Token';
+    
     /**
      * password_hash Algorithm
      * @var integer
