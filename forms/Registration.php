@@ -63,7 +63,7 @@ abstract class Registration extends \yii\base\Model
     public function verifyUsernameOrEmail($attribute, $params)
     {
         if (!$this->hasErrors()) {
-            $user = new Yii::$app->yrc->userClass;
+            $user = new Yii::$app->user->identityClass;
             $user->$attribute = $this->$attribute;
 
             $user->validate([$attribute]);
@@ -81,7 +81,7 @@ abstract class Registration extends \yii\base\Model
     public function register()
     {
         if ($this->validate()) {
-            $user = new Yii::$app->yrc->userClass;
+            $user = new Yii::$app->user->identityClass;
             
             $user->attributes = [
                 'email'             => $this->email,

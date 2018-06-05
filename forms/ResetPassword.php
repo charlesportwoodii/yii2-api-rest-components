@@ -167,7 +167,7 @@ abstract class ResetPassword extends \yii\base\Model
                 return;
             }
 
-            $this->setUser(Yii::$app->yrc->userClass::find()->where([
+            $this->setUser(Yii::$app->user->identityClass::find()->where([
                 'id' => $code->user_id
             ])->one());
 
@@ -201,9 +201,9 @@ abstract class ResetPassword extends \yii\base\Model
         }
 
         if (isset($this->user_id)) {
-            $this->user = Yii::$app->yrc->userClass::findOne(['id' => $this->user_id]);
+            $this->user = Yii::$app->user->identityClass::findOne(['id' => $this->user_id]);
         } elseif (isset($this->email)) {
-            $this->user = Yii::$app->yrc->userClass::findOne(['email' => $this->email]);
+            $this->user = Yii::$app->user->identityClass::findOne(['email' => $this->email]);
         }
 
         return $this->user;
