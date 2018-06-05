@@ -166,7 +166,7 @@ final class HMACSignatureAuth extends AuthMethod
             return $request->getRawBody();
         }
         
-        return JSON::encode($request->bodyParams, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        return JSON::encode($request->bodyParams, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRESERVE_ZERO_FRACTION);
     }
 
     /**
