@@ -37,7 +37,7 @@
         "yii2mod/yii2-rbac": "*",
         "spomky-labs/otphp": ">=8.2.0",
         "christian-riesen/base32": "1.3.1",
-        "rpq/server": "dev-master"
+        "rpq/server": "^0.1.0"
     },
     "autoload": {
         "psr-4": { "yrc\\": "" }
