@@ -9,8 +9,8 @@ use yii\web\UnauthorizedHttpException;
 use Yii;
 
 /**
- * @class AuthenticationAction
  * Handles Authentication and Deauthentication of users
+ * @class AuthenticationAction
  */
 class AuthenticationAction extends RestAction
 {

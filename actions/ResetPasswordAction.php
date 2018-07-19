@@ -10,8 +10,8 @@ use yii\web\HttpException;
 use Yii;
 
 /**
- * @class ResetPasswordAction
  * Handles token refresh
+ * @class ResetPasswordAction
  */
 class ResetPasswordAction extends RestAction
 {

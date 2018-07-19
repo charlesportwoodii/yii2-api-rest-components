@@ -9,8 +9,8 @@ use yii\web\HttpException;
 use Yii;
 
 /**
- * @class RegisterAction
  * Handles user registration
+ * @class RegisterAction
  */
 class RegisterAction extends RestAction
 {

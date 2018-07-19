@@ -9,8 +9,8 @@ use yii\web\HttpException;
 use Yii;
 
 /**
- * @class OTPAction
  * Handles enabling and disabling of OTP
+ * @class OTPAction
  */
 class OTPAction extends RestAction
 {

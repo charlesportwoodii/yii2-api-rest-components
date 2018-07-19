@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "33b9cf3776f9213c7f58f51bc6751cd6",
+    "content-hash": "ae823b1b4c2c1ae3d44cb38ce365968b",
     "packages": [
         {
             "name": "2amigos/yii2-arrayquery-component",
@@ -786,20 +786,20 @@
         },
         {
             "name": "rpq/client",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/charlesportwoodii/rpq-client.git",
-                "reference": "cc6fa831fe2112f7ac1b3acaa79596961322c171"
+                "reference": "2b0b9227056db1e642cccc9a5a91b8af34503587"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/charlesportwoodii/rpq-client/zipball/cc6fa831fe2112f7ac1b3acaa79596961322c171",
-                "reference": "cc6fa831fe2112f7ac1b3acaa79596961322c171",
+                "url": "https://api.github.com/repos/charlesportwoodii/rpq-client/zipball/2b0b9227056db1e642cccc9a5a91b8af34503587",
+                "reference": "2b0b9227056db1e642cccc9a5a91b8af34503587",
                 "shasum": ""
             },
             "require": {
-                "ext-redis": "^3.1",
+                "ext-redis": "^3.1.2 || ^4.0.2",
                 "php": "^7.1",
                 "ramsey/uuid": "^3.7"
             },
@@ -823,33 +823,33 @@
                 }
             ],
             "description": "Redis Priority Queue Client implementation in pure PHP",
-            "time": "2018-03-13T20:03:14+00:00"
+            "time": "2018-07-19T19:42:21+00:00"
         },
         {
             "name": "rpq/server",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/charlesportwoodii/rpq-server.git",
-                "reference": "be3d0307b57befe799de7568528786ab281da3ba"
+                "reference": "1bbf6379bc909f43b8d3837a75d1412409fa1495"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/charlesportwoodii/rpq-server/zipball/be3d0307b57befe799de7568528786ab281da3ba",
-                "reference": "be3d0307b57befe799de7568528786ab281da3ba",
+                "url": "https://api.github.com/repos/charlesportwoodii/rpq-server/zipball/1bbf6379bc909f43b8d3837a75d1412409fa1495",
+                "reference": "1bbf6379bc909f43b8d3837a75d1412409fa1495",
                 "shasum": ""
             },
             "require": {
                 "amphp/amp": "^2.0",
                 "amphp/process": "^v0.3",
                 "ext-pcntl": "*",
-                "ext-redis": "^3.1.0",
+                "ext-redis": "^3.1.2 || ^4.0.2",
                 "monolog/monolog": "^1.23",
                 "php": "^7.1",
-                "rpq/client": "^0.1.0",
+                "rpq/client": "^0.1.1",
                 "symfony/console": "^4.0",
-                "symfony/process": "^4.0",
-                "symfony/yaml": "^4.0"
+                "symfony/process": "^4.1",
+                "symfony/yaml": "^4.1"
             },
             "bin": [
                 "rpq"
@@ -871,7 +871,7 @@
                 }
             ],
             "description": "Redis Priority Queue Server implementation in pure PHP",
-            "time": "2018-07-10T20:10:05+00:00"
+            "time": "2018-07-19T19:47:05+00:00"
         },
         {
             "name": "spomky-labs/otphp",
@@ -1280,20 +1280,21 @@
         },
         {
             "name": "twig/twig",
-            "version": "v2.4.8",
+            "version": "v2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "7b604c89da162034bdf4bb66310f358d313dd16d"
+                "reference": "6a5f676b77a90823c2d4eaf76137b771adf31323"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/7b604c89da162034bdf4bb66310f358d313dd16d",
-                "reference": "7b604c89da162034bdf4bb66310f358d313dd16d",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/6a5f676b77a90823c2d4eaf76137b771adf31323",
+                "reference": "6a5f676b77a90823c2d4eaf76137b771adf31323",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.0",
+                "symfony/polyfill-ctype": "^1.8",
                 "symfony/polyfill-mbstring": "~1.0"
             },
             "require-dev": {
@@ -1304,7 +1305,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.4-dev"
+                    "dev-master": "2.5-dev"
                 }
             },
             "autoload": {
@@ -1333,16 +1334,16 @@
                 },
                 {
                     "name": "Twig Team",
-                    "homepage": "http://twig.sensiolabs.org/contributors",
+                    "homepage": "https://twig.symfony.com/contributors",
                     "role": "Contributors"
                 }
             ],
             "description": "Twig, the flexible, fast, and secure template language for PHP",
-            "homepage": "http://twig.sensiolabs.org",
+            "homepage": "https://twig.symfony.com",
             "keywords": [
                 "templating"
             ],
-            "time": "2018-04-02T09:24:19+00:00"
+            "time": "2018-07-13T07:18:09+00:00"
         },
         {
             "name": "yidas/yii2-bower-asset",
@@ -1833,7 +1834,59 @@
             "time": "2017-11-07T20:54:43+00:00"
         }
     ],
-    "packages-dev": [],
+    "packages-dev": [
+        {
+            "name": "squizlabs/php_codesniffer",
+            "version": "3.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
+                "reference": "d86873af43b4aa9d1f39a3601cc0cfcf02b25266"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/d86873af43b4aa9d1f39a3601cc0cfcf02b25266",
+                "reference": "d86873af43b4aa9d1f39a3601cc0cfcf02b25266",
+                "shasum": ""
+            },
+            "require": {
+                "ext-simplexml": "*",
+                "ext-tokenizer": "*",
+                "ext-xmlwriter": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0"
+            },
+            "bin": [
+                "bin/phpcs",
+                "bin/phpcbf"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Greg Sherwood",
+                    "role": "lead"
+                }
+            ],
+            "description": "PHP_CodeSniffer tokenizes PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.",
+            "homepage": "http://www.squizlabs.com/php-codesniffer",
+            "keywords": [
+                "phpcs",
+                "standards"
+            ],
+            "time": "2018-06-06T23:58:19+00:00"
+        }
+    ],
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": [],
@@ -1845,7 +1898,7 @@
         "ext-openssl": "*",
         "ext-pdo": "*",
         "ext-reflection": "*",
-        "ext-redis": ">=3.1.0",
+        "ext-redis": "^3.1.2 || ^4.0.2",
         "ext-hash": "*",
         "ext-json": "*",
         "ext-pcntl": "*",

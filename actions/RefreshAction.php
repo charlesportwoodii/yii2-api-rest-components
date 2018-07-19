@@ -9,8 +9,8 @@ use yii\helpers\ArrayHelper;
 use Yii;
 
 /**
- * @class RefreshAction
  * Handles token refresh
+ * @class RefreshAction
  */
 class RefreshAction extends RestAction
 {

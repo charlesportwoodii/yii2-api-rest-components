@@ -9,8 +9,8 @@ use yii\web\HttpException;
 use Yii;
 
 /**
- * @class ActivationAction
  * Handles token refresh
+ * @class ActivationAction
  */
 class ActivationAction extends RestAction
 {

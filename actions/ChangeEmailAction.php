@@ -9,8 +9,8 @@ use yii\web\HttpException;
 use Yii;
 
 /**
- * @class ChangeEmailAction
  * Handles enabling and disabling of OTP
+ * @class ChangeEmailAction
  */
 class ChangeEmailAction extends RestAction
 {
