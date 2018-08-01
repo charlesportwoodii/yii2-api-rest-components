@@ -86,13 +86,13 @@ class AuthenticationAction extends RestAction
     /**
      * Returns the unversioned authorization headers
      * @param string $data
-     * @return array
+     * @return array|bool
      */
     private static function getV1Headers(string $data)
     {
         $params = explode(',', trim($data[1]));
 
-        if (count($data) !== 3) {
+        if (count($params) !== 3) {
             return false;
         }
 
@@ -108,7 +108,7 @@ class AuthenticationAction extends RestAction
     /**
      * Returns the versioned authorization headers
      * @param string $data
-     * @return array
+     * @return array|bool
      */
     private static function getVersionedHeaders(string $data)
     {

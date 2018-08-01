@@ -72,13 +72,13 @@ final class HMACSignatureAuth extends AuthMethod
     /**
      * Returns the unversioned authorization headers
      * @param string $data
-     * @return array
+     * @return array|bool
      */
     private function getV1Headers(string $data)
     {
         $params = explode(',', trim($data[1]));
 
-        if (count($data) !== 3) {
+        if (count($params) !== 3) {
             return false;
         }
 
@@ -94,7 +94,7 @@ final class HMACSignatureAuth extends AuthMethod
     /**
      * Returns the versioned authorization headers
      * @param string $data
-     * @return array
+     * @return array|bool
      */
     private function getVersionedHeaders(string $data)
     {
