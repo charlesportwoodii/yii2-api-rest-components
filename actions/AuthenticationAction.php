@@ -56,14 +56,17 @@ class AuthenticationAction extends RestAction
         
         // Pull the accessToken from the Authorization header string
         if ($authHeader !== null && preg_match('/^HMAC\s+(.*?)$/', $authHeader, $matches)) {
-            $data = explode(',', trim($matches[1]));
-            $accessToken = $data[0];
+            if (\strpos($matches[1], ',') !== false) {
+                $data = self::getV1Headers($matches[1]);
+            } else {
+                $data = self::getVersionedHeaders($matches[1]);
+            }
 
             // Retrieve the token object
             $tokenClass = (Yii::$app->user->identityClass::TOKEN_CLASS);
             $token = $tokenClass::find()
                 ->where([
-                    'access_token' => $accessToken,
+                    'access_token' => $data['access_token'],
                     'user_id'      => Yii::$app->user->id
                 ])
                 ->one();
@@ -78,5 +81,44 @@ class AuthenticationAction extends RestAction
 
         // Header isn't present
         throw new UnauthorizedHttpException;
+    }
+
+    /**
+     * Returns the unversioned authorization headers
+     * @param string $data
+     * @return array
+     */
+    private static function getV1Headers(string $data)
+    {
+        $params = explode(',', trim($data[1]));
+
+        if (count($data) !== 3) {
+            return false;
+        }
+
+        return [
+            'access_token' => $params[0],
+            'hmac' => $params[1],
+            'salt' => $params[2],
+            'v' => 1,
+            'date' => null,
+        ];
+    }
+
+    /**
+     * Returns the versioned authorization headers
+     * @param string $data
+     * @return array
+     */
+    private static function getVersionedHeaders(string $data)
+    {
+        $params = \json_decode(\base64_decode($data), true);
+
+        // Make sure all the necessary parameters are set
+        if (!isset($params['access_token']) || !isset($params['hmac']) || !isset($params['salt']) || !isset($params['v']) || !isset($params['date'])) {
+            return false;
+        }
+
+        return $params;
     }
 }

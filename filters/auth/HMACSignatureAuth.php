@@ -49,19 +49,63 @@ final class HMACSignatureAuth extends AuthMethod
         $authHeader = $request->getHeaders()->get(self::AUTHORIZATION_HEADER);
 
         if ($authHeader !== null && preg_match('/^HMAC\s+(.*?)$/', $authHeader, $matches)) {
-            $data = explode(',', trim($matches[1]));
-            if (count($data) === 3) {
-                if ($token = $this->getTokenFromAccessToken($data[0])) {
-                    if ($this->isHMACSignatureValid($request, $token, \base64_decode($data[2]), $data[1])) {
+            if (\strpos($matches[1], ',') !== false) {
+                $data = $this->getV1Headers($matches[1]);
+            } else {
+                $data = $this->getVersionedHeaders($matches[1]);
+            }
+
+            if ($data) {
+                if ($token = $this->getTokenFromAccessToken($data['access_token'])) {
+                    if ($this->isHMACSignatureValid($request, $token, \base64_decode($data['salt']), $data['hmac'], $data['date'])) {
                         if ($identity = $user->loginByAccessToken($token, \get_class($this))) {
                             return $identity;
                         }
                     }
                 }
-            }            
+            }
         }
             
         $this->handleFailure($response);
+    }
+
+    /**
+     * Returns the unversioned authorization headers
+     * @param string $data
+     * @return array
+     */
+    private function getV1Headers(string $data)
+    {
+        $params = explode(',', trim($data[1]));
+
+        if (count($data) !== 3) {
+            return false;
+        }
+
+        return [
+            'access_token' => $params[0],
+            'hmac' => $params[1],
+            'salt' => $params[2],
+            'v' => 1,
+            'date' => null,
+        ];
+    }
+
+    /**
+     * Returns the versioned authorization headers
+     * @param string $data
+     * @return array
+     */
+    private function getVersionedHeaders(string $data)
+    {
+        $params = \json_decode(\base64_decode($data), true);
+
+        // Make sure all the necessary parameters are set
+        if (!isset($params['access_token']) || !isset($params['hmac']) || !isset($params['salt']) || !isset($params['v']) || !isset($params['date'])) {
+            return false;
+        }
+
+        return $params;
     }
     
     /**
@@ -72,7 +116,7 @@ final class HMACSignatureAuth extends AuthMethod
      * @param string $hmac
      * @return bool
      */
-    private function isHMACSignatureValid(Request $request, Token $token, string $salt, string $hmac = null)
+    private function isHMACSignatureValid(Request $request, Token $token, string $salt, string $hmac = null, string $date = null)
     {
         static $selfHMAC = null;
         static $hkdf = null;
@@ -98,27 +142,31 @@ final class HMACSignatureAuth extends AuthMethod
 
         // Termiante the request if the time drift exceeds the allocated value
         // Do not allow request to be submitted before the server time
-        $drift = $this->getTimeDrift($request);
+        $drift = $this->getTimeDrift($request, $date);
         if ($drift >= self::DRIFT_TIME_ALLOWANCE) {
             return false;
         }
 
-        return $this->isHMACValid($request, $hmac, $hkdf, $salt);
+        return $this->isHMACValid($request, $hmac, $hkdf, $salt, $date);
     }
     
     /**
      * Gets the datetime drift that has occured since the request was sent
      * @param \yii\web\Request $request
+     * @param string $date
      * @return int
      */
-    private function getTimeDrift(Request $request)
+    private function getTimeDrift(Request $request, string $headerDate = null)
     {
         // Get the current datetime
         $now = new \DateTime();
         $now->format(\DateTime::RFC1123);
         
         // Get the Header datetime
-        $headerDate = $request->getHeaders()->get(self::DATE_HEADER);
+        if ($headerDate === null) {
+            $headerDate = $request->getHeaders()->get(self::DATE_HEADER);
+        }
+        
         if ($headerDate === null) {
             return false;
         }
@@ -175,13 +223,18 @@ final class HMACSignatureAuth extends AuthMethod
      * @param \yii\web\Request $request
      * @param string $body
      * @param string $salt
+     * @param strin $date
      * @return string
      */
-    private function generateSignatureStringFromRequestAndBody(Request $request, string $body, string $salt)
+    private function generateSignatureStringFromRequestAndBody(Request $request, string $body, string $salt, string $headerDate = null)
     {
+        if ($headerDate === null) {
+            $headerDate = $request->getHeaders()->get(self::DATE_HEADER);
+        }
+
         $signatureString = hash('sha256', $body) . "\n" .
                             $request->method . "+" . $request->getUrl() . "\n" .
-                            $request->getHeaders()->get(self::DATE_HEADER) . "\n" .
+                            $headerDate . "\n" .
                             \base64_encode($salt);
        
         Yii::debug([
@@ -198,12 +251,13 @@ final class HMACSignatureAuth extends AuthMethod
      * @param string $hmac
      * @param string $hkdf
      * @param string $salt
+     * @param string $date
      * @return boolean
      */
-    public function isHMACValid(Request $request, string $hmac, string $hkdf, string $salt)
+    public function isHMACValid(Request $request, string $hmac, string $hkdf, string $salt, string $date = null)
     {
         $body = $this->getBodyFromRequest($request);
-        $signatureString = $this->generateSignatureStringFromRequestAndBody($request, $body, $salt);
+        $signatureString = $this->generateSignatureStringFromRequestAndBody($request, $body, $salt, $date);
 
         $selfHMAC = \base64_encode(\hash_hmac('sha256', $signatureString, \bin2hex($hkdf), true));
         
