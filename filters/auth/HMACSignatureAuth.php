@@ -57,7 +57,7 @@ final class HMACSignatureAuth extends AuthMethod
 
             if ($data) {
                 if ($token = $this->getTokenFromAccessToken($data['access_token'])) {
-                    if ($this->isHMACSignatureValid($request, $token, \base64_decode($data['salt']), $data['hmac'], $data['date'])) {
+                    if ($this->isHMACSignatureValid($request, $token, \base64_decode($data['salt']), $data['hmac'], $data['v'], $data['date'])) {
                         if ($identity = $user->loginByAccessToken($token, \get_class($this))) {
                             return $identity;
                         }
@@ -114,9 +114,11 @@ final class HMACSignatureAuth extends AuthMethod
      * @param \yrc\models\redis\Token
      * @param string $salt
      * @param string $hmac
+     * @param string $version
+     * @param string $date
      * @return bool
      */
-    private function isHMACSignatureValid(Request $request, Token $token, string $salt, string $hmac = null, string $date = null)
+    private function isHMACSignatureValid(Request $request, Token $token, string $salt, string $hmac = null, string $version, string $date = null)
     {
         static $selfHMAC = null;
         static $hkdf = null;
@@ -147,7 +149,7 @@ final class HMACSignatureAuth extends AuthMethod
             return false;
         }
 
-        return $this->isHMACValid($request, $hmac, $hkdf, $salt, $date);
+        return $this->isHMACValid($request, $hmac, $hkdf, $salt, $version, $date);
     }
     
     /**
@@ -223,16 +225,23 @@ final class HMACSignatureAuth extends AuthMethod
      * @param \yii\web\Request $request
      * @param string $body
      * @param string $salt
-     * @param strin $date
+     * @param string $version
+     * @param string $date
      * @return string
      */
-    private function generateSignatureStringFromRequestAndBody(Request $request, string $body, string $salt, string $headerDate = null)
+    private function generateSignatureStringFromRequestAndBody(Request $request, string $body, string $salt, string $version, string $headerDate = null)
     {
         if ($headerDate === null) {
             $headerDate = $request->getHeaders()->get(self::DATE_HEADER);
         }
 
-        $signatureString = hash('sha256', $body) . "\n" .
+        if ($version == 2) {
+            $hash = \base64_encode(\sodium_crypto_generichash($body, $salt, 64));
+        } else {
+            $hash = \hash('sha256', $body);
+        }
+        
+        $signatureString =  $hash . "\n" .
                             $request->method . "+" . $request->getUrl() . "\n" .
                             $headerDate . "\n" .
                             \base64_encode($salt);
@@ -251,13 +260,14 @@ final class HMACSignatureAuth extends AuthMethod
      * @param string $hmac
      * @param string $hkdf
      * @param string $salt
+     * @param string $version
      * @param string $date
      * @return boolean
      */
-    public function isHMACValid(Request $request, string $hmac, string $hkdf, string $salt, string $date = null)
+    public function isHMACValid(Request $request, string $hmac, string $hkdf, string $salt, string $version, string $date = null)
     {
         $body = $this->getBodyFromRequest($request);
-        $signatureString = $this->generateSignatureStringFromRequestAndBody($request, $body, $salt, $date);
+        $signatureString = $this->generateSignatureStringFromRequestAndBody($request, $body, $salt, $version, $date);
 
         $selfHMAC = \base64_encode(\hash_hmac('sha256', $signatureString, \bin2hex($hkdf), true));
         
