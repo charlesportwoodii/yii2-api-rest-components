@@ -2,7 +2,7 @@
 
 namespace yrc\actions;
 
-use app\forms\Registration;
+use common\forms\Registration;
 use yrc\rest\Action as RestAction;
 
 use yii\web\HttpException;

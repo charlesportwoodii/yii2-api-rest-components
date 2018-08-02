@@ -2,7 +2,7 @@
 
 namespace yrc\actions;
 
-use app\forms\ChangeEmail;
+use common\forms\ChangeEmail;
 use yrc\rest\Action as RestAction;
 
 use yii\web\HttpException;

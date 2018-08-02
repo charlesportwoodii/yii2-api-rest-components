@@ -2,7 +2,7 @@
 
 namespace yrc\actions;
 
-use app\forms\Login;
+use common\forms\Login;
 use yrc\rest\Action as RestAction;
 
 use yii\web\UnauthorizedHttpException;
