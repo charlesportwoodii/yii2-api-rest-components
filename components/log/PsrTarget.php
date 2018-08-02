@@ -10,6 +10,7 @@ use yii\base\InvalidConfigException;
 use yii\helpers\VarDumper;
 use yii\log\Logger;
 use yii\log\Target;
+use Yii;
 
 final class PsrTarget extends Target
 {
