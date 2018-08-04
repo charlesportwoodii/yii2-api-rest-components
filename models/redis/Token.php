@@ -3,7 +3,6 @@
 namespace yrc\models\redis;
 
 use Base32\Base32;
-use yrc\models\TokenKeyPair;
 use yrc\redis\ActiveRecord;
 use Yii;
 
@@ -24,6 +23,11 @@ abstract class Token extends ActiveRecord
      * @const TOKEN_EXPIRATION_TIME
      */
     const TOKEN_EXPIRATION_TIME = '+15 minutes';
+
+    /**
+     * The refresh token class
+     */
+    const REFRESH_TOKEN_CLASS = '\app\models\RefreshToken';
 
     /**
      * @inheritdoc
@@ -75,12 +79,14 @@ abstract class Token extends ActiveRecord
         }
        
         $token = new static;
-        $token->user_id = $userId;
-        $token->access_token = \str_replace('=', '', Base32::encode(\random_bytes(32)));
-        $token->refresh_token = \str_replace('=', '', Base32::encode(\random_bytes(32)));
-        $token->ikm = \base64_encode(\random_bytes(32));
-        $token->secret_sign_kp = \base64_encode(sodium_crypto_sign_secretkey($signKp));
-        $token->expires_at = \strtotime(static::TOKEN_EXPIRATION_TIME);
+        $token->setAttributes([
+            'user_id' => $user->id,
+            'access_token' => \str_replace('=', '', Base32::encode(\random_bytes(32))),
+            'refresh_token' => (static::REFRESH_TOKEN_CLASS)::create($user),
+            'ikm' => \base64_encode(\random_bytes(32)),
+            'secret_sign_kp' => \base64_encode(sodium_crypto_sign_secretkey($signKp)),
+            'expires_at' => \strtotime(static::TOKEN_EXPIRATION_TIME)
+        ], false);
 
         if ($token->save()) {
             return $token;

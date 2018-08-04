@@ -2,10 +2,11 @@
 
 namespace yrc\actions;
 
-use yrc\actions\AuthenticationAction;
+use common\models\RefreshToken;
 use yrc\web\Json25519Parser;
 use yrc\rest\Action as RestAction;
 use yii\helpers\ArrayHelper;
+use yii\web\HttpException;
 use Yii;
 
 /**
@@ -24,16 +25,18 @@ class RefreshAction extends RestAction
      */
     public function post($params)
     {
-        // Get the token
-        $token = AuthenticationAction::getAccessTokenFromHeader();
-        
         $refreshToken = Yii::$app->request->post('refresh_token', false);
-        if ($refreshToken !== $token->refresh_token) {
-            return false;
+        $model = RefreshToken::find()->where([
+            'user_id' => Yii::$app->user->id,
+            'token' => $refreshToken
+        ])->one();
+
+        if ($model === null) {
+            throw new HttpException(401, Yii::t('yrc', 'The refresh token provided is either not valid, or has expired.'));
         }
 
         // If we can delete the token, send a newly generated token out
-        if ($token->delete()) {
+        if ($model->delete()) {
             // Merge any extra attributes with the generated tokens
             $tokenClass = (Yii::$app->user->identityClass::TOKEN_CLASS);
             $tokens = ArrayHelper::merge($this->extraAttributes, $tokenClass::generate(Yii::$app->user->id)->getAuthResponse());
@@ -43,7 +46,7 @@ class RefreshAction extends RestAction
             }
             return $tokens;
         }
-        // Return false for any other reasons
-        return false;
+
+        throw new HttpException(400, Yii::t('yrc', 'An unexpected error occurred. Please re-authenticate.'));
     }
 }

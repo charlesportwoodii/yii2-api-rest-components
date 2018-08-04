@@ -1,4 +1,5 @@
 <?php
+
 namespace yrc\components\log;
 
 use Psr\Log\LoggerAwareInterface;
@@ -9,14 +10,12 @@ use yii\base\InvalidConfigException;
 use yii\helpers\VarDumper;
 use yii\log\Logger;
 use yii\log\Target;
+use Yii;
 
-/**
- * PSRTarget is a log target which passes messages to PSR-3 compatible logger.
- */
-class PsrTarget extends Target implements LoggerAwareInterface
+final class PsrTarget extends Target
 {
     use LoggerAwareTrait;
-    
+
     private $_psrLevels = [
         Logger::LEVEL_ERROR => LogLevel::ERROR,
         Logger::LEVEL_WARNING => LogLevel::WARNING,
@@ -64,11 +63,23 @@ class PsrTarget extends Target implements LoggerAwareInterface
                 // exceptions may not be serializable if in the call stack somewhere is a Closure
                 if ($text instanceof \Throwable || $text instanceof \Exception) {
                     $text = (string)$text;
-                } else if (\is_array($text)) {
+                } elseif (\is_array($text)) {
                     $ctx = $text;
                     if (isset($ctx['message'])) {
                         $text = $ctx['message'];
                         unset($ctx['message']);
+
+                        if (isset($ctx['exception'])) {
+                            $e = $ctx['exception'];
+                            unset($ctx['exception']);
+                            $context['exception'] = [
+                                'message' => $e->getMessage(),
+                                'line' => $e->getLine(),
+                                'file' => $e->getFile(),
+                                'code' => $e->getCode(),
+                                'trace' => $e->getTrace()
+                            ];
+                        }
                         foreach ($ctx as $k => $v) {
                             $context[$k] = $v;
                         }
@@ -78,6 +89,24 @@ class PsrTarget extends Target implements LoggerAwareInterface
                 } else {
                     $text = VarDumper::export($text);
                 }
+            }
+            
+            // If the user_id is not passed, dynamically set it from the user identity object
+            if (!isset($context['user_id'])) {
+                $context['user_id'] = Yii::$app->has('user') && Yii::$app->user->id != null ? Yii::$app->user->id : 'system';
+            }
+
+            // If the user_id of the event isn't the system, pre-load the policy number
+            if (!\in_array($context['user_id'], ['system', null])) {
+                if (Yii::$app->has('user') && Yii::$app->user->id) {
+                    $model = Yii::$app->user->identity;
+                } else {
+                    $model = Yii::$app->user->identityClass::find()->where(['id' => $context['user_id']])->one();
+                }
+            }
+            
+            if (!isset($context['timestamp'])) {
+                $context['timestamp'] = \microtime(true);
             }
 
             $this->getLogger()->log($this->_psrLevels[$message[1]], $text, $context);

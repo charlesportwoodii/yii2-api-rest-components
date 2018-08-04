@@ -2,7 +2,7 @@
 
 namespace yrc\actions;
 
-use app\models\User;
+use common\models\User;
 use yrc\rest\Action as RestAction;
 
 use yii\web\HttpException;

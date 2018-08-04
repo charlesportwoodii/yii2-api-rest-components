@@ -2,7 +2,7 @@
 
 namespace yrc\actions;
 
-use app\forms\ResetPassword;
+use common\forms\ResetPassword;
 use yrc\rest\Action as RestAction;
 use yrc\models\redis\Code;
 
