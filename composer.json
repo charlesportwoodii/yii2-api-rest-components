@@ -40,7 +40,8 @@
         "rpq/server": "^0.1.1"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "^3.2"
+        "squizlabs/php_codesniffer": "^3.2",
+        "yiisoft/yii2-coding-standards": "^2.0"
     },
     "autoload": {
         "psr-4": { "yrc\\": "" }
