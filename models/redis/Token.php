@@ -3,6 +3,7 @@
 namespace yrc\models\redis;
 
 use Base32\Base32;
+use ncryptf\Token as NcryptfToken;
 use yrc\redis\ActiveRecord;
 use Yii;
 
@@ -93,6 +94,23 @@ abstract class Token extends ActiveRecord
         }
             
         throw new \yii\base\Exception(Yii::t('yrc', 'Token failed to save'));
+    }
+
+    /**
+     * Returns an ncryptf compatible token
+     *
+     * @return ncryptf\Token
+     */
+    public function getNcryptfToken()
+    {
+        $attributes = $this->getAuthResponse();
+        return new NcryptfToken(
+            $attributes['access_token'],
+            $attributes['refresh_token'],
+            \base64_decode($attributes['ikm']),
+            \base64_decode($attributes['signing']),
+            $attributes['expires_at']
+        );
     }
 
     /**

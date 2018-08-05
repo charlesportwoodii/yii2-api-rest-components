@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "367f15ea1fc2781062e8a1c3f69935f0",
+    "content-hash": "6c81be1548715aa55fcf0d78bff0c24c",
     "packages": [
         {
             "name": "2amigos/yii2-arrayquery-component",
@@ -366,6 +366,47 @@
                 "markdown-extra"
             ],
             "time": "2017-07-16T21:13:23+00:00"
+        },
+        {
+            "name": "charlesportwoodii/ncryptf",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/charlesportwoodii/ncryptf-php.git",
+                "reference": "88e989bd9ab53fb9c6c5228e94bf4a66b7ae8e24"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/charlesportwoodii/ncryptf-php/zipball/88e989bd9ab53fb9c6c5228e94bf4a66b7ae8e24",
+                "reference": "88e989bd9ab53fb9c6c5228e94bf4a66b7ae8e24",
+                "shasum": ""
+            },
+            "require": {
+                "ext-sodium": ">=2.0.2",
+                "php": "^7.1 || ^7.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7",
+                "squizlabs/php_codesniffer": "^3.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ncryptf\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Charles R. Portwood II",
+                    "email": "charlesportwoodii@erianna.com"
+                }
+            ],
+            "description": "ncryptf for PHP",
+            "time": "2018-08-05T15:43:15+00:00"
         },
         {
             "name": "christian-riesen/base32",
@@ -1955,7 +1996,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "charlesportwoodii/ncryptf": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
