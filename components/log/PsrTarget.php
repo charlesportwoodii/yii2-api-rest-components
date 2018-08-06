@@ -12,7 +12,7 @@ use yii\log\Logger;
 use yii\log\Target;
 use Yii;
 
-final class PsrTarget extends Target
+class PsrTarget extends Target
 {
     use LoggerAwareTrait;
 
