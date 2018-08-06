@@ -19,17 +19,18 @@ abstract class Action extends \yii\base\Action
     /**
      * Action runner
      *
+     * @param mixed $id
      * @param array $args
      * @return mixed
      * @throws HttpException
      */
-    public function run(array $args = [])
+    public function run($id = null, array $args = [])
     {
         $method = strtolower(Yii::$app->request->method);
         
         // Make sure the method exists before trying to call it
         if (method_exists(get_called_class(), $method)) {
-            return $this->$method($args);
+            return $this->$method(\array_merge(['id' => $id], $args));
         }
 
         // Return a 405 if the method isn't implemented
