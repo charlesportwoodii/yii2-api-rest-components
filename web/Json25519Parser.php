@@ -2,13 +2,16 @@
 
 namespace yrc\web;
 
+use ncryptf\Request;
+use ncryptf\Response;
+use yrc\models\redis\EncryptionKey;
+use yii\base\InvalidParamException;
 use yii\helpers\Json;
 use yii\web\JsonParser;
-use yrc\models\redis\EncryptionKey;
-
 use yii\web\BadRequestHttpException;
-use yii\base\InvalidParamException;
 use Yii;
+
+use Exception;
 
 /**
  * Allows for requests to be encrypted and signed via Curve/Ed 25519 cryptography via libsodium
@@ -45,7 +48,12 @@ class Json25519Parser extends JsonParser
         $public = Yii::$app->request->getHeaders()->get(self::PUBLICKEY_HEADER, null);
 
         try {
-            $rawBody = $this->getRawBodyFromTokenAndNonce($key, $nonce, $public, $rawBody);
+            $rawBody = $this->getRawBodyFromTokenAndNonce(
+                $key,
+                \base64_decode($nonce),
+                \base64_decode($public),
+                \base64_decode($rawBody)
+            );
 
             if ($rawBody === false) {
                 throw new \Exception;
@@ -73,29 +81,26 @@ class Json25519Parser extends JsonParser
      * @param string $rawBody
      * @return string
      */
-    private function getRawBodyFromTokenAndNonce($key, $nonce, $public, $rawBody)
+    private function getRawBodyFromTokenAndNonce(EncryptionKey $key, string $nonce, string $public, string $rawBody)
     {
-        if ($key === null || empty($nonce) || empty($public)) {
-            throw new HttpException(400, Yii::t('yrc', 'Invalid security headers.'));
+        try {
+            $response = new Response(
+                \base64_decode($key->secret),
+                $public
+            );
+
+            $rawBody = $response->decrypt(
+                $rawBody,
+                $nonce
+            );
+
+            $key->delete();
+
+            return $rawBody;
+        } catch (\Exception $e) {
+            Yii::error('Unable to decrypt request.', 'yrc');
+            throw new BadRequestHttpException(Yii::t('yrc', 'Unable decrypt response with provided data.'));
         }
-
-        // Construct a keypair from the client_public and the server private key
-        $kp = sodium_crypto_box_keypair_from_secretkey_and_publickey(
-            \base64_decode($key->secret),
-            \base64_decode($public)
-        );
-
-        // Decrypt the raw body
-        $rawBody = sodium_crypto_box_open(
-            \base64_decode($rawBody),
-            \base64_decode($nonce),
-            $kp
-        );
-        
-        // The key is deleted upon consumption
-        $key->delete();
-
-        return $rawBody;
     }
 
     /**
@@ -113,7 +118,10 @@ class Json25519Parser extends JsonParser
             throw new BadRequestHttpException(Yii::t('yrc', 'Missing x-hashid header'));
         }
 
-        $token = EncryptionKey::find()->where(['hash' => $hash])->one();
+        $token = EncryptionKey::find()
+            ->where([
+                'hash' => $hash
+            ])->one();
 
         if ($token === null) {
             throw new BadRequestHttpException(Yii::t('yrc', 'Invalid x-hashid header.'));

@@ -2,13 +2,15 @@
 
 namespace yrc\web;
 
-use yrc\web\JsonResponseFormatter;
-use yii\web\NotAcceptableHttpException;
-use yrc\web\Json25519Parser;
+use ncryptf\Request;
 use yrc\models\redis\EncryptionKey;
+use yrc\web\JsonResponseFormatter;
+use yrc\web\Json25519Parser;
+use yii\web\NotAcceptableHttpException;
 use yii\web\HttpException;
-
 use Yii;
+
+use Exception;
 
 class Json25519ResponseFormatter extends JsonResponseFormatter
 {
@@ -29,6 +31,7 @@ class Json25519ResponseFormatter extends JsonResponseFormatter
             return;
         }
 
+        $nonce = \random_bytes(SODIUM_CRYPTO_BOX_NONCEBYTES);
         $rawPublic = \base64_decode($public);
         if (strlen($rawPublic) !== 32) {
             $response->statusCode = 400;
@@ -39,18 +42,14 @@ class Json25519ResponseFormatter extends JsonResponseFormatter
         parent::formatJson($response);
         $response->getHeaders()->set('Content-Type', 'application/vnd.25519+json; charset=UTF-8');
 
-        // Calculate the keypair
-        $keyPair = \sodium_crypto_box_keypair_from_secretkey_and_publickey(
+        $request = new Request(
             \base64_decode($key->secret),
             $rawPublic
         );
 
-        // Encrypt the content
-        $nonce = \random_bytes(SODIUM_CRYPTO_BOX_NONCEBYTES);
-        $content = \sodium_crypto_box(
+        $content = $request->encrypt(
             $response->content,
-            $nonce,
-            $keyPair
+            $nonce
         );
 
         // If the user is authenticated, we can sign the request using the signature associated to the session.
@@ -62,13 +61,12 @@ class Json25519ResponseFormatter extends JsonResponseFormatter
                 $response->content = '';
                 Yii::warning([
                     'message' => 'Could not fetch token keypair. Unable to generate encrypted response.'
-                ]);
+                ], 'yrc');
                 return;
             }
 
-            // Sign the request using the new authentication key
-            $signature = \sodium_crypto_sign_detached(
-                $content,
+            $signature = $request->sign(
+                $response->content,
                 \base64_decode($token->secret_sign_kp)
             );
 
