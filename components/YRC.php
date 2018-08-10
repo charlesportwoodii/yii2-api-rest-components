@@ -6,7 +6,7 @@ use Yii;
 use yii\base\BaseObject;
 
 /**
- * Yii2 Rest Component 
+ * Yii2 Rest Component
  * @class YRC
  */
 class YRC extends BaseObject

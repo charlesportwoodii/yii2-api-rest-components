@@ -110,7 +110,6 @@ abstract class ChangeEmail extends \yii\base\Model
             // Validation check
             if ($this->user->validate()) {
                 if ($this->user->save()) {
-
                     return true;
                 }
             }

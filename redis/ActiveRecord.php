@@ -78,7 +78,7 @@ abstract class ActiveRecord extends YiiRedisActiveRecord
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            if ($this->hasAttribute('data')) { 
+            if ($this->hasAttribute('data')) {
                 $this->data = Json::encode($this->data);
             }
 

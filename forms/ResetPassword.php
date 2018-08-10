@@ -246,7 +246,7 @@ abstract class ResetPassword extends \yii\base\Model
                         'email' => $this->getUser()->email
                     ],
                     'job_id' => $job->getId()
-                ]);  
+                ]);
 
                 return true;
             } elseif ($this->getScenario() === self::SCENARIO_RESET || $this->getScenario() === self::SCENARIO_RESET_AUTHENTICATED) {
@@ -269,7 +269,8 @@ abstract class ResetPassword extends \yii\base\Model
                             'email' => $this->getUser()->email
                         ],
                         'job_id' => $job->getId()
-                    ]);  
+                    ]);
+                    
                     return true;
                 }
             }

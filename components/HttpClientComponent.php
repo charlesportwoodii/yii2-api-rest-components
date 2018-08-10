@@ -51,7 +51,7 @@ final class HttpClientComponent extends BaseObject
         parent::init();
         $this->client = new Client($this->clientOptions);
 
-        $this->client->on(Client::EVENT_BEFORE_SEND, function(RequestEvent $e) {
+        $this->client->on(Client::EVENT_BEFORE_SEND, function (RequestEvent $e) {
             Yii::debug([
                 'message' => sprintf('Sending HTTP request [%s] %s', $e->request->getMethod(), $e->request->getFullUrl()),
                 'data' => $e->request->getData(),
@@ -59,7 +59,7 @@ final class HttpClientComponent extends BaseObject
             ], 'yrc\components\HttpClientComponent:beforeSendEvent');
         });
 
-        $this->client->on(Client::EVENT_AFTER_SEND, function(RequestEvent $e) {
+        $this->client->on(Client::EVENT_AFTER_SEND, function (RequestEvent $e) {
             Yii::debug([
                 'message' => sprintf('Recieved HTTP response HTTP [%s] | [%s] %s', $e->response->getStatusCode(), $e->request->getMethod(), $e->request->getFullUrl()),
                 'data' => (function () use ($e) {

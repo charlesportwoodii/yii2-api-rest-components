@@ -91,7 +91,7 @@ abstract class Registration extends \yii\base\Model
                 'otp_secret'        => '',
             ];
         
-            if ($user->save()) {                
+            if ($user->save()) {
                 $token = \str_replace('=', '', Base32::encode(\random_bytes(64)));
         
                 $code = new Code;
@@ -121,7 +121,7 @@ abstract class Registration extends \yii\base\Model
                         'email' => $user->email
                     ],
                     'job_id' => $job->getId()
-                ], 'yrc/forms/Registration:register');    
+                ], 'yrc/forms/Registration:register');
 
                 return true;
             }

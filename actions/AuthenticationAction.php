@@ -57,21 +57,21 @@ class AuthenticationAction extends RestAction
     * @param string $accessToken
     * @return \yrc\models\redis\Token
     */
-   private function getTokenFromAccessToken(string $accessToken)
-   {
-       try {
-           $tokenClass = (Yii::$app->user->identityClass::TOKEN_CLASS);
-           $token = $tokenClass::find()
-               ->where(['access_token' => $accessToken])
-               ->one();
-       } catch (\Exception $e) {
-           return null;
-       }
+    private function getTokenFromAccessToken(string $accessToken)
+    {
+        try {
+            $tokenClass = (Yii::$app->user->identityClass::TOKEN_CLASS);
+            $token = $tokenClass::find()
+                ->where(['access_token' => $accessToken])
+                ->one();
+        } catch (\Exception $e) {
+            return null;
+        }
 
-       if ($token === null || $token->isExpired()) {
-           return null;
-       }
+        if ($token === null || $token->isExpired()) {
+            return null;
+        }
 
-       return $token;
-   }
+        return $token;
+    }
 }

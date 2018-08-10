@@ -122,7 +122,7 @@ class Controller extends RestController
     {
         $access = [
             'class' => AccessControl::class,
-            'denyCallback' => function($rule, $action) {
+            'denyCallback' => function ($rule, $action) {
                 throw new ForbiddenHttpException(Yii::t('yrc', 'You do not have permission to access this resource'));
             }
         ];

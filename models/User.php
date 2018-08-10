@@ -95,7 +95,9 @@ abstract class User extends ActiveRecord implements IdentityInterface, RateLimit
         parent::init();
 
         // Prefer Argon2 if it is available, but fall back to BCRYPT if it isn't
-        if (defined('PASSWORD_ARGON2I')) {
+        if (defined('PASSWORD_ARGON2ID')) {
+            $this->passwordHashAlgorithm = PASSWORD_ARGON2ID;
+        } elseif (defined('PASSWORD_ARGON2I')) {
             $this->passwordHashAlgorithm = PASSWORD_ARGON2I;
         }
 
@@ -385,7 +387,6 @@ abstract class User extends ActiveRecord implements IdentityInterface, RateLimit
      */
     public function getAuthKey()
     {
-        
     }
 
     /**

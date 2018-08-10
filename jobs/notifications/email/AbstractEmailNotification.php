@@ -39,7 +39,7 @@ abstract class AbstractEmailNotification extends AbstractJob
 
     /**
      * Generates a message composition and returns a MessageInterface
-     * @param string|array $to 
+     * @param string|array $to
      * @param array $args
      * @return yii\mail\MessageInterface
      */
