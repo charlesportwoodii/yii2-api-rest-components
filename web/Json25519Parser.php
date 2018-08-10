@@ -56,9 +56,8 @@ class Json25519Parser extends JsonParser
             );
 
             if ($rawBody === false) {
-                throw new \Exception;
+                throw new BadRequestHttpException(Yii::t('yrc', 'Unable to decrypt request.'));
             }
-
         } catch (\Exception $e) {
             throw new BadRequestHttpException(Yii::t('yrc', 'Invalid security headers.'));
         }

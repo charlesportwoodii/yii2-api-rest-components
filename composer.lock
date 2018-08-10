@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a55183b15e33236d656f3bea4e422296",
+    "content-hash": "23382b343400949e2d1c2c3d6f58b215",
     "packages": [
         {
             "name": "2amigos/yii2-arrayquery-component",
@@ -369,16 +369,16 @@
         },
         {
             "name": "charlesportwoodii/ncryptf",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/charlesportwoodii/ncryptf-php.git",
-                "reference": "24ce06737b75c7b40b3e3c227dd61a5224028a80"
+                "reference": "2e741c64b34a37f629e1f26cc1033e0eb10cffad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/charlesportwoodii/ncryptf-php/zipball/24ce06737b75c7b40b3e3c227dd61a5224028a80",
-                "reference": "24ce06737b75c7b40b3e3c227dd61a5224028a80",
+                "url": "https://api.github.com/repos/charlesportwoodii/ncryptf-php/zipball/2e741c64b34a37f629e1f26cc1033e0eb10cffad",
+                "reference": "2e741c64b34a37f629e1f26cc1033e0eb10cffad",
                 "shasum": ""
             },
             "require": {
@@ -406,7 +406,7 @@
                 }
             ],
             "description": "ncryptf for PHP",
-            "time": "2018-08-09T21:33:57+00:00"
+            "time": "2018-08-10T00:09:26+00:00"
         },
         {
             "name": "christian-riesen/base32",
