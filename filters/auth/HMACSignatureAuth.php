@@ -103,9 +103,6 @@ final class HMACSignatureAuth extends AuthMethod
      */
     private function getBodyFromRequest(Request $request)
     {
-        $p = $_POST;
-        $b = $request->getRawBody();
-        $bp = $request->getBodyParams();
         $body = $request->getDecryptedBody();
         if ($body === '') {
             return "";
