@@ -5,13 +5,12 @@ namespace yrc\web;
 use ncryptf\Request;
 use ncryptf\Response;
 use yrc\models\redis\EncryptionKey;
+use yii\base\Exception;
 use yii\base\InvalidParamException;
 use yii\helpers\Json;
 use yii\web\JsonParser;
 use yii\web\BadRequestHttpException;
 use Yii;
-
-use Exception;
 
 /**
  * Allows for requests to be encrypted and signed via Curve/Ed 25519 cryptography via libsodium
@@ -36,6 +35,11 @@ class Json25519Parser extends JsonParser
 
     private $decryptedBody;
 
+    /**
+     * Returns the decrypted box, if it was encrypted
+     *
+     * @return string
+     */
     public function getDecryptedBody()
     {
         return $this->decryptedBody;
@@ -55,7 +59,7 @@ class Json25519Parser extends JsonParser
         $public = Yii::$app->request->getHeaders()->get(self::PUBLICKEY_HEADER, null);
 
         try {
-            $rawBody = $this->getRawBodyFromTokenAndNonce(
+            $decryptedBody = $this->getRawBodyFromTokenAndNonce(
                 $key,
                 \base64_decode($nonce),
                 \base64_decode($public),
@@ -63,15 +67,15 @@ class Json25519Parser extends JsonParser
             );
 
             if ($rawBody === false) {
-                throw new BadRequestHttpException(Yii::t('yrc', 'Unable to decrypt request.'));
+                throw new Exception(Yii::t('yrc', 'Unable to decrypt request.'));
             }
         } catch (\Exception $e) {
             throw new BadRequestHttpException(Yii::t('yrc', 'Invalid security headers.'));
         }
 
         try {
-            $this->decryptedBody = $rawBody;
-            $parameters = Json::decode($rawBody, $this->asArray);
+            $this->decryptedBody = $decryptedBody;
+            $parameters = Json::decode($decryptedBody, $this->asArray);
             return $parameters === null ? [] : $parameters;
         } catch (InvalidParamException $e) {
             if ($this->throwException) {
@@ -101,12 +105,10 @@ class Json25519Parser extends JsonParser
                 $nonce
             );
 
-            $key->delete();
-
             return $rawBody;
         } catch (\Exception $e) {
             Yii::error('Unable to decrypt request.', 'yrc');
-            throw new BadRequestHttpException(Yii::t('yrc', 'Unable decrypt response with provided data.'));
+            throw new Exception(Yii::t('yrc', 'Unable decrypt response with provided data.'));
         }
     }
 

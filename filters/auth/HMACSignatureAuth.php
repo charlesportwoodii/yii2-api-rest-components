@@ -8,6 +8,7 @@ use ncryptf\Token as NcryptfToken;
 use yrc\models\redis\Token;
 use yii\helpers\Json;
 use yii\filters\auth\AuthMethod;
+use yii\web\HttpException;
 use yii\web\Request;
 use yii\web\Response;
 use Yii;
@@ -64,8 +65,12 @@ final class HMACSignatureAuth extends AuthMethod
                             return $identity;
                         }
                     }
+                } catch (HttpException $e) {
+                    throw $e;
                 } catch (\Exception $e) {
-                    Yii::error('Failed to determine date.');
+                    Yii::error([
+                        'exception' => $e
+                    ]);
                 }
             }
         }
