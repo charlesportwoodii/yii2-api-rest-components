@@ -16,7 +16,8 @@ class Request extends BaseRequest
 
     public function getDecryptedBody()
     {
-        if ($this->getContentType() !== 'application/vnd.25519+json') {
+        $rawContentType = $this->getContentType();
+        if (\stripos($rawContentType, 'application/vnd.25519+json') === false) {
             return $this->getRawBody();
         }
 
@@ -57,7 +58,7 @@ class Request extends BaseRequest
                     throw new InvalidConfigException("The '$contentType' request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
                 }
                 $this->_bodyParams = $parser->parse($this->getRawBody(), $rawContentType);
-                if ($rawContentType === 'application/vnd.25519+json') {
+                if (\stripos($rawContentType, 'application/vnd.25519+json') !== false) {
                     $this->_decryptedBody = $parser->getDecryptedBody();
                 }
             } elseif (isset($this->parsers['*'])) {
