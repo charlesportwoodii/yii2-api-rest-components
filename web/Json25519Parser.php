@@ -34,6 +34,13 @@ class Json25519Parser extends JsonParser
      */
     const NONCE_HEADER = 'x-nonce';
 
+    private $decryptedBody;
+
+    public function getDecryptedBody()
+    {
+        return $this->decryptedBody;
+    }
+    
     /**
      * Parses a HTTP request body.
      * @param string $rawBody the raw HTTP request body.
@@ -63,6 +70,7 @@ class Json25519Parser extends JsonParser
         }
 
         try {
+            $this->decryptedBody = $rawBody;
             $parameters = Json::decode($rawBody, $this->asArray);
             return $parameters === null ? [] : $parameters;
         } catch (InvalidParamException $e) {

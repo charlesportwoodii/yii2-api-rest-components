@@ -103,10 +103,15 @@ final class HMACSignatureAuth extends AuthMethod
      */
     private function getBodyFromRequest(Request $request)
     {
-        if ($request->getRawBody() === '') {
-            return $request->getRawBody();
+        $body = $request->getDecryptedBody();
+        if ($body === '') {
+            return "";
         }
-        
-        return JSON::encode($request->bodyParams, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRESERVE_ZERO_FRACTION);
+
+        if ($request->headers->has('X-Force-Serialize')) {
+            return Json::encode(Json::decode($body), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRESERVE_ZERO_FRACTION);
+        }
+
+        return $body;
     }
 }
