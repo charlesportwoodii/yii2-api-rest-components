@@ -54,6 +54,10 @@ class Json25519Parser extends JsonParser
      */
     public function parse($rawBody, $contentType)
     {
+        if ($rawBody === '') {
+            return '';
+        }
+        
         $key = self::getKeyFromHash(Yii::$app->request->getHeaders()->get(self::HASH_HEADER, null));
         $nonce = Yii::$app->request->getHeaders()->get(self::NONCE_HEADER, null);
         $public = Yii::$app->request->getHeaders()->get(self::PUBLICKEY_HEADER, null);
