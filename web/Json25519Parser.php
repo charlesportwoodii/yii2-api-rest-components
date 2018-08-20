@@ -55,7 +55,8 @@ class Json25519Parser extends JsonParser
     public function parse($rawBody, $contentType)
     {
         if ($rawBody === '') {
-            return '';
+            $this->decryptedBody = '';
+            return [];
         }
         
         $key = self::getKeyFromHash(Yii::$app->request->getHeaders()->get(self::HASH_HEADER, null));
@@ -74,13 +75,18 @@ class Json25519Parser extends JsonParser
                 throw new Exception(Yii::t('yrc', 'Unable to decrypt request.'));
             }
         } catch (\Exception $e) {
+            Yii::error([
+                'message' => 'Invalid or missing security headers. See attached exception for more details',
+                'exception' => $e
+            ], 'yrc');
+
             throw new BadRequestHttpException(Yii::t('yrc', 'Invalid security headers.'));
         }
 
         try {
             $this->decryptedBody = $decryptedBody;
             $parameters = Json::decode($decryptedBody, $this->asArray);
-            return $parameters === null ? [] : $parameters;
+            return $parameters ?? [];
         } catch (InvalidParamException $e) {
             if ($this->throwException) {
                 throw new BadRequestHttpException('Invalid JSON data in request body: ' . $e->getMessage());
@@ -109,6 +115,11 @@ class Json25519Parser extends JsonParser
                 $nonce
             );
 
+            // Purge single use keys
+            if ($key->is_single_use) {
+                $key->delete();
+            }
+
             return $rawBody;
         } catch (\Exception $e) {
             Yii::error('Unable to decrypt request.', 'yrc');
@@ -128,7 +139,8 @@ class Json25519Parser extends JsonParser
 
         // Fetch the hash from the header
         if ($hash === null) {
-            throw new BadRequestHttpException(Yii::t('yrc', 'Missing x-hashid header'));
+            Yii::error('X-HashId missing on request. Unable to decrypt request', 'yrc');
+            throw new Exception(Yii::t('yrc', 'Missing x-hashid header'));
         }
 
         $token = EncryptionKey::find()
@@ -137,7 +149,8 @@ class Json25519Parser extends JsonParser
             ])->one();
 
         if ($token === null) {
-            throw new BadRequestHttpException(Yii::t('yrc', 'Invalid x-hashid header.'));
+            Yii::error('X-HashId not found in database.', 'yrc');
+            throw new Exception(Yii::t('yrc', 'Invalid x-hashid header.'));
         }
 
         return $token;

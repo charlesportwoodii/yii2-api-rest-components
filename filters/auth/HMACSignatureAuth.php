@@ -69,6 +69,7 @@ final class HMACSignatureAuth extends AuthMethod
                     throw $e;
                 } catch (\Exception $e) {
                     Yii::error([
+                        'message' => 'An unexpected error occured when handling authentication request.',
                         'exception' => $e
                     ]);
                 }
