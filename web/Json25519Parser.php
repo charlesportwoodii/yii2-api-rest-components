@@ -5,13 +5,12 @@ namespace yrc\web;
 use ncryptf\Request;
 use ncryptf\Response;
 use yrc\models\redis\EncryptionKey;
+use yii\base\Exception;
 use yii\base\InvalidParamException;
 use yii\helpers\Json;
 use yii\web\JsonParser;
 use yii\web\BadRequestHttpException;
 use Yii;
-
-use Exception;
 
 /**
  * Allows for requests to be encrypted and signed via Curve/Ed 25519 cryptography via libsodium
@@ -34,6 +33,18 @@ class Json25519Parser extends JsonParser
      */
     const NONCE_HEADER = 'x-nonce';
 
+    private $decryptedBody;
+
+    /**
+     * Returns the decrypted box, if it was encrypted
+     *
+     * @return string
+     */
+    public function getDecryptedBody()
+    {
+        return $this->decryptedBody;
+    }
+    
     /**
      * Parses a HTTP request body.
      * @param string $rawBody the raw HTTP request body.
@@ -43,12 +54,17 @@ class Json25519Parser extends JsonParser
      */
     public function parse($rawBody, $contentType)
     {
+        if ($rawBody === '') {
+            $this->decryptedBody = '';
+            return [];
+        }
+        
         $key = self::getKeyFromHash(Yii::$app->request->getHeaders()->get(self::HASH_HEADER, null));
         $nonce = Yii::$app->request->getHeaders()->get(self::NONCE_HEADER, null);
         $public = Yii::$app->request->getHeaders()->get(self::PUBLICKEY_HEADER, null);
 
         try {
-            $rawBody = $this->getRawBodyFromTokenAndNonce(
+            $decryptedBody = $this->getRawBodyFromTokenAndNonce(
                 $key,
                 \base64_decode($nonce),
                 \base64_decode($public),
@@ -56,15 +72,21 @@ class Json25519Parser extends JsonParser
             );
 
             if ($rawBody === false) {
-                throw new BadRequestHttpException(Yii::t('yrc', 'Unable to decrypt request.'));
+                throw new Exception(Yii::t('yrc', 'Unable to decrypt request.'));
             }
         } catch (\Exception $e) {
+            Yii::error([
+                'message' => 'Invalid or missing security headers. See attached exception for more details',
+                'exception' => $e
+            ], 'yrc');
+
             throw new BadRequestHttpException(Yii::t('yrc', 'Invalid security headers.'));
         }
 
         try {
-            $parameters = Json::decode($rawBody, $this->asArray);
-            return $parameters === null ? [] : $parameters;
+            $this->decryptedBody = $decryptedBody;
+            $parameters = Json::decode($decryptedBody, $this->asArray);
+            return $parameters ?? [];
         } catch (InvalidParamException $e) {
             if ($this->throwException) {
                 throw new BadRequestHttpException('Invalid JSON data in request body: ' . $e->getMessage());
@@ -93,12 +115,15 @@ class Json25519Parser extends JsonParser
                 $nonce
             );
 
-            $key->delete();
+            // Purge single use keys
+            if ($key->is_single_use) {
+                $key->delete();
+            }
 
             return $rawBody;
         } catch (\Exception $e) {
             Yii::error('Unable to decrypt request.', 'yrc');
-            throw new BadRequestHttpException(Yii::t('yrc', 'Unable decrypt response with provided data.'));
+            throw new Exception(Yii::t('yrc', 'Unable decrypt response with provided data.'));
         }
     }
 
@@ -114,7 +139,8 @@ class Json25519Parser extends JsonParser
 
         // Fetch the hash from the header
         if ($hash === null) {
-            throw new BadRequestHttpException(Yii::t('yrc', 'Missing x-hashid header'));
+            Yii::error('X-HashId missing on request. Unable to decrypt request', 'yrc');
+            throw new Exception(Yii::t('yrc', 'Missing x-hashid header'));
         }
 
         $token = EncryptionKey::find()
@@ -123,7 +149,8 @@ class Json25519Parser extends JsonParser
             ])->one();
 
         if ($token === null) {
-            throw new BadRequestHttpException(Yii::t('yrc', 'Invalid x-hashid header.'));
+            Yii::error('X-HashId not found in database.', 'yrc');
+            throw new Exception(Yii::t('yrc', 'Invalid x-hashid header.'));
         }
 
         return $token;

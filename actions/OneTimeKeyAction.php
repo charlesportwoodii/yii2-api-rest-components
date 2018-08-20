@@ -15,7 +15,7 @@ class OneTimeKeyAction extends RestAction
     public function get($params)
     {
         // Generate a one time key pair
-        $model = EncryptionKey::generate();
+        $model = EncryptionKey::generate(true);
 
         // Return the public keys, and a signature of the public key
         return [

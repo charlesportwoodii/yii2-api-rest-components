@@ -13,6 +13,7 @@ use Yii;
  * @property integer $id
  * @property string $hash
  * @property integer $secret
+ * @property boolean $is_single_use
  * @property integer $expires_at
  */
 final class EncryptionKey extends ActiveRecord
@@ -33,6 +34,7 @@ final class EncryptionKey extends ActiveRecord
             'id',
             'secret',
             'expires_at',
+            'is_single_use',
             'hash'
         ];
     }
@@ -57,9 +59,10 @@ final class EncryptionKey extends ActiveRecord
 
     /**
      * Helper method to return an encryption key
+     * @param boolean $otk
      * @return EncryptionKey
      */
-    public static function generate()
+    public static function generate($otk = false)
     {
         $boxKp = sodium_crypto_box_keypair();
         $obj = new static;
@@ -72,7 +75,7 @@ final class EncryptionKey extends ActiveRecord
         }
 
         $obj->expires_at = \strtotime(static::OBJECT_EXPIRATION_TIME);
-
+        $obj->is_single_use = $otk;
         if ($obj->save()) {
             return $obj;
         }
