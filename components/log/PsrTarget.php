@@ -93,12 +93,12 @@ class PsrTarget extends Target
             
             // If the user_id is not passed, dynamically set it from the user identity object
             if (!isset($context['user_id'])) {
-                $context['user_id'] = Yii::$app->has('user') && Yii::$app->user->id != null ? Yii::$app->user->id : 'system';
+                $context['user_id'] = (isset(Yii::$app) && Yii::$app->has('user') && Yii::$app->user->id != null) ? Yii::$app->user->id : 'system';
             }
 
             // If the user_id of the event isn't the system, pre-load the policy number
             if (!\in_array($context['user_id'], ['system', null])) {
-                if (Yii::$app->has('user') && Yii::$app->user->id) {
+                if (isset(Yii::$app) && Yii::$app->has('user') && Yii::$app->user->id) {
                     $model = Yii::$app->user->identity;
                 } else {
                     $model = Yii::$app->user->identityClass::find()->where(['id' => $context['user_id']])->one();
