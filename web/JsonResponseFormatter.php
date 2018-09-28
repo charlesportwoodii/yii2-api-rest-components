@@ -3,14 +3,13 @@
 namespace yrc\web;
 
 use yii\helpers\Json;
-use yii\web\JsonResponseFormatter as YiiJsonResponseFormatter;
 use Yii;
 
 /**
  * Handles formatting of the response
  * @class JsonResponseFormatter
  */
-class JsonResponseFormatter extends YiiJsonResponseFormatter
+class JsonResponseFormatter extends \yii\web\JsonResponseFormatter
 {
     /**
      * Formats response data in JSON format.

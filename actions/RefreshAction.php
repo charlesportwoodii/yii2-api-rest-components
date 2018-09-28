@@ -3,7 +3,6 @@
 namespace yrc\actions;
 
 use common\models\RefreshToken;
-use yrc\web\Json25519Parser;
 use yrc\rest\Action as RestAction;
 use yii\helpers\ArrayHelper;
 use yii\web\HttpException;

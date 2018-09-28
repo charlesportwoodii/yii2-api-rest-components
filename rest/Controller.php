@@ -64,6 +64,7 @@ class Controller extends RestController
             'formats' => [
                 'application/json' => Response::FORMAT_JSON,
                 'application/vnd.25519+json' => Response::FORMAT_JSON25519,
+                'application/vnd.ncryptf+json' => Response::FORMAT_NCRYPTF_JSON,
                 'application/xml' => Response::FORMAT_XML,
             ]
         ];

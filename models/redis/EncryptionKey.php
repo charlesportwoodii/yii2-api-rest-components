@@ -33,6 +33,7 @@ final class EncryptionKey extends ActiveRecord
         return [
             'id',
             'secret',
+            'public',
             'expires_at',
             'is_single_use',
             'hash'
@@ -44,7 +45,7 @@ final class EncryptionKey extends ActiveRecord
      */
     public function getBoxPublicKey()
     {
-        return sodium_crypto_box_publickey($this->getBoxKeyPair());
+        return \base64_decode($this->public);
     }
 
     /**
@@ -67,6 +68,7 @@ final class EncryptionKey extends ActiveRecord
         $boxKp = sodium_crypto_box_keypair();
         $obj = new static;
         $obj->secret = \base64_encode(sodium_crypto_box_secretkey($boxKp));
+        $obj->public = \base64_encode(sodium_crypto_box_publickey($boxKp));
         try {
             $uuid = Uuid::uuid4();
             $obj->hash = $uuid->toString();
