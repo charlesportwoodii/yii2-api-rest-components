@@ -6,6 +6,8 @@ use InvalidArgumentException;
 use ncryptf\Request;
 use ncryptf\Response;
 use ncryptf\exceptions\DecryptionFailedException;
+use ncryptf\exceptions\InvalidSignatureException;
+use ncryptf\exceptions\InvalidChecksumException;
 use yrc\models\redis\EncryptionKey;
 use yrc\web\Request as YiiRequest;
 use yii\base\Exception;
@@ -54,7 +56,7 @@ class JsonParser extends \yii\web\JsonParser
 
         $request = Yii::$app->request;
         $version = Response::getVersion(\base64_decode($rawBody));
-        $key = $this->getEncryptionKey($request, $rawBody, $version);
+        $key = $this->getEncryptionKey($request);
 
         try {
             $this->decryptedBody = $this->decryptRequest($key, $request, $rawBody, $version);
@@ -84,7 +86,7 @@ class JsonParser extends \yii\web\JsonParser
      * Decrypts the request using a given encryption key and request parameters
      *
      * @param EncryptionKey $key
-     * @param Request $request
+     * @param \yrc\web\Request $request
      * @param string $rawBody
      * @param string $version
      * @return string
@@ -126,14 +128,13 @@ class JsonParser extends \yii\web\JsonParser
     /**
      * Fetches the local encryption key from the data provided in the request
      *
-     * @param yrc\web\Request $request
+     * @param \yrc\web\Request $request
      * @param string $rawBody
      * @param integer $version
      * @return EncryptionKey
      */
-    private function getEncryptionKey(\yrc\web\Request $request, string $rawBody, int $version) : EncryptionKey
+    private function getEncryptionKey(\yrc\web\Request $request) : EncryptionKey
     {
-        
         $lookup = $request->headers->get('x-hashid', null);
         if ($lookup === null) {
             Yii::warning([
@@ -146,13 +147,7 @@ class JsonParser extends \yii\web\JsonParser
             'hash' => $lookup
         ])->one();
 
-        if ($key === null) {
-            Yii::warning([
-                'message' => Yii::t('yrc', '{property} not found in database', [
-                    'property' => $property
-                ])
-            ]);
-            
+        if ($key === null) {            
             throw new Exception(Yii::t('yrc', 'Unable to decrypt response.'));
         }
 

@@ -12,7 +12,8 @@ use Yii;
  * Represents a libsodium keypair with an identifiable hash for encrypted requests & responses
  * @property integer $id
  * @property string $hash
- * @property integer $secret
+ * @property string $secret
+ * @property string $public
  * @property boolean $is_single_use
  * @property integer $expires_at
  */
@@ -54,8 +55,8 @@ final class EncryptionKey extends ActiveRecord
     public function getBoxKeyPair()
     {
         $secret = \base64_decode($this->secret);
-        $public = sodium_crypto_box_publickey_from_secretkey($secret);
-        return sodium_crypto_box_keypair_from_secretkey_and_publickey($secret, $public);
+        $public = \sodium_crypto_box_publickey_from_secretkey($secret);
+        return \sodium_crypto_box_keypair_from_secretkey_and_publickey($secret, $public);
     }
 
     /**
@@ -65,7 +66,7 @@ final class EncryptionKey extends ActiveRecord
      */
     public static function generate($otk = false)
     {
-        $boxKp = sodium_crypto_box_keypair();
+        $boxKp = \sodium_crypto_box_keypair();
         $obj = new static;
         $obj->secret = \base64_encode(sodium_crypto_box_secretkey($boxKp));
         $obj->public = \base64_encode(sodium_crypto_box_publickey($boxKp));
