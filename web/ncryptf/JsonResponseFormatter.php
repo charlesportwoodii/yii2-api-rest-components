@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace yrc\web\ncryptf;
 
@@ -47,13 +47,6 @@ class JsonResponseFormatter extends \yrc\web\JsonResponseFormatter
 
         parent::formatJson($response);
         $headers->set('Content-Type', 'application/vnd.ncryptf+json; charset=UTF-8');
-
-        $r = new Request(
-            \base64_decode($key->secret),
-            $rawPublic
-        );
-
-        $nonce = \random_bytes(SODIUM_CRYPTO_BOX_NONCEBYTES);
         
         if (!Yii::$app->user->isGuest) {
             $token = Yii::$app->user->getIdentity()->getToken();
@@ -67,18 +60,22 @@ class JsonResponseFormatter extends \yrc\web\JsonResponseFormatter
                 return;
             }
 
+            $r = new Request(
+                \base64_decode($key->secret),
+                \base64_decode($token->secret_sign_kp)
+            );
+
+            $nonce = \random_bytes(SODIUM_CRYPTO_BOX_NONCEBYTES);
+            
             $content = $r->encrypt(
                 $response->content,
-                \base64_decode($token->secret_sign_kp),
+                $rawPublic,
                 $version,
                 $version === 2 ? null : $nonce
             );
 
             if ($version === 1) {
-                $signature = $r->sign(
-                    $response->content,
-                    \base64_decode($token->secret_sign_kp)
-                );
+                $signature = $r->sign($response->content);
                 // Sign the raw response and send the signature alongside the header
                 $headers->set('x-sigpubkey', \base64_encode($token->getSignPublicKey()));
                 $headers->set('x-signature', \base64_encode($signature));

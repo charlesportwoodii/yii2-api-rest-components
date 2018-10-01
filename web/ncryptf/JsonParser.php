@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace yrc\web\ncryptf;
 
@@ -27,7 +27,7 @@ class JsonParser extends \yii\web\JsonParser
      *
      * @return string
      */
-    public function getDecryptedBody()
+    public function getDecryptedBody() :? string
     {
         return $this->decryptedBody;
     }
@@ -89,15 +89,17 @@ class JsonParser extends \yii\web\JsonParser
      * @param string $version
      * @return string
      */
-    private function decryptRequest(EncryptionKey $key, YiiRequest $request, string $rawBody, int $version)
+    private function decryptRequest(EncryptionKey $key, \yrc\web\Request $request, string $rawBody, int $version)
     {
         static $response = null;
         static $nonce = null;
-        if ($version === 2) {
-            $response = new Response(
-                \base64_decode($key->secret)
-            );
-        } else {
+        static $publicKey = null;
+        
+        $response = new Response(
+            \base64_decode($key->secret)
+        );
+
+        if ($version === 1) {
             $publicKey = $request->headers->get('x-pubkey', null);
             $nonce = $request->headers->get('x-nonce', null);
 
@@ -105,15 +107,12 @@ class JsonParser extends \yii\web\JsonParser
                 throw new Exception(Yii::t('yrc', 'Missing nonce or public key header. Unable to decrypt request.'));
             }
             $nonce = \base64_decode($nonce);
-
-            $response = new Response(
-                \base64_decode($key->secret),
-                \base64_decode($publicKey)
-            );
+            $publicKey = \base64_decode($publicKey);
         }
 
         $decryptedRequest = $response->decrypt(
             \base64_decode($rawBody),
+            $publicKey,
             $nonce
         );
 
@@ -132,7 +131,7 @@ class JsonParser extends \yii\web\JsonParser
      * @param integer $version
      * @return EncryptionKey
      */
-    private function getEncryptionKey(YiiRequest $request, string $rawBody, int $version) : EncryptionKey
+    private function getEncryptionKey(\yrc\web\Request $request, string $rawBody, int $version) : EncryptionKey
     {
         
         $lookup = $request->headers->get('x-hashid', null);

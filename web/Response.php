@@ -10,7 +10,7 @@ class Response extends YiiResponse
     /**
      * @const FORMAT_JSON25519
      */
-    const FORMAT_JSON25519 = 'json+25519';
+    const FORMAT_JSON25519 = 'vnd.json+25519';
 
     /**
      * @const FORMAT_NCRYPTF_JSON
@@ -23,8 +23,21 @@ class Response extends YiiResponse
     protected function defaultFormatters()
     {
         $formatters = parent::defaultFormatters();
-        $formatters[self::FORMAT_JSON25519] = 'yrc\web\json25519\JsonResponseFormatter';
-        $formatters[self::FORMAT_NCRYPTF_JSON] = 'yrc\web\ncryptf\JsonResponseFormatter';
+
+        foreach ([self::FORMAT_JSON25519, self::FORMAT_NCRYPTF_JSON] as $format) {
+            $formatters[$format] = [
+                'class'         => \yrc\web\ncryptf\JsonResponseFormatter::class,
+                'prettyPrint'   => YII_DEBUG,
+                'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRESERVE_ZERO_FRACTION,
+            ];
+        }
+
+        $formatters[self::FORMAT_JSON] = [
+            'class'         => \yrc\web\JsonResponseFormatter::class,
+            'prettyPrint'   => YII_DEBUG,
+            'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRESERVE_ZERO_FRACTION,
+        ];
+        
         return $formatters;
     }
 }

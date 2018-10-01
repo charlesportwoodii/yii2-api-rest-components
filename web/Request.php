@@ -1,25 +1,68 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace yrc\web;
 
 use yii\base\InvalidConfigException;
-use yii\web\Request as BaseRequest;
 use yii\web\RequestParserInterface;
 use yrc\web\Response;
 use Yii;
 
-class Request extends BaseRequest
+class Request extends \yii\web\Request
 {
+    /**
+     * @var array $parsers
+     */
+    public $parsers = [ 
+        'application/json' => \yii\web\JsonParser::class,
+        'application/vnd.25519+json' => \yrc\web\ncryptf\JsonParser::class,
+        'application/vnd.ncryptf+json' => \yrc\web\ncryptf\JsonParser::class,
+    ];
+
+    /**
+     * @var array $_ncryptfContentTypes
+     */
+    private $_ncryptfContentTypes = [
+        'application/vnd.25519+json',
+        'application/vnd.ncryptf+json'
+    ];
+
+    /**
+     * @var array $_bodyParams
+     * @see yii\web\Request::_bodyParams
+     */
     private $_bodyParams;
 
+    /**
+     * @var string $_decryptedBody
+     */
     private $_decryptedBody;
 
-    public function getDecryptedBody()
+    /**
+     * Returns true if a given need is in an haystack array
+     * @param array $haystack
+     * @param string $needle
+     * @return boolean
+     */
+    private function striposa($haystack, $needle)
+    {
+        foreach ($haystack as $element) {
+            if (\stripos($element, $needle) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns the decrypted body
+     * @return string
+     */
+    public function getDecryptedBody() :? string
     {
         $rawContentType = $this->getContentType();
-        if (\stripos($rawContentType, 'application/vnd.25519+json') === false ||
-            \stripos($rawContentType, 'application/vnd.ncryptf+json') === false
-        ) {
+
+        if (!$this->striposa($this->_ncryptfContentTypes, $rawContentType)) {
             return $this->getRawBody();
         }
 
@@ -28,16 +71,15 @@ class Request extends BaseRequest
     }
 
     /**
-     * Returns the request parameters given in the request body.
-     *
-     * Request parameters are determined using the parsers configured in [[parsers]] property.
-     * If no parsers are configured for the current [[contentType]] it uses the PHP function `mb_parse_str()`
-     * to parse the [[rawBody|request body]].
-     * @return array the request parameters given in the request body.
-     * @throws \yii\base\InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
-     * @see getMethod()
-     * @see getBodyParam()
-     * @see setBodyParams()
+     * @inheritdoc
+     */
+    public function getContentType()
+    {
+        return parent::getContentType() ?? '';
+    }
+
+    /**
+     * @inheritdoc
      */
     public function getBodyParams()
     {
@@ -60,8 +102,7 @@ class Request extends BaseRequest
                     throw new InvalidConfigException("The '$contentType' request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
                 }
                 $this->_bodyParams = $parser->parse($this->getRawBody(), $rawContentType);
-                if (\stripos($rawContentType, 'application/vnd.25519+json') !== false ||
-                    \stripos($rawContentType, 'application/vnd.ncryptf+json') !== false) {
+                if ($this->striposa($this->_ncryptfContentTypes, $rawContentType)) {
                     $this->_decryptedBody = $parser->getDecryptedBody();
                 }
             } elseif (isset($this->parsers['*'])) {
@@ -78,6 +119,7 @@ class Request extends BaseRequest
                 mb_parse_str($this->getRawBody(), $this->_bodyParams);
             }
         }
+
         return $this->_bodyParams;
     }
 }
