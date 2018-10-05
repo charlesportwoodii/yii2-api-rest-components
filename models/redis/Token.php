@@ -108,7 +108,7 @@ abstract class Token extends ActiveRecord
             $attributes['access_token'],
             $attributes['refresh_token'],
             \base64_decode($attributes['ikm']),
-            \base64_decode($attributes['signing']),
+            \base64_decode($attributes['secret_sign_kp']),
             $attributes['expires_at']
         );
     }
@@ -122,7 +122,7 @@ abstract class Token extends ActiveRecord
         $attributes = $this->getAttributes();
         unset($attributes['id']);
 
-        $attributes['signing'] = \base64_encode($this->getSignPublicKey());
+        $attributes['signing'] = $attributes['secret_sign_kp'];
         unset($attributes['secret_sign_kp']);
         return $attributes;
     }
