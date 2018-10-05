@@ -99,7 +99,7 @@ abstract class Token extends ActiveRecord
     /**
      * Returns an ncryptf compatible token
      *
-     * @return ncryptf\Token
+     * @return \ncryptf\Token
      */
     public function getNcryptfToken()
     {
