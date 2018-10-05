@@ -108,7 +108,7 @@ abstract class Token extends ActiveRecord
             $attributes['access_token'],
             $attributes['refresh_token'],
             \base64_decode($attributes['ikm']),
-            \base64_decode($attributes['secret_sign_kp']),
+            \base64_decode($attributes['signing']),
             $attributes['expires_at']
         );
     }
