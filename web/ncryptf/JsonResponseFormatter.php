@@ -47,7 +47,7 @@ class JsonResponseFormatter extends \yrc\web\JsonResponseFormatter
 
         parent::formatJson($response);
         $headers->set('Content-Type', 'application/vnd.ncryptf+json; charset=UTF-8');
-        
+
         if (!Yii::$app->user->isGuest) {
             $token = Yii::$app->user->getIdentity()->getToken();
 
@@ -66,7 +66,7 @@ class JsonResponseFormatter extends \yrc\web\JsonResponseFormatter
             );
 
             $nonce = \random_bytes(SODIUM_CRYPTO_BOX_NONCEBYTES);
-            
+
             $content = $r->encrypt(
                 $response->content,
                 $rawPublic,

@@ -96,7 +96,7 @@ class JsonParser extends \yii\web\JsonParser
         static $response = null;
         static $nonce = null;
         static $publicKey = null;
-        
+
         $response = new Response(
             \base64_decode($key->secret)
         );
@@ -147,7 +147,7 @@ class JsonParser extends \yii\web\JsonParser
             'hash' => $lookup
         ])->one();
 
-        if ($key === null) {            
+        if ($key === null) {
             throw new Exception(Yii::t('yrc', 'Unable to decrypt response.'));
         }
 
