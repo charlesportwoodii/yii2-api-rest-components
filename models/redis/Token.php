@@ -99,7 +99,7 @@ abstract class Token extends ActiveRecord
     /**
      * Returns an ncryptf compatible token
      *
-     * @return ncryptf\Token
+     * @return \ncryptf\Token
      */
     public function getNcryptfToken()
     {
@@ -122,7 +122,7 @@ abstract class Token extends ActiveRecord
         $attributes = $this->getAttributes();
         unset($attributes['id']);
 
-        $attributes['signing'] = \base64_encode($this->getSignPublicKey());
+        $attributes['signing'] = $attributes['secret_sign_kp'];
         unset($attributes['secret_sign_kp']);
         return $attributes;
     }
