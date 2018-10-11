@@ -79,12 +79,12 @@ class JsonResponseFormatter extends \yrc\web\JsonResponseFormatter
                 // Sign the raw response and send the signature alongside the header
                 $headers->set('x-sigpubkey', \base64_encode($token->getSignPublicKey()));
                 $headers->set('x-signature', \base64_encode($signature));
-                $headers->set('x-hashid', $key->hash);
                 $headers->set('x-pubkey-expiration', $key->expires_at);
                 $headers->set('x-nonce', \base64_encode($nonce));
                 $headers->set('x-pubkey', \base64_encode($key->getBoxPublicKey()));
             }
 
+            $headers->set('x-hashid', $key->hash);
             $response->content = \base64_encode($content);
             return;
         }
