@@ -22,13 +22,20 @@ class JsonResponseFormatter extends \yrc\web\JsonResponseFormatter
         // Generate a new encryption key
         $key = EncryptionKey::generate();
         $request = Yii::$app->request;
-        $version = Response::getVersion(\base64_decode($request->getRawBody()));
+        if ($request->method === 'GET' && $request->getRawBody() === '' && $request->getHeaders()->get('Content-Type') === 'application/json') {
+            $headerExtractionVersion = 1;
+        } else {
+            $headerExtractionVersion = Response::getVersion(\base64_decode($request->getRawBody()));
+        }
+
         $headers = $response->getHeaders();
 
-        if ($version === 2) {
+        if ($headerExtractionVersion === 2) {
             $rawPublic = Response::getPublicKeyFromResponse(\base64_decode($request->getRawBody()));
+            $version = 2;
         } else {
-            $public = Yii::$app->request->getHeaders()->get('x-pubkey', null);
+            $public = $request->getHeaders()->get('x-pubkey', null);
+            $version = 1;
 
             if ($public === null) {
                 $response->statusCode = 400;
@@ -43,6 +50,11 @@ class JsonResponseFormatter extends \yrc\web\JsonResponseFormatter
                 $headers->set('x-reason', Yii::t('yrc', 'Public key is not 32 bytes in length.'));
                 return;
             }
+        }
+
+        // Upgrade GET request with empty bodies
+        if ($request->method === 'GET' && $request->getRawBody() === '') {
+            $version = 2;
         }
 
         parent::formatJson($response);
