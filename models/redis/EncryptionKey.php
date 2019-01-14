@@ -101,7 +101,7 @@ final class EncryptionKey extends ActiveRecord implements EncryptionKeyInterface
      */
     public function getSignPublicKey() : string
     {
-        return $this->getSigningKeyPair()
+        return $this->getSignKeyPair()
             ->getPublicKey();
     }
 
@@ -112,7 +112,7 @@ final class EncryptionKey extends ActiveRecord implements EncryptionKeyInterface
      */
     public function getSignSecretKey() : string
     {
-        return $this->getSigningKeyPair()
+        return $this->getSignKeyPair()
             ->getSecretKey();
     }
 
