@@ -73,7 +73,7 @@ class JsonResponseFormatter extends \yrc\web\JsonResponseFormatter
             }
 
             $r = new Request(
-                \base64_decode($key->secret),
+                $key->getBoxSecretKey(),
                 \base64_decode($token->secret_sign_kp)
             );
 
@@ -91,7 +91,7 @@ class JsonResponseFormatter extends \yrc\web\JsonResponseFormatter
                 // Sign the raw response and send the signature alongside the header
                 $headers->set('x-sigpubkey', \base64_encode($token->getSignPublicKey()));
                 $headers->set('x-signature', \base64_encode($signature));
-                $headers->set('x-pubkey-expiration', $key->expires_at);
+                $headers->set('x-pubkey-expiration', $key->getPublicKeyExpiration());
                 $headers->set('x-nonce', \base64_encode($nonce));
                 $headers->set('x-pubkey', \base64_encode($key->getBoxPublicKey()));
             }

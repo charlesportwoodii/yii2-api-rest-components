@@ -8,6 +8,7 @@ use ncryptf\Response;
 use ncryptf\exceptions\DecryptionFailedException;
 use ncryptf\exceptions\InvalidSignatureException;
 use ncryptf\exceptions\InvalidChecksumException;
+use ncryptf\middleware\EncryptionKeyInterface;
 use yrc\models\redis\EncryptionKey;
 use yrc\web\Request as YiiRequest;
 use yii\base\Exception;
@@ -85,20 +86,20 @@ class JsonParser extends \yii\web\JsonParser
     /**
      * Decrypts the request using a given encryption key and request parameters
      *
-     * @param EncryptionKey $key
+     * @param EncryptionKeyInterface $key
      * @param \yrc\web\Request $request
      * @param string $rawBody
      * @param string $version
      * @return string
      */
-    private function decryptRequest(EncryptionKey $key, \yrc\web\Request $request, string $rawBody, int $version)
+    private function decryptRequest(EncryptionKeyInterface $key, \yrc\web\Request $request, string $rawBody, int $version)
     {
         static $response = null;
         static $nonce = null;
         static $publicKey = null;
 
         $response = new Response(
-            \base64_decode($key->secret)
+            $key->getBoxSecretKey()
         );
 
         if ($version === 1) {
@@ -118,7 +119,7 @@ class JsonParser extends \yii\web\JsonParser
             $nonce
         );
 
-        if ($key->is_single_use) {
+        if ($key->isEphemeral()) {
             $key->delete();
         }
 
